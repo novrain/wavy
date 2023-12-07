@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "resolveJsonModule": true,
+    "composite": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
+  },
+  "include": [
+    "src/main/**/*",
+    "src/wavy/**/*",
+    "src/main/**/*.json",
+    "src/wavy/**/*.json"
+  ]
+}

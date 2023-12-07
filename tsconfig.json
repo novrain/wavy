@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "target": "esnext",
+    "module": "CommonJS",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true
+  },
+  "references": [
+    {
+      "path": "./tsconfig.electron.json"
+    },
+    {
+      "path": "./tsconfig.vite.json"
+    }
+  ]
+}

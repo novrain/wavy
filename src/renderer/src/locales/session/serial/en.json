@@ -1,0 +1,14 @@
+{
+  "serial": {
+    "options": {
+      "pathName": "Port Name",
+      "baudRate": "Baud Rate",
+      "dataBits": "Data Bits",
+      "stopBits": "Stop Bits",
+      "parity": "Parity"
+    },
+    "rules": {
+      "pathIsRequired": "Port is required"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "locale": {
+    "en": "English",
+    "zhHans": "简体中文"
+  },
+  "session": {
+    "menu": {
+      "session": "Session",
+      "new": "New"
+    },
+    "options": {
+      "enableTimestamp": "Timestamp",
+      "enableNewline": "Newline"
+    },
+    "command": {
+      "label": "Command",
+      "send": "Send"
+    },
+    "data": {
+      "label": "Data"
+    },
+    "status": {
+      "info": "",
+      "state": "State"
+    }
+  },
+  "help":{
+    "menu":{
+      "help": "Help",
+      "github": "Github"
+    }
+  }
+}

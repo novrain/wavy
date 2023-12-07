@@ -1,0 +1,37 @@
+@use 'vuetify/settings' with ( //
+  // input
+  $input-control-height: 24px,
+  // field
+  $field-control-height: 24px,
+  $field-font-size: 12px,
+  $field-input-padding-bottom: 0,
+  $field-input-padding-top: 2px,
+  $field-control-padding-bottom: 0,
+  $field-control-padding-end: 0,
+  $field-control-padding-start: 6px,
+  $field-control-padding-top: 2px,
+  $field-input-min-height: 26px,
+
+  // label
+  $label-font-size: 12px,
+
+  // list
+  $list-item-title-font-size: 12px,
+  $list-item-nav-title-font-size: 12px,
+  $list-indent-size: 12px,
+  $list-item-padding: 2px 8px,
+  $list-item-one-line-min-height: 24px,
+  $list-item-one-line-padding: 4px 8px,
+  $list-nav-padding: 4px 8px,
+
+  // windows
+  $window-transition: none,
+
+  // tabs
+  // $tabs-height: 36px
+
+);
+
+.v-window-item--active {
+  display: flex !important;
+}

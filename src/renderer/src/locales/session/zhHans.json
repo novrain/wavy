@@ -1,0 +1,29 @@
+{
+  "session": {
+    "menu": {
+      "session": "会话",
+      "new": "新建"
+    },
+    "options": {
+      "enableTimestamp": "时间戳",
+      "enableNewline": "自动换行"
+    },
+    "command": {
+      "label": "指令",
+      "send": "发送"
+    },
+    "data": {
+      "label": "数据"
+    },
+    "status": {
+      "info": "",
+      "state": "状态"
+    }
+  },
+  "help":{
+    "menu":{
+      "help": "帮助",
+      "github": "Github"
+    }
+  }
+}

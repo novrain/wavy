@@ -1,0 +1,14 @@
+{
+  "serial": {
+    "options": {
+      "pathName": "串口",
+      "baudRate": "波特率",
+      "dataBits": "数据位",
+      "stopBits": "停止位",
+      "parity": "校验位"
+    },
+    "rules": {
+      "pathIsRequired": "请选择串口"
+    }
+  }
+}

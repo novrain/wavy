@@ -1,0 +1,111 @@
+{
+  "name": "wavy",
+  "private": true,
+  "version": "1.0.0",
+  "main": "./dist/main/main.js",
+  "description": "A protocol testing tool that supports various connection methods.",
+  "repository": "https://github.com/novrain/wavy",
+  "author": {
+    "name": "nov rain",
+    "email": "novrainn@gmail.com"
+  },
+  "scripts": {
+    "vite:dev": "vite",
+    "vite:build": "vue-tsc --noEmit -p tsconfig.vite-cli.json && vite build",
+    "vite:tsc": "vue-tsc -p tsconfig.vite-cli.json",
+    "vite:preview": "vite preview",
+    "vite:lint": "eslint -c .vite.eslintrc.js ./src/renderer --ext .ts,.vue",
+    "electron:build": "tsc -p tsconfig.electron.json",
+    "electron:watch": "tsc -w -p tsconfig.electron.json",
+    "electron:start": "npm run electron:build && wait-on tcp:3000 && cross-env IS_DEV=true electron ./dist/main/main.js",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run vite:dev\" \"npm run electron:start\"",
+    "forge:start": "electron-forge start --enable-logging",
+    "forge:package": "electron-forge package",
+    "forge:make": "electron-forge make",
+    "forge:publish": "electron-forge publish"
+  },
+  "dependencies": {
+    "@intlify/unplugin-vue-i18n": "^1.5.0",
+    "@mdi/font": "7.3.67",
+    "@serialport/binding-abstract": "^10.1.0",
+    "buffer": "^6.0.3",
+    "class-transformer": "^0.5.1",
+    "compare-versions": "^6.1.0",
+    "electron-debug": "^3.2.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.1.0",
+    "element-plus": "^2.4.3",
+    "fs-extra": "^11.2.0",
+    "glasstron": "^0.1.1",
+    "js-yaml": "^4.1.0",
+    "macos-release": "^3.2.0",
+    "pinia": "^2.1.7",
+    "reflect-metadata": "^0.1.13",
+    "roboto-fontface": "*",
+    "rxjs": "^7.8.1",
+    "serialport": "^12.0.0",
+    "splitpanes": "^3.1.5",
+    "stylus": "^0.62.0",
+    "vue": "^3.3.10",
+    "vue-i18n": "^9.8.0",
+    "vue-router": "^4.2.5",
+    "vuetify": "^3.4.6",
+    "winston": "^3.11.0",
+    "yargs": "^17.7.2"
+  },
+  "optionalDependencies": {
+    "@tabby-gang/windows-blurbehind": "^3.0.0",
+    "windows-native-registry": "^3.2.2"
+  },
+  "devDependencies": {
+    "@babel/types": "^7.23.5",
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "@electron-forge/maker-rpm": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "@types/jest": "^29.5.11",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.10.3",
+    "@types/splitpanes": "^2.2.6",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitejs/plugin-vue": "^4.5.1",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "@vue/test-utils": "^2.4.3",
+    "@vue/vue3-jest": "^29.2.6",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^28.0.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-vue": "^9.19.2",
+    "jest": "^29.7.0",
+    "sass": "^1.69.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3",
+    "unplugin-fonts": "^1.1.1",
+    "vite": "^5.0.6",
+    "vite-plugin-vuetify": "^1.0.2",
+    "vue-tsc": "^1.8.25",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "cn.theiota.wavy",
+    "productName": "Wavy",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    }
+  }
+}

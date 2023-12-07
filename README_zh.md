@@ -1,5 +1,5 @@
 # Wavy
 
-[English](https://github.com/novrain/wavy/blob/master/README.md)
+[中文](https://github.com/novrain/wavy/blob/master/README_zh.md)
 
-Target: Build a protocol testing tool that supports various connection methods.
+目标：支持多种连接方式的协议测试工具.

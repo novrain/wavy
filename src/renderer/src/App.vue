@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import AppMenu from '@/components/Menu.vue'
 import SessionManager from '@/views/SessionManager.vue'
+// @ts-ignore
 import { Pane, Splitpanes } from 'splitpanes'
 import { onMounted } from 'vue'
 // import ProjectManager from '@/views/ProjectManager.vue'

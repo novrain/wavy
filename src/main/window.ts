@@ -1,5 +1,3 @@
-import * as glasstron from 'glasstron'
-
 import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, Menu, nativeImage, Rectangle, screen, TouchBar } from 'electron'
 import ElectronConfig from 'electron-store'
 import { debounceTime, Observable, Subject } from 'rxjs'
@@ -98,11 +96,7 @@ export class Window {
       }
     }
 
-    if (process.platform === 'darwin') {
-      this.window = new BrowserWindow(bwOptions) as GlasstronWindow
-    } else {
-      this.window = new glasstron.BrowserWindow(bwOptions)
-    }
+    this.window = new BrowserWindow(bwOptions) as GlasstronWindow
 
     this.window!.once('ready-to-show', () => {
       if (process.platform === 'darwin') {

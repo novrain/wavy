@@ -9,6 +9,7 @@
     "name": "nov rain",
     "email": "novrainn@gmail.com"
   },
+  "license": "MIT",
   "scripts": {
     "vite:dev": "vite",
     "vite:build": "vue-tsc --noEmit -p tsconfig.vite-cli.json && vite build",

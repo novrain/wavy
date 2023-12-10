@@ -1,9 +1,11 @@
+const path = require('path')
+const fs = require('node:fs/promises')
+
 module.exports = {
   packagerConfig: {
     icon: "./src/renderer/public/icon",
     asar: true,
-    name: "Wavy",
-    appName: "Wavy",
+    name: "Wavy"
   },
   rebuildConfig: {},
   makers: [
@@ -11,7 +13,6 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {
         name: "Wavy",
-        appName: "Wavy",
         setupIcon: "./src/renderer/public/icon.ico"
       },
     },
@@ -21,11 +22,15 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        bin: "Wavy"
+      },
     },
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
+      config: {
+        bin: "Wavy"
+      },
     },
   ],
   plugins: [
@@ -34,4 +39,16 @@ module.exports = {
       config: {},
     },
   ],
+  hooks: {
+    packageAfterPrune: async (_config, buildPath) => {
+      const gypPath = path.join(
+        buildPath,
+        'node_modules',
+        '@serialport/bindings-cpp',
+        'build',
+        'node_gyp_bins'
+      )
+      await fs.rm(gypPath, { recursive: true, force: true })
+    }
+  }
 }

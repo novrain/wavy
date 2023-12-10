@@ -23,12 +23,14 @@ module.exports = {
     {
       name: '@electron-forge/maker-deb',
       config: {
+        name: "Wavy",
         bin: "Wavy"
       },
     },
     {
       name: '@electron-forge/maker-rpm',
       config: {
+        name: "Wavy",
         bin: "Wavy"
       },
     },

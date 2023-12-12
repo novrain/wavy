@@ -51,6 +51,14 @@ export const useSessionStore = defineStore('session', {
       this.sessions = this.sessions.filter(s => {
         return !(s.id === session.id)
       })
+    },
+    setSessionName(session: Session, name: string) {
+      const s = this.sessions.find(s => {
+        return (s.id === session.id)
+      })
+      if (s) {
+        s.name = name
+      }
     }
   }
 })

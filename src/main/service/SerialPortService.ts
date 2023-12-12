@@ -42,6 +42,7 @@ class DefaultSerialPortService implements SerialPortService {
       return new Promise((resolve) => {
         serial.close((err) => {
           console.log(err)
+          serial.removeAllListeners()
           resolve(true)
         })
       })

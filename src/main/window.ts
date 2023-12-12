@@ -24,7 +24,7 @@ abstract class GlasstronWindow extends BrowserWindow {
   abstract setBlur(_: boolean): void
 }
 
-const macOSVibrancyType = process.platform === 'darwin' ? compareVersions(macOSRelease(undefined).version, '10.14', '>=') ? 'under-window' : 'window' : null
+const macOSVibrancyType = process.platform === 'darwin' ? compareVersions(macOSRelease(undefined).version || '0.0', '10.14', '>=') ? 'under-window' : 'window' : null
 
 const activityIcon = nativeImage.createFromPath(`${app.getAppPath()}/assets/activity.png`)
 

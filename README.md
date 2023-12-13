@@ -8,11 +8,13 @@ Target: Build a protocol testing tool that supports various connection methods.
 
 ### UI
 
-Communication between two serial ports.
+Using lumino, drag and drop function to change the layout, making it more convenient for multiple connections.
 
-![COM1](docs/imgs/COM-1.png)
+[vue3-lumino-widget](https://github.com/novrain/vue3-lumino-widget)
 
-![COM2](docs/imgs/COM-2.png)
+Send and receive data between two serial ports.
+
+![Lumino](docs/imgs/Lumino.png)
 
 ## Development
 

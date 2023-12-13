@@ -1,7 +1,7 @@
 {
   "name": "wavy",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/main/main.js",
   "description": "A protocol testing tool that supports various connection methods.",
   "repository": "https://github.com/novrain/wavy",

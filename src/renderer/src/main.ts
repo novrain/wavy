@@ -12,7 +12,6 @@ import { createApp } from 'vue'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
-import 'splitpanes/dist/splitpanes.css'
 
 const app = createApp(App)
 

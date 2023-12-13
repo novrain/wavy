@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import AppMenu from '@/components/Menu.vue'
 import SessionManager from '@/views/SessionManager.vue'
+import 'splitpanes/dist/splitpanes.css'
 // @ts-ignore
 import { Pane, Splitpanes } from 'splitpanes'
 import { onMounted } from 'vue'
@@ -92,7 +93,9 @@ onMounted(async () => {
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         handler: (_e: any) => {
-          window.hostWindow.openExternal('https://github.com/novrain/wavy')
+          if (window.hostWindow) {
+            window.hostWindow.openExternal('https://github.com/novrain/wavy')
+          }
         },
       }
     ]

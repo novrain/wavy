@@ -154,7 +154,8 @@ import { storeToRefs } from 'pinia'
 import SessionTextarea from './SessionTextarea.vue'
 import { useSerialStore } from '@/store/serial'
 import { Buffer } from 'buffer'
-import { session } from 'electron'
+
+const emits = defineEmits(['nameChanged'])
 
 const textDecoder = new TextDecoder()
 const textEncoder = new TextEncoder()
@@ -269,7 +270,8 @@ const connect = async () => {
         connected.value = r.result
         info.value = r.err || ''
         if (r.result) {
-          props.session.name = options.path
+          // props.session.name = options.path
+          emits('nameChanged', {session:props.session,name: options.path})
           window.serialPort.on(props.session.id, 'data', onData)
           window.serialPort.on(props.session.id, 'close', onClose)
           window.serialPort.on(props.session.id, 'error', onError)
@@ -284,7 +286,9 @@ const disconnect = async () => {
     return
   }
   window.serialPort.disconnect(props.session.id)
-    .then((r: boolean) => connected.value = !r)
+    .then((r: boolean) => {
+      connected.value = !r
+    })
     .catch((e) => { console.log(e) })
 }
 

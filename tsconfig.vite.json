@@ -20,7 +20,12 @@
     ],
     "types": [
       "element-plus/global"
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/renderer/src/*"],
+      "@W/*": ["./src/wavy/*"],
+      "@M/*": ["./src/main/*"],
+    }
   },
   "include": [
     "src/renderer/**/*.ts",

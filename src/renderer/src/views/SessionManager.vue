@@ -1,37 +1,21 @@
 <template>
-  <div class="d-flex flex-1-1 mx-2 flex-column">
-    <v-tabs center-active
-            next-icon="mdi-arrow-right-bold-box-outline"
-            prev-icon="mdi-arrow-left-bold-box-outline"
-            show-arrows
-            height="24px"
-            v-model="currentSessionId">
-      <v-tab v-for="s in sessions"
-             :key="s.id"
-             :value="s.id">
-        <!-- {{ s.name }} -->
-        <template v-slot:default>
-          <span class="mr-1">{{ s.name }}</span>
-          <span class="mr-1"
-                v-if="s.dirty">*</span>
-          <v-icon icon="mdi-window-close"
-                  class="close"
-                  @click="() => onSessionClose(s)"></v-icon>
-        </template>
-      </v-tab>
-    </v-tabs>
-    <v-window class="d-flex flex-1-1 w-100"
-              v-model="currentSessionId">
-      <v-window-item v-for="s in sessions"
-                     :key="s.id"
-                     :value="s.id">
+  <div class="d-flex flex-1-1 ma-2 flex-column">
+    <LuminoBoxPanel>
+      <LuminoWidget v-for="s in sessions"
+                    :key="s.id"
+                    @close="onLuminoWidgetClose"
+                    @active="onLuminoWidgetActive"
+                    :item="s">
         <component :is="sessionComps[s.type]"
-                   :session="s" />
-      </v-window-item>
-    </v-window>
+                   :session="s"
+                   @nameChanged="onSessionNameChanged" />
+      </LuminoWidget>
+    </LuminoBoxPanel>
   </div>
 </template>
 <script lang="ts" setup>
+import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
+import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
 import SerialSession from '@/components/SerialSession.vue'
 import { useMenuStore } from '@/store/menu'
 import { useSessionStore } from '@/store/session'
@@ -116,9 +100,21 @@ const onNewSession = () => {
   currentSessionId.value = session.id
 }
 
+const onLuminoWidgetClose = ({ msg, widget, item }) => {
+  sessionStore.closeSession(item)
+  widget.doClose(msg)
+}
+
+const onLuminoWidgetActive = ({ msg, widget, item }) => {
+  currentSessionId.value = item.id
+}
+
+const onSessionNameChanged = ({ session, name }) => {
+  sessionStore.setSessionName(session, name)
+}
+
 const onSessionClose = (session: Session) => {
   sessionStore.closeSession(session)
-
 }
 </script>
 

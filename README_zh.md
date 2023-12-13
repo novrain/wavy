@@ -8,11 +8,13 @@
 
 ### UI
 
+引入了Lumino, 方便的拖拽功能，改变布局，多连接时更便捷。
+
+[vue3-lumino-widget](https://github.com/novrain/vue3-lumino-widget)
+
 两个串口间收发数据。
 
-![COM1](docs/imgs/COM-1.png)
-
-![COM2](docs/imgs/COM-2.png)
+![Lumino](docs/imgs/Lumino.png)
 
 ## 开发
 

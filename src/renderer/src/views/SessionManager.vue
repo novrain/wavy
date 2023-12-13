@@ -16,6 +16,7 @@
 <script lang="ts" setup>
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
+import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import SerialSession from '@/components/SerialSession.vue'
 import { useMenuStore } from '@/store/menu'
 import { useSessionStore } from '@/store/session'
@@ -100,16 +101,16 @@ const onNewSession = () => {
   currentSessionId.value = session.id
 }
 
-const onLuminoWidgetClose = ({ msg, widget, item }) => {
-  sessionStore.closeSession(item)
+const onLuminoWidgetClose = ({ msg, widget, item }: WidgetEvent) => {
+  sessionStore.closeSession(item as Session)
   widget.doClose(msg)
 }
 
-const onLuminoWidgetActive = ({ msg, widget, item }) => {
+const onLuminoWidgetActive = ({ msg, widget, item }: WidgetEvent) => {
   currentSessionId.value = item.id
 }
 
-const onSessionNameChanged = ({ session, name }) => {
+const onSessionNameChanged = ({ session, name }: { session: Session, name: string }) => {
   sessionStore.setSessionName(session, name)
 }
 

@@ -4,7 +4,8 @@
       <LuminoWidget v-for="s in sessions"
                     :key="s.id"
                     @close="onLuminoWidgetClose"
-                    @active="onLuminoWidgetActive"
+                    @active="onLuminoWidgetActiveOrShow"
+                    @show="onLuminoWidgetActiveOrShow"
                     :item="s">
         <component :is="sessionComps[s.type]"
                    :session="s"
@@ -14,9 +15,9 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
-import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import SerialSession from '@/components/SerialSession.vue'
 import { useMenuStore } from '@/store/menu'
 import { useSessionStore } from '@/store/session'
@@ -106,7 +107,7 @@ const onLuminoWidgetClose = ({ msg, widget, item }: WidgetEvent) => {
   widget.doClose(msg)
 }
 
-const onLuminoWidgetActive = ({ msg, widget, item }: WidgetEvent) => {
+const onLuminoWidgetActiveOrShow = ({ msg, widget, item }: WidgetEvent) => {
   currentSessionId.value = item.id
 }
 

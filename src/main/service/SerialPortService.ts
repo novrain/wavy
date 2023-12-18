@@ -43,6 +43,7 @@ class DefaultSerialPortService implements SerialPortService {
         serial.close((err) => {
           console.log(err)
           serial.removeAllListeners()
+          this.serials.delete(id)
           resolve(true)
         })
       })

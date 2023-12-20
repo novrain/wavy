@@ -39,13 +39,13 @@
                @click="closeApp"></v-btn>
       </v-toolbar>
       <splitpanes class="default-theme flex-1-1">
-        <pane size="100"
+        <pane size="50"
               class="d-flex h-100">
           <session-manager />
         </pane>
-        <!-- <pane class="d-flex h-100">
+        <pane class="d-flex h-100">
           <project-manager />
-        </pane> -->
+        </pane>
       </splitpanes>
     </v-main>
   </v-app>
@@ -58,7 +58,7 @@ import 'splitpanes/dist/splitpanes.css'
 // @ts-ignore
 import { Pane, Splitpanes } from 'splitpanes'
 import { onMounted } from 'vue'
-// import ProjectManager from '@/views/ProjectManager.vue'
+import ProjectManager from '@/views/ProjectManager.vue'
 import { hostWindowStore } from '@/store/hostWindow'
 import { useMenuStore } from '@/store/menu'
 import { useI18n } from 'vue-i18n'

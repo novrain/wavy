@@ -13,7 +13,12 @@ import { BoxPanel, Widget } from '@lumino/widgets'
 import { inject, nextTick, onMounted, ref, watch } from 'vue'
 import { CustomDockPanel, Item, ItemWidget } from './ItemWidget'
 
-const props = defineProps(['item', 'closable', 'titleClass', 'titleActiveClass'])
+const props = withDefaults(defineProps<{
+  item: Item,
+  closable?: boolean,
+  titleClass?: string,
+  titleActiveClass?: string
+}>(), { closable: true, titleClass: 'lumino-tab', titleActiveClass: 'lumino-tab-active' })
 const emits = defineEmits(['close', 'active', 'deActive', 'show', 'hide'])
 const boxPanel: BoxPanel | undefined = inject('boxPanel')
 const dockPanel: CustomDockPanel | undefined = inject('dockPanel')
@@ -58,7 +63,7 @@ const luminoWidget = new ItemWidget(props.item, {
 })
 
 watch(() => props.item, (newItem: Item, oldItem: Item) => {
-  luminoWidget.title.label = newItem.name
+  luminoWidget.title.label = newItem.name || ''
 }, { deep: true })
 
 watch(() => props.titleActiveClass, (newClass: string, oldClass: string) => {

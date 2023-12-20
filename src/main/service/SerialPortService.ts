@@ -58,10 +58,10 @@ class DefaultSerialPortService implements SerialPortService {
       serial.on(event, listener)
     }
   }
-  async write(id: string, data: any): Promise<void> {
+  async write(id: string, data: any): Promise<any> {
     const serial = this.serials.get(id)
     if (serial) {
-      serial.write(data)
+      return serial.write(data)
     }
   }
 }

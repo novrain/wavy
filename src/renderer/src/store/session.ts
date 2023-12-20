@@ -1,5 +1,5 @@
-// Utilities
-import { createDefaultSerialOptions, Session, SessionOptions, SessionType } from '@W/types/session'
+import RawSerialPortSession, { Session } from '@/types/session'
+import { createDefaultSerialOptions, SessionOptions, SessionType } from '@W/types/session'
 import BitSet from '@W/util/BitSet'
 import SnowflakeId from '@W/util/SnowflakeId'
 import { defineStore } from 'pinia'
@@ -15,19 +15,21 @@ const defaultOptions = (type: string): SessionOptions => {
   }
 }
 
+const createSession = (type: string): Session => {
+  switch (type) {
+    case 'Serial':
+    default:
+      return new RawSerialPortSession(idGenerator.nextId().toString(), defaultOptions(type))
+  }
+}
+
 export const useSessionStore = defineStore('session', {
   state: () => ({
     sessions: [] as Session[]
   }),
   actions: {
     newSession(type: SessionType): Session {
-      const session = {
-        id: idGenerator.nextId().toString(),
-        type: type,
-        options: defaultOptions(type),
-        dirty: false,
-        index: this.sessions.length
-      }
+      const session = createSession(type)
       this.addSession(session)
       return session
     },
@@ -40,7 +42,7 @@ export const useSessionStore = defineStore('session', {
         session.index = this.sessions.length
       }
       if (!session.name) {
-        session.name = `new-${session.tempIndex}`
+        session.name = `session-${session.tempIndex}`
       }
       this.sessions.push(session)
     },

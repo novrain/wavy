@@ -5,8 +5,27 @@
     "module": "CommonJS",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "./src/renderer/src/*"
+      ],
+      "@W/*": [
+        "./src/wavy/*"
+      ],
+      "@M/*": [
+        "./src/main/*"
+      ],
+    }
   },
+  "include": [
+    "src/renderer/**/*.ts",
+    "src/renderer/**/*.d.ts",
+    "src/renderer/**/*.tsx",
+    "src/renderer/**/*.vue",
+    "src/wavy/**/*.ts",
+  ],
   "references": [
     {
       "path": "./tsconfig.electron.json"

@@ -12,7 +12,7 @@
       <v-list nav
               :min-width="100"
               :lines="false">
-        <v-list-item v-for="(item) in m?.items"
+        <v-list-item v-for="(item) in ((m?.items || []) as MenuComposite[])"
                      :key="item?.id"
                      :value="item"
                      @click="() => {
@@ -32,6 +32,7 @@
 </template>
 <script lang="ts" setup>
 import { useMenuStore } from '@/store/menu'
+import { MenuComposite } from '@/types/menu'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

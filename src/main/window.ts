@@ -57,11 +57,11 @@ export class Window {
 
     const maximized = this.windowConfig.get('maximized')
     const bwOptions: BrowserWindowConstructorOptions = {
-      width: 800,
-      height: 600,
+      width: 1200,
+      height: 800,
       title: 'Wavy',
-      minWidth: 800,
-      minHeight: 600,
+      minWidth: 1200,
+      minHeight: 800,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
         nodeIntegration: true,
@@ -97,6 +97,7 @@ export class Window {
     }
 
     this.window = new BrowserWindow(bwOptions) as GlasstronWindow
+    // this.window.webContents.openDevTools()
 
     this.window!.once('ready-to-show', () => {
       if (process.platform === 'darwin') {

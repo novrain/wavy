@@ -222,7 +222,7 @@ const send = () => {
       d = textEncoder.encode(command.value)
     }
     if (d) {
-      window.serialPort.write(props.session.id, d)
+      props.session.send(d)
       onData(command.value, 'out')
     }
   }
@@ -233,7 +233,7 @@ const onData = (d: Uint8Array | string, type: 'in' | 'out') => {
 
   // }
   const r = { t: new Date(), d: d }
-  data.value.push()
+  // data.value.push(r)
   let prefix = '>> '
   if (type === 'out') {
     prefix = '<< '
@@ -251,6 +251,11 @@ const onData = (d: Uint8Array | string, type: 'in' | 'out') => {
   }
 }
 
+const onEcho = (d: any) => {
+  const raw = d.raw
+  onData(raw, 'out')
+}
+
 const onError = (err: any) => {
   console.log(err)
 }
@@ -265,31 +270,28 @@ const connect = async () => {
   }
   const res = await form.value.validate()
   if (res.valid) {
-    window.serialPort.connect(props.session.id, { ...options })
-      .then((r: any) => {
-        connected.value = r.result
-        info.value = r.err || ''
-        if (r.result) {
-          // props.session.name = options.path
-          emits('nameChanged', {session:props.session,name: options.path})
-          window.serialPort.on(props.session.id, 'data', onData)
-          window.serialPort.on(props.session.id, 'close', onClose)
-          window.serialPort.on(props.session.id, 'error', onError)
-        }
-      })
-      .catch((e) => { console.log(e) })
+    const session = props.session
+    session.options = options
+    session.open().then((r: any) => {
+      connected.value = r.result
+      info.value = r.err || ''
+      if (r.result) {
+        // props.session.name = options.path
+        emits('nameChanged', { session: props.session, name: options.path })
+        session.on('data', onData)
+        session.on('echo', onEcho)
+        session.on('close', onClose)
+        session.on('error', onError)
+      }
+    }).catch((e: any) => { console.log(e) })
   }
 }
 
 const disconnect = async () => {
-  if (!window.serialPort) {
-    return
-  }
-  window.serialPort.disconnect(props.session.id)
-    .then((r: boolean) => {
-      connected.value = !r
-    })
-    .catch((e) => { console.log(e) })
+  props.session.close().then((r: boolean) => {
+    connected.value = !r
+  })
+    .catch((e: any) => { console.log(e) })
 }
 
 onUnmounted(disconnect)

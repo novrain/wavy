@@ -1,0 +1,40 @@
+{
+  "name": "demo wavy project",
+  "frames": [
+    {
+      "id": "f1",
+      "name": "f1",
+      "__type": "Data",
+      "blocks": [
+        {
+          "id": "f1.b1",
+          "name": "f1.b1",
+          "__type": "Ref",
+          "refId": "b1"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "name": "f2",
+      "__type": "Ref",
+      "refId": "f1"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "b1",
+      "name": "b1",
+      "strValue": "1234",
+      "__type": "Decimal",
+      "endian": "BigEndian",
+      "numberType": "Int16"
+    },
+    {
+      "id": "b2",
+      "name": "b2",
+      "strValue": "Hello wavy.",
+      "__type": "String"
+    }
+  ]
+}

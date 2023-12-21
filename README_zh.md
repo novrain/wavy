@@ -8,13 +8,12 @@
 
 ### UI
 
-引入了Lumino, 方便的拖拽功能，改变布局，多连接时更便捷。
-
-[vue3-lumino-widget](https://github.com/novrain/vue3-lumino-widget)
+- 引入了Lumino, 方便的拖拽功能，改变布局，多连接时更便捷。[vue3-lumino-widget](https://github.com/novrain/vue3-lumino-widget)
+- String/Decimal 命令块定义，方便编辑指令
 
 两个串口间收发数据。
 
-![Lumino](docs/imgs/Lumino.png)
+![SimpleBlocks](docs/imgs/SimpleBlocks.png)
 
 ## 开发
 

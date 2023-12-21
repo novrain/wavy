@@ -13,4 +13,4 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "on",
     "no-unused-vars": "off"
   }
-};
+}

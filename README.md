@@ -8,13 +8,12 @@ Target: Build a protocol testing tool that supports various connection methods.
 
 ### UI
 
-Using lumino, drag and drop function to change the layout, making it more convenient for multiple connections.
-
-[vue3-lumino-widget](https://github.com/novrain/vue3-lumino-widget)
+- Using lumino, drag and drop function to change the layout, making it more convenient for multiple connections. [vue3-lumino-widget](https://github.com/novrain/vue3-lumino-widget)
+- String/Decimal Command Blocks，easy to build command.
 
 Send and receive data between two serial ports.
 
-![Lumino](docs/imgs/Lumino.png)
+![SimpleBlocks](docs/imgs/SimpleBlocks.png)
 
 ## Development
 

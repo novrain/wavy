@@ -24,8 +24,8 @@
       "state": "State"
     }
   },
-  "help":{
-    "menu":{
+  "help": {
+    "menu": {
       "help": "Help",
       "github": "Github"
     }

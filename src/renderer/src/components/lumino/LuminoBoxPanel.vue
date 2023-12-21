@@ -11,8 +11,13 @@ import '@lumino/default-theme/style/index.css'
 import { BoxPanel, Widget } from '@lumino/widgets'
 import { onMounted, onUnmounted, onUpdated, provide, ref } from 'vue'
 import { CustomDockPanel } from './ItemWidget'
+
+const props = withDefaults(defineProps<{
+  tabsConstrained?: boolean
+}>(), { tabsConstrained: false })
+
 const boxPanel = new BoxPanel({ direction: 'left-to-right', spacing: 0 })
-const dockPanel = new CustomDockPanel()
+const dockPanel = new CustomDockPanel({ tabsConstrained: props.tabsConstrained })
 boxPanel.id = 'box-panel'
 dockPanel.id = 'dock-panel'
 
@@ -24,19 +29,19 @@ const container = ref<HTMLElement | null>(null)
 const onWindowResize = () => {
   boxPanel.update()
 }
+let sizeChangeObserver = new ResizeObserver(onWindowResize)
 
 onMounted(() => {
   boxPanel.addWidget(dockPanel)
   BoxPanel.setStretch(dockPanel, 1)
   if (container.value) {
     Widget.attach(boxPanel, container.value)
+    sizeChangeObserver.observe(container.value)
   }
-
-  window.addEventListener('resize', onWindowResize)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', onWindowResize)
+  sizeChangeObserver.disconnect()
 })
 
 onUpdated(() => {
@@ -49,14 +54,14 @@ onUpdated(() => {
   display: flex;
   flex: 1;
 
-  :deep(.lm-mod-current){
+  :deep(.lm-mod-current) {
     border-top: #1867C060 2px solid;
   }
 
-  :deep(.lumino-tab-active){
+  :deep(.lumino-tab-active) {
     border-top: #1867C0 2px solid;
   }
-  
+
   :deep(#box-panel) {
     display: flex;
     flex: 1;

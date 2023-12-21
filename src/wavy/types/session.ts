@@ -47,18 +47,14 @@ export type SessionType = 'Serial' | 'TCP'
 
 export interface AbstractSession {
   id: string,
+  type: SessionType,
+  isConnected: boolean,
   tempIndex?: number,
   index?: number,
   name?: string,
-  type: SessionType,
   dirty?: boolean,
-  open?(): void | Promise<void>,
-  close?(): void | Promise<void>,
+  open(): any | Promise<any>,
+  close(): any | Promise<any>,
+  send(data: Uint8Array, echo: boolean, raw: string | undefined): any | Promise<any>,
+  on(event: string, listener: (event: any) => void): any
 }
-
-// @Todo as a class implements functions.
-export interface RawSerialPortSession extends AbstractSession {
-  options: SessionOptions
-}
-
-export type Session = RawSerialPortSession // | TCPSession

@@ -7,6 +7,8 @@ if (!process.env.TABBY_PLUGINS) {
   process.env.TABBY_PLUGINS = ''
 }
 
+app.disableHardwareAcceleration()
+
 const application = new Application()
 
 ipcMain.on('app:new-window', () => {

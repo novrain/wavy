@@ -1,0 +1,31 @@
+{
+  "project": {
+    "menu": {
+      "project": "工程",
+      "new": "新建"
+    },
+    "block": {
+      "name": "名称",
+      "type": "类型",
+      "definition": "定义",
+      "actions": "",
+      "blocks": "指令定义"
+    },
+    "stringBlock": {
+      "value": "值",
+      "pad": "补齐",
+      "padSide": "补齐位置",
+      "encoding": "编码",
+      "padToLength": "补齐长度"
+    },
+    "decimalBlock": {
+      "value": "值",
+      "numberType": "数值类型",
+      "endian": "字节序",
+      "pad": "补齐",
+      "padSide": "补齐位置",
+      "encoding": "编码",
+      "padToLength": "补齐长度"
+    }
+  }
+}

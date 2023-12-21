@@ -1,0 +1,31 @@
+{
+  "project": {
+    "menu": {
+      "project": "Project",
+      "new": "New"
+    },
+    "block": {
+      "name": "Name",
+      "type": "Type",
+      "definition": "Definition",
+      "actions": "",
+      "blocks": "Command Blocks"
+    },
+    "stringBlock": {
+      "value": "Value",
+      "pad": "Pad",
+      "padSide": "Pad Side",
+      "encoding": "Encoding",
+      "padToLength": "Pad To Length"
+    },
+    "decimalBlock": {
+      "value": "Value",
+      "numberType": "Number Type",
+      "endian": "Endian",
+      "pad": "Pad",
+      "padSide": "Pad Side",
+      "encoding": "Encoding",
+      "padToLength": "Pad To Length"
+    }
+  }
+}

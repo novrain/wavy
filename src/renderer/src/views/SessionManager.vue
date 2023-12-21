@@ -1,12 +1,12 @@
 <template>
   <div class="d-flex flex-1-1 ma-2 flex-column">
-    <LuminoBoxPanel>
+    <LuminoBoxPanel tabsConstrained>
       <LuminoWidget v-for="s in sessions"
                     :key="s.id"
                     @close="onLuminoWidgetClose"
                     @active="onLuminoWidgetActiveOrShow"
                     @show="onLuminoWidgetActiveOrShow"
-                    :item="s">
+                    :item="(s)">
         <component :is="sessionComps[s.type]"
                    :session="s"
                    @nameChanged="onSessionNameChanged" />
@@ -21,14 +21,17 @@ import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
 import SerialSession from '@/components/SerialSession.vue'
 import { useMenuStore } from '@/store/menu'
 import { useSessionStore } from '@/store/session'
+import { useAppStore } from '@/store/app'
 import { MenuEvent } from '@/types/menu'
-import { Session } from '@W/types/session'
 import { storeToRefs } from 'pinia'
 import { onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+const appStore = useAppStore()
+
 // @Todo move to where?
 import { useSerialStore } from '@/store/serial'
+import { Session } from '@/types/session'
 const serialStore = useSerialStore()
 const { paths } = storeToRefs(serialStore)
 
@@ -89,6 +92,7 @@ onUnmounted(() => {
 watch(currentSessionId, (id) => {
   if (id) {
     currentSession.value = sessions.value.find(s => s.id === id)
+    appStore.session.currentSession = currentSession.value
   } else {
     const newSession = sessionStore.sessions[0]
     if (newSession) {

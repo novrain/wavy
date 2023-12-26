@@ -14,6 +14,7 @@ export const useProjectStore = defineStore('project', {
   actions: {
     newProject(type: ProjectType, closeable: boolean = true): Project {
       const tempIndex = tempIndexSet.nextClearBit(0)
+      tempIndexSet.set(tempIndex)
       const id = idGenerator.nextId().toString()
       const name = `project-${tempIndex}`
       const project = {

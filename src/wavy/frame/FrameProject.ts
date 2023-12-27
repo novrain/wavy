@@ -89,7 +89,7 @@ export class FrameProject {
   }
 
   addBlock(block: Block, after: number | undefined = undefined): void {
-    if (after && after >= 0 && after < this._blocks.length) {
+    if (after !== undefined && after >= 0 && after < this._blocks.length) {
       this._blocks.splice(after, 0, block)
     } else {
       this._blocks.push(block)

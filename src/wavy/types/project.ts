@@ -1,20 +1,22 @@
+import { Type } from 'class-transformer'
+import 'reflect-metadata'
 import { FrameProject } from "../frame/FrameProject"
 
 export type ProjectType = 'BlockOnly' | 'Frame'
 
-export interface AbstractProject {
-  id: string,
-  tempIndex?: number,
-  index?: number,
-  name?: string,
-  type: ProjectType,
-  dirty?: boolean,
-  closeable?: boolean
-  project?: FrameProject
-}
+export class Project {
+  id: string
+  tempIndex?: number | undefined
+  index?: number | undefined
+  name?: string | undefined
+  dirty?: boolean | undefined
+  closeable?: boolean | undefined
 
-// @Todo as a class implements functions.
-export interface BlockOnlyProject extends AbstractProject {
-}
+  @Type(() => FrameProject)
+  project?: FrameProject | undefined
+  path?: string | undefined
 
-export type Project = BlockOnlyProject // | FrameProject 
+  constructor(id: string, readonly type: ProjectType) {
+    this.id = id
+  }
+}

@@ -1,4 +1,4 @@
-import { SerialPortService, Result } from './types'
+import { SerialPortService, Result } from '../types'
 import { SerialPort } from 'serialport'
 
 class DefaultSerialPortService implements SerialPortService {

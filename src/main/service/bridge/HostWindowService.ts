@@ -1,4 +1,4 @@
-import { app, ipcRenderer, shell } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 
 export default {
   isMaximized() {

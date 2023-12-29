@@ -2,7 +2,18 @@
   "project": {
     "menu": {
       "project": "Project",
-      "new": "New"
+      "new": "New",
+      "save": "Save",
+      "saveAs": "Save As",
+      "open": "Open"
+    },
+    "dialog": {
+      "hint": "Warning",
+      "reload": "The project has already been opened. Would you like to reload?",
+      "clearAll": "Are you sure to remove all blocks?",
+      "deleteSelected": "Are you sure to remove the selected blocks?",
+      "confirm": "Ok",
+      "cancel": "Cancel"
     },
     "block": {
       "name": "Name",

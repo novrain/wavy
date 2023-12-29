@@ -1,10 +1,13 @@
 import { contextBridge } from 'electron'
-import DefaultHostWindowService from './service/HostWindowService'
-import DefaultSerialPortService from './service/SerialPortService'
+import DefaultHostWindowService from './service/bridge/HostWindowService'
+import DefaultProjectService from './service/bridge/ProjectService'
+import DefaultSerialPortService from './service/bridge/SerialPortService'
 
 // host window
 contextBridge.exposeInMainWorld('hostWindow', DefaultHostWindowService)
 
 // serial port
+contextBridge.exposeInMainWorld('serialPort', DefaultSerialPortService)
 
-contextBridge.exposeInMainWorld('serialPort', DefaultSerialPortService) 
+// file service
+contextBridge.exposeInMainWorld('projectService', DefaultProjectService)

@@ -1,10 +1,12 @@
+
 type Menu = {
   id: string
   alt?: string
   icon?: string
-  name: string,
-  nameKey?: string,
+  name: string
+  nameKey?: string
   handler?: MenuItemEventHandler
+  disabled?: any
 }
 
 export type MenuItem = Menu & { items: undefined, handler: MenuItemEventHandler }

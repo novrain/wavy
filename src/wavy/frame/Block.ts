@@ -3,6 +3,7 @@ import {
   Exclude,
   Expose
 } from 'class-transformer'
+import 'reflect-metadata'
 import { defaultId } from '../util/SnowflakeId'
 
 export type UndefinableBuffer = Buffer | undefined
@@ -24,6 +25,7 @@ type DataProcessing = 'None' | 'Repeat'
 type Endian = 'BigEndian' | 'LittleEndian'
 
 export interface Block {
+  tempIndex: number,
   readonly id: string
   name: string
   encoding: string
@@ -69,6 +71,7 @@ export class DecimalBlock implements DataBlock {
   @Exclude()
   _value: number | bigint = 0
   strValue: string
+  tempIndex: number
 
   constructor(
     readonly id: string,
@@ -83,6 +86,7 @@ export class DecimalBlock implements DataBlock {
   ) {
     this._value = value || this._value
     this.strValue = this._value + ''
+    this.tempIndex = 0
   }
 
   get type(): BlockType {
@@ -224,6 +228,7 @@ export class StringBlock implements DataBlock {
 
   __type: BlockType = 'String'
   strValue: string = '0'
+  tempIndex: number
 
   constructor(
     readonly id: string,
@@ -236,6 +241,7 @@ export class StringBlock implements DataBlock {
     public pad: number | string = 0
   ) {
     this.strValue = value
+    this.tempIndex = 0
   }
 
   get type(): BlockType {

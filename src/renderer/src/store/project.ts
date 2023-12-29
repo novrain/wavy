@@ -43,6 +43,10 @@ export const useProjectStore = defineStore('project', {
       }
       this.projects.push(project)
     },
+    reloadProject(index: number, newProject: Project) {
+      const deleted = this.projects.splice(index, 1, newProject)
+      console.log(deleted)
+    },
     closeProject(project: Project) {
       if (project.tempIndex !== undefined) {
         tempIndexSet.clear(project.tempIndex)

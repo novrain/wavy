@@ -1,5 +1,12 @@
 {
   "project": {
+    "welcome": {
+      "welcome": "欢迎页",
+      "project_category": "工程"
+    },
+    "types": {
+      "block": "简单指令块"
+    },
     "menu": {
       "project": "工程",
       "new": "新建",

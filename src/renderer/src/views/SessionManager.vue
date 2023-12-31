@@ -1,6 +1,30 @@
 <template>
   <div class="d-flex flex-1-1 ma-2 flex-column">
-    <LuminoBoxPanel tabsConstrained>
+    <LuminoBoxPanel tabsConstrained
+                    addButtonEnabled
+                    id="session-lumino"
+                    @add="onNewSession">
+      <LuminoWidget v-if="sessions.length <= 0 || showWelcome"
+                    :item="{ id: 'welcome', name: t('session.welcome.welcome') }"
+                    :closable="sessions.length > 0"
+                    @close="onWelcomeClose">
+        <v-container class="ma-4">
+          <v-chip prepend-icon="mdi-transit-connection-horizontal"
+                  size="large">
+            {{ t('session.welcome.session_category') }}
+          </v-chip>
+          <v-divider class="mt-2 mb-2"></v-divider>
+          <v-container class="d-flex ma-0 pa-0">
+            <v-btn prepend-icon="mdi-serial-port"
+                   size="x-large"
+                   variant="tonal"
+                   stacked
+                   @click="onNewSession">
+              {{ t('session.types.serial') }}
+            </v-btn>
+          </v-container>
+        </v-container>
+      </LuminoWidget>
       <LuminoWidget v-for="s in sessions"
                     :key="s.id"
                     @close="onLuminoWidgetClose"
@@ -54,6 +78,12 @@ const { t } = useI18n()
 const currentSession = ref<Session | null | undefined>(null)
 const currentSessionId = ref<string | null | undefined>(null)
 
+const showWelcome = ref(true)
+
+const onWelcomeClose = ({ msg, widget, item }) => {
+  showWelcome.value = false
+}
+
 onMounted(() => {
   menusStore.registerMenu({
     id: 'session-manager',
@@ -73,10 +103,10 @@ onMounted(() => {
       }
     ]
   })
-  if (sessions.value.length <= 0) {
-    const session = sessionStore.newSession('Serial')
-    currentSessionId.value = session.id
-  }
+  // if (sessions.value.length <= 0) {
+  //   const session = sessionStore.newSession('Serial')
+  //   currentSessionId.value = session.id
+  // }
   // @Todo move
   listPorts()
 })
@@ -109,6 +139,9 @@ const onNewSession = () => {
 const onLuminoWidgetClose = ({ msg, widget, item }: WidgetEvent) => {
   sessionStore.closeSession(item as Session)
   widget.doClose(msg)
+  if (sessions.value.length <= 0) {
+    showWelcome.value = true
+  }
 }
 
 const onLuminoWidgetActiveOrShow = ({ msg, widget, item }: WidgetEvent) => {

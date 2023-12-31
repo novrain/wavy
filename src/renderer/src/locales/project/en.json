@@ -1,5 +1,12 @@
 {
   "project": {
+    "welcome": {
+      "welcome": "Welcome",
+      "project_category": "Project"
+    },
+    "types": {
+      "block": "Block Only"
+    },
     "menu": {
       "project": "Project",
       "new": "New",

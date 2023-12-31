@@ -74,6 +74,10 @@ watch(() => props.titleClass, (newClass: string, oldClass: string) => {
   luminoWidget.title.className = createTitleClass(luminoWidget === dockPanel!.currentWidget)
 })
 
+watch(() => props.closable, (newClosable, oldClosable) => {
+  luminoWidget.title.closable = newClosable
+})
+
 onMounted(() => {
   const widgets = dockPanel!.widgets()
   if (!Array.from(widgets).find((w: Widget) => {

@@ -34,9 +34,9 @@ const blockComps = {
 const props = defineProps<{ block: Block, project: Project, index: number }>()
 
 const onTypeChanged = (type: BlockType | string | null) => {
-  const newBlock = createBlock(type as BlockType, defaultId.nextId() + '')
+  const newBlock = createBlock(type as BlockType, defaultId.nextId() + '', props.block.name)
   if (newBlock) {
-    props.project.project?.replaceBlock(props.index, newBlock)
+    props.project.project?.replaceBlock(props.block, newBlock)
   }
 }
 

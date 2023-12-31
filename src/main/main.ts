@@ -1,6 +1,7 @@
-import { app, ipcMain, Menu } from 'electron'
-import { parseArgs } from './cli'
+import { app, BrowserWindow, ipcMain, Menu } from 'electron'
 import { Application } from './app'
+import { parseArgs } from './cli'
+import ProjectServiceInMain from './service/ProjectServiceInMain'
 import electronDebug = require('electron-debug')
 
 if (!process.env.TABBY_PLUGINS) {
@@ -61,7 +62,10 @@ app.on('ready', async () => {
   }
   application.init()
 
+  const projectService = new ProjectServiceInMain()
   const window = await application.newWindow({ hidden: argv.hidden })
-  await window.ready
+  projectService.window = window.browserWindow as BrowserWindow
+  // await window.ready
   window.passCliArguments(process.argv, process.cwd(), false)
+  window.focus()
 })

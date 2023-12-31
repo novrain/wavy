@@ -109,7 +109,7 @@ export class Application {
     if (process.platform === 'darwin') {
       this.setupMenu()
     }
-    await window.ready
+    // await window.ready
     return window
   }
 

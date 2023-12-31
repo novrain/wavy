@@ -47,6 +47,10 @@ export class Window {
   get visible$(): Observable<boolean> { return this.visible }
   get closed$(): Observable<void> { return this.closed }
 
+  get browserWindow (){
+    return this.window
+  }
+
   constructor(private application: Application, options?: WindowOptions) {
     this.configStore = loadConfig()
 

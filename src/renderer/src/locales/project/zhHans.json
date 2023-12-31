@@ -1,8 +1,24 @@
 {
   "project": {
+    "welcome": {
+      "welcome": "欢迎页",
+      "project_category": "工程"
+    },
+    "types": {
+      "block": "简单指令块"
+    },
     "menu": {
       "project": "工程",
-      "new": "新建"
+      "new": "新建",
+      "save": "保存",
+      "saveAs": "另存为",
+      "open": "打开"
+    },
+    "dialog": {
+      "hint": "警告",
+      "reload": "工程已经打开, 重新加载?",
+      "confirm": "确认",
+      "cancel": "取消"
     },
     "block": {
       "name": "名称",

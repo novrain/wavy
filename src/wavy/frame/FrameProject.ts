@@ -2,6 +2,8 @@ import {
   Expose,
   Type
 } from 'class-transformer'
+import 'reflect-metadata'
+import { defaultId } from '../util/SnowflakeId'
 import {
   Block,
   UndefinableBlock
@@ -16,7 +18,6 @@ import {
   UndefinableFrame,
   WavyItem
 } from "./Frame"
-import { defaultId } from '../util/SnowflakeId'
 
 type UndefinableWavyItem = WavyItem | undefined
 
@@ -89,19 +90,32 @@ export class FrameProject {
   }
 
   addBlock(block: Block, after: number | undefined = undefined): void {
-    if (after && after >= 0 && after < this._blocks.length) {
+    if (after !== undefined && after >= 0 && after < this._blocks.length) {
       this._blocks.splice(after, 0, block)
     } else {
       this._blocks.push(block)
     }
   }
 
-  deleteBlock(index: number): void {
-    const block = this._blocks.splice(index, 1)
+  deleteBlock(block: number): void
+  deleteBlock(block: Block): void
+  deleteBlock(block: Block | number): void {
+    let index = block
+    if (typeof block !== 'number') {
+      index = this._blocks.indexOf(block)
+    }
+    const deletedBlock = this._blocks.splice(index as number, 1)
     // @Todo ref broken
   }
 
-  replaceBlock(index: number, newBlock: Block): void {
+  replaceBlock(oldBlock: number, newBlock: Block): void
+  replaceBlock(oldBlock: Block, newBlock: Block): void
+  replaceBlock(oldBlock: Block | number, newBlock: Block): void {
+    if (typeof oldBlock === 'number') {
+      const block = this._blocks.splice(oldBlock, 1, newBlock)
+      return
+    }
+    const index = this._blocks.findIndex(b => oldBlock.id === b.id)
     const block = this._blocks.splice(index, 1, newBlock)
     // @Todo ref broken
   }
@@ -111,6 +125,13 @@ export class FrameProject {
       return b.id === id
     })
     return b
+  }
+
+  removeAllBlock(): void {
+    this._blocks.forEach(b => {
+      // @Todo ref broken
+    })
+    this._blocks.splice(0, this._blocks.length)
   }
 
   clone(): FrameProject {

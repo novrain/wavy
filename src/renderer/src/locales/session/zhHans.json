@@ -1,5 +1,12 @@
 {
   "session": {
+    "welcome": {
+      "welcome": "欢迎页",
+      "session_category": "会话"
+    },
+    "types": {
+      "serial": "串口"
+    },
     "menu": {
       "session": "会话",
       "new": "新建"

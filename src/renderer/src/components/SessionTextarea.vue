@@ -11,6 +11,7 @@
         <v-btn class="mb-1"
                variant="tonal"
                icon="mdi-broom"
+               color="red"
                @click="clear"></v-btn>
         <v-btn class="mb-1"
                variant="tonal"

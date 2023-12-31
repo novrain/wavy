@@ -2,7 +2,6 @@ import { AbstractSession, SessionOptions, SessionType } from "@W/types/session"
 import EventEmitter from 'eventemitter3'
 
 export default class RawSerialPortSession extends EventEmitter implements AbstractSession {
-
   private _tempIndex?: number | undefined
   private _index?: number | undefined
   private _name?: string | undefined

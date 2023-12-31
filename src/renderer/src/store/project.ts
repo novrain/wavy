@@ -14,6 +14,7 @@ export const useProjectStore = defineStore('project', {
   actions: {
     newProject(type: ProjectType, closeable: boolean = true): Project {
       const tempIndex = tempIndexSet.nextClearBit(0)
+      tempIndexSet.set(tempIndex)
       const id = idGenerator.nextId().toString()
       const name = `project-${tempIndex}`
       const project = {
@@ -41,6 +42,10 @@ export const useProjectStore = defineStore('project', {
         project.name = `project-${project.tempIndex}`
       }
       this.projects.push(project)
+    },
+    reloadProject(index: number, newProject: Project) {
+      const deleted = this.projects.splice(index, 1, newProject)
+      console.log(deleted)
     },
     closeProject(project: Project) {
       if (project.tempIndex !== undefined) {

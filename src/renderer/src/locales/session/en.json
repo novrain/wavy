@@ -1,9 +1,12 @@
 {
-  "locale": {
-    "en": "English",
-    "zhHans": "简体中文"
-  },
   "session": {
+    "welcome": {
+      "welcome": "Welcome",
+      "session_category": "Session"
+    },
+    "types": {
+      "serial": "serial"
+    },
     "menu": {
       "session": "Session",
       "new": "New"

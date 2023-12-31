@@ -12,6 +12,29 @@
                    @nameChanged="onProjectNameChanged" />
       </LuminoWidget>
     </LuminoBoxPanel>
+    <v-dialog v-model="dialog"
+              persistent
+              width="auto">
+      <v-card>
+        <v-card-title class="text-h5">
+          {{ t('project.dialog.hint') }}
+        </v-card-title>
+        <v-card-text>
+          {{ t('project.dialog.reload') }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="elevated"
+                 @click="onReloadConfirm">
+            {{ t('project.dialog.confirm') }}
+          </v-btn>
+          <v-btn variant="text"
+                 @click="onReloadCancel">
+            {{ t('project.dialog.cancel') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts" setup>
@@ -19,13 +42,18 @@ import BlokOnlyProject from '@/components/BlockOnlyProject.vue'
 import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
+import { useAppStore } from '@/store/app'
 import { useMenuStore } from '@/store/menu'
 import { useProjectStore } from '@/store/project'
 import { MenuEvent } from '@/types/menu'
 import { Project } from '@W/types/project'
+import { defaultId } from '@W/util/SnowflakeId'
+import { instanceToPlain, plainToInstance } from 'class-transformer'
 import { storeToRefs } from 'pinia'
-import { onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const appStore = useAppStore()
 
 //
 const projectComps = {
@@ -39,6 +67,8 @@ const { t } = useI18n()
 
 const currentProject = ref<Project | null | undefined>(null)
 const currentProjectId = ref<string | null | undefined>(null)
+
+const dialog = ref(false)
 
 onMounted(() => {
   menusStore.registerMenu({
@@ -56,6 +86,41 @@ onMounted(() => {
         handler: (_e: MenuEvent) => {
           onNewProject()
         },
+      },
+      {
+        id: 'project-save',
+        nameKey: "project.menu.save",
+        name: t("project.menu.save"),
+        icon: 'mdi-alpha-s',
+        items: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handler: (_e: MenuEvent) => {
+          appStore.saveCurrentProject()
+        },
+        disabled: canSave
+      },
+      {
+        id: 'project-saveAs',
+        nameKey: "project.menu.saveAs",
+        name: t("project.menu.saveAs"),
+        icon: 'mdi-alpha-a',
+        items: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handler: (_e: MenuEvent) => {
+          appStore.saveCurrentProjectAs()
+        },
+        disabled: canSave
+      },
+      {
+        id: 'project-open',
+        nameKey: "project.menu.open",
+        name: t("project.menu.open"),
+        icon: 'mdi-alpha-o',
+        items: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handler: (_e: MenuEvent) => {
+          openProject()
+        }
       }
     ]
   })
@@ -66,9 +131,14 @@ onMounted(() => {
   }
 })
 
+const canSave = computed(() => {
+  return !!appStore.project.currentProject
+})
+
 watch(currentProjectId, (id) => {
   if (id) {
     currentProject.value = projects.value.find(s => s.id === id)
+    appStore.project.currentProject = currentProject.value
   } else {
     const newProject = projectStore.projects[0]
     if (newProject) {
@@ -91,6 +161,7 @@ const onNewProject = () => {
 }
 
 const onLuminoWidgetClose = ({ msg, widget, item }: WidgetEvent) => {
+  projectStore.closeProject(item as Project)
   widget.doClose(msg)
 }
 
@@ -99,6 +170,51 @@ const onLuminoWidgetActive = ({ msg, widget, item }: WidgetEvent) => {
 
 const onProjectNameChanged = (name: String) => {
 
+}
+
+let existHintPromiseResolve: any = undefined
+
+const onReloadConfirm = () => {
+  dialog.value = false
+  existHintPromiseResolve(true)
+}
+
+const onReloadCancel = () => {
+  dialog.value = false
+  existHintPromiseResolve(false)
+}
+
+const openProject = () => {
+  window.projectService.openProject().then(async r => {
+    if (!r.canceled && r.result && r.project) {
+      const obj = JSON.parse(r.project) as {}
+      const projectCls = plainToInstance(Project, obj)
+      if (projectCls.id && projectCls.name && projectCls.type) {
+        projectCls.id = defaultId.nextId() + ''
+        // projectCls.project?.id = projectCls.id
+        projectCls.name = r.name || projectCls.name
+        projectCls.path = r.path
+        let exist = projects.value.find(p => (p.path !== undefined && p.path === projectCls.path) && (p.name !== undefined && p.name === projectCls.name))
+        if (exist) {
+          dialog.value = true
+          const p = new Promise((resolve) => {
+            existHintPromiseResolve = resolve
+          })
+          const reload = await p
+          if (reload) {
+            projectCls.closeable = exist.closeable
+            projectCls.index = exist.index
+            projectCls.tempIndex = exist.tempIndex
+            projectStore.reloadProject(exist.index!, projectCls)
+          }
+        } else {
+          projectCls.closeable = true
+          projectStore.addProject(projectCls)
+        }
+        currentProjectId.value = projectCls.id
+      }
+    }
+  })
 }
 </script>
 

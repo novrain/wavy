@@ -4,6 +4,7 @@ import {
   Type
 } from 'class-transformer'
 import 'reflect-metadata'
+import { defaultId } from '../util/SnowflakeId'
 import {
   Block,
   BlockType,
@@ -12,7 +13,6 @@ import {
   UndefinableBlock,
   UndefinableBuffer
 } from "./Block"
-import { defaultId } from '../util/SnowflakeId'
 import { FrameProject } from './FrameProject'
 
 type UndefinableFrameProject = FrameProject | undefined
@@ -22,6 +22,7 @@ export class RefBlock implements Block {
   _block?: Block
   _refId?: string
   _project?: FrameProject
+  tempIndex: number
 
   constructor(
     readonly id: string,
@@ -31,6 +32,7 @@ export class RefBlock implements Block {
   ) {
     this._refId = refId
     this._project = project
+    this.tempIndex = 0
   }
 
   get type(): BlockType {

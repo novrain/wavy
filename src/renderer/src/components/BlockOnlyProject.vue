@@ -6,6 +6,7 @@
                   show-select
                   density="default"
                   item-value="id"
+                  :items-per-page="-1"
                   hover
                   class="block-table"
                   multi-sort>
@@ -30,9 +31,83 @@
                      inset
                      vertical></v-divider>
           <v-spacer></v-spacer>
+          <v-btn icon="mdi-content-save"
+                 class="ml-2 mr-2"
+                 primary
+                 @click="onSave"></v-btn>
           <v-btn icon="mdi-plus"
+                 class="ml-2 mr-2"
                  primary
                  @click="() => onNewBlock(null, -1)"></v-btn>
+          <v-dialog persistent
+                    width="auto">
+            <template v-slot:activator="{ props }">
+              <v-btn icon="mdi-broom"
+                     class="ml-2 mr-2"
+                     :disabled="blocks.length <= 0"
+                     v-bind="props"
+                     color="red">
+              </v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card>
+                <v-card-title class="text-h5">
+                  {{ t('project.dialog.hint') }}
+                </v-card-title>
+                <v-card-text>
+                  {{ t('project.dialog.clearAll') }}
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn variant="elevated"
+                         @click="() => {
+                           isActive.value = false
+                           clearAll()
+                         }">
+                    {{ t('project.dialog.confirm') }}
+                  </v-btn>
+                  <v-btn variant="text"
+                         @click="() => isActive.value = false">
+                    {{ t('project.dialog.cancel') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog> <v-dialog persistent
+                    width="auto">
+            <template v-slot:activator="{ props }">
+              <v-btn icon="mdi-delete-sweep"
+                     class="ml-2 mr-2"
+                     :disabled="selectedBlocks.length <= 0"
+                     v-bind="props"
+                     color="red">
+              </v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card>
+                <v-card-title class="text-h5">
+                  {{ t('project.dialog.hint') }}
+                </v-card-title>
+                <v-card-text>
+                  {{ t('project.dialog.deleteSelected') }}
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn variant="elevated"
+                         @click="() => {
+                           isActive.value = false
+                           removeSelected()
+                         }">
+                    {{ t('project.dialog.confirm') }}
+                  </v-btn>
+                  <v-btn variant="text"
+                         @click="() => isActive.value = false">
+                    {{ t('project.dialog.cancel') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:item="{ item, index }">
@@ -54,7 +129,7 @@
                      @click="() => onNewBlock(item, index)"></v-btn>
               <v-btn icon="mdi-minus"
                      class="mr-1"
-                     @click="() => deleteBlock(index)"></v-btn>
+                     @click="() => deleteBlock(item, index)"></v-btn>
               <v-btn icon="mdi-play"
                      :disabled="!sessionIsConnected"
                      @click="() => executeBlock(item, index)"></v-btn>
@@ -73,9 +148,12 @@ import TableBlockItem from '@/components/blocks/TableBlockItem.vue'
 import { useAppStore } from '@/store/app'
 import { Block, StringBlock } from '@W/frame/Block'
 import { Project } from '@W/types/project'
+import BitSet from '@W/util/BitSet'
 import { defaultId } from '@W/util/SnowflakeId'
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const tempIndexSet = new BitSet(100)
 
 const appStore = useAppStore()
 
@@ -97,28 +175,58 @@ const headers = computed(() => {
     {
       title: t('project.block.definition'),
       key: 'definition',
-      minWidth: '300px'
+      minWidth: '300px',
+      sortable: false,
     },
     {
       title: t('project.block.actions'),
       // align: 'center',
       key: 'actions',
-      width: '20px'
+      width: '20px',
+      sortable: false,
     },
   ]
 })
 
-const blocks = props.project.project?.blocks
+let blockOnlyProject = props.project.project
+let blocks = ref(blockOnlyProject?.blocks)
 
-const selectedBlocks = ref()
+watch(() => props.project, (newProject) => {
+  blockOnlyProject = newProject.project
+  blocks.value = blockOnlyProject?.blocks
+})
+
+const onSave = () => {
+  appStore.saveCurrentProject(props.project)
+}
+
+const selectedBlocks = ref([])
+
+const clearAll = () => {
+  blockOnlyProject.removeAllBlock()
+  tempIndexSet.clearAll()
+}
+
+const removeSelected = () => {
+  selectedBlocks.value.forEach(block => {
+    blockOnlyProject.deleteBlock(block)
+    tempIndexSet.clear(block.tempIndex)
+  })
+  selectedBlocks.value = []
+}
 
 // add block directly?
 const onNewBlock = (preItem: Block | null, index: number) => {
-  props.project.project?.addBlock(new StringBlock(defaultId.nextId() + '', "s-block"))
+  const tempIndex = tempIndexSet.nextClearBit(0)
+  const newBlock = new StringBlock(defaultId.nextId() + '', 'block-' + tempIndex)
+  newBlock.tempIndex = tempIndex
+  tempIndexSet.set(tempIndex)
+  blockOnlyProject?.addBlock(newBlock, index)
 }
 
-const deleteBlock = (index: number) => {
-  props.project.project?.deleteBlock(index)
+const deleteBlock = (item: Block, index: number) => {
+  blockOnlyProject?.deleteBlock(index)
+  tempIndexSet.clear(item.tempIndex)
 }
 
 const executeBlock = (block: Block, index: number) => {

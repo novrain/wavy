@@ -10,6 +10,16 @@ module.exports = {
   rebuildConfig: {},
   makers: [
     {
+      name: '@electron-forge/maker-appx',
+      config: {
+        name: "Wavy",
+        setupIcon: "./src/renderer/public/icon.ico",
+        publisher: 'CN=iota',
+        devCert: './liang.wang.pfx',
+        certPass: 'GoWavy@!'
+      }
+    },
+    {
       name: '@electron-forge/maker-squirrel',
       config: {
         name: "Wavy",

@@ -1,6 +1,30 @@
 <template>
   <div class="d-flex flex-1-1 ma-2 flex-column">
-    <LuminoBoxPanel tabsConstrained>
+    <LuminoBoxPanel tabsConstrained
+                    addButtonEnabled
+                    id="project-lumino"
+                    @add="onNewProject">
+      <LuminoWidget v-if="projects.length <= 0 || showWelcome"
+                    :item="{ id: 'project-welcome', name: t('project.welcome.welcome') }"
+                    :closable="projects.length > 0"
+                    @close="onWelcomeClose">
+        <v-container class="ma-4">
+          <v-chip prepend-icon="mdi-transit-connection-horizontal"
+                  size="large">
+            {{ t('project.welcome.project_category') }}
+          </v-chip>
+          <v-divider class="mt-2 mb-2"></v-divider>
+          <v-container class="d-flex ma-0 pa-0">
+            <v-btn prepend-icon="mdi-semantic-web"
+                   size="x-large"
+                   variant="tonal"
+                   @click="onNewProject"
+                   stacked>
+              {{ t('project.types.block') }}
+            </v-btn>
+          </v-container>
+        </v-container>
+      </LuminoWidget>
       <LuminoWidget v-for="p in projects"
                     :key="p.id"
                     @close="onLuminoWidgetClose"
@@ -48,7 +72,7 @@ import { useProjectStore } from '@/store/project'
 import { MenuEvent } from '@/types/menu'
 import { Project } from '@W/types/project'
 import { defaultId } from '@W/util/SnowflakeId'
-import { instanceToPlain, plainToInstance } from 'class-transformer'
+import { plainToInstance } from 'class-transformer'
 import { storeToRefs } from 'pinia'
 import { computed, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -125,15 +149,21 @@ onMounted(() => {
     ]
   })
 
-  if (projects.value.length <= 0) {
-    const project = projectStore.newProject('BlockOnly', false)
-    currentProjectId.value = project.id
-  }
+  // if (projects.value.length <= 0) {
+  //   const project = projectStore.newProject('BlockOnly', false)
+  //   currentProjectId.value = project.id
+  // }
 })
 
 const canSave = computed(() => {
   return !!appStore.project.currentProject
 })
+
+const showWelcome = ref(true)
+
+const onWelcomeClose = ({ msg, widget, item }) => {
+  showWelcome.value = false
+}
 
 watch(currentProjectId, (id) => {
   if (id) {
@@ -163,6 +193,9 @@ const onNewProject = () => {
 const onLuminoWidgetClose = ({ msg, widget, item }: WidgetEvent) => {
   projectStore.closeProject(item as Project)
   widget.doClose(msg)
+  if (projects.value.length <= 0) {
+    showWelcome.value = true
+  }
 }
 
 const onLuminoWidgetActive = ({ msg, widget, item }: WidgetEvent) => {

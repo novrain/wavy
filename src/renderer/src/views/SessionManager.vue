@@ -5,11 +5,11 @@
                     id="session-lumino"
                     @add="onNewSession">
       <LuminoWidget v-if="sessions.length <= 0 || showWelcome"
-                    :item="{ id: 'welcome', name: t('session.welcome.welcome') }"
+                    :item="{ id: 'session-welcome', name: t('session.welcome.welcome') }"
                     :closable="sessions.length > 0"
                     @close="onWelcomeClose">
         <v-container class="ma-4">
-          <v-chip prepend-icon="mdi-transit-connection-horizontal"
+          <v-chip prepend-icon="mdi-cable-data"
                   size="large">
             {{ t('session.welcome.session_category') }}
           </v-chip>

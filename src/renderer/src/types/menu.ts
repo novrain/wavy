@@ -6,7 +6,7 @@ type Menu = {
   name: string
   nameKey?: string
   handler?: MenuItemEventHandler
-  disabled?: any
+  isDisabled?: MenuItemIsDisabled
 }
 
 export type MenuItem = Menu & { items: undefined, handler: MenuItemEventHandler }
@@ -20,3 +20,8 @@ export type MenuEvent = {
 export interface MenuItemEventHandler {
   (event: MenuEvent): void | Promise<void>
 }
+
+export interface MenuItemIsDisabled {
+  (): boolean
+}
+

@@ -15,6 +15,7 @@
     <component :is="blockComps[block.type as string]"
                :project="project"
                :block="block"
+               direction="column"
                :index="index"></component>
   </td>
 </template>

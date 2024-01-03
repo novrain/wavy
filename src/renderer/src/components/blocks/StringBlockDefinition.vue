@@ -1,5 +1,5 @@
 <template >
-  <div class="d-flex">
+  <div :class="`d-flex ${direction === 'column' ? 'flex-column' : 'flex-row'}`">
     <v-text-field v-model="stringBlock.value"
                   class="mr-1 flex-1-1"
                   width="40px"
@@ -38,15 +38,22 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const props = defineProps<{ block: Block, project: Project, index: number }>()
+const props = defineProps<{ block: Block, project: Project, index: number, direction?: 'row' | 'column' }>()
 const stringBlock = props.block as StringBlock
 
 </script>
 
 <style lang="scss" scoped>
-:deep(.v-input) {
+.v-input {
   flex-shrink: 0;
   flex-grow: 0;
+}
+
+.flex-column {
+  .v-input {
+    margin: 10px;
+    width: auto;
+  }
 }
 
 .w-5 {

@@ -21,6 +21,7 @@
       "cancel": "取消"
     },
     "block": {
+      "search": "查询",
       "name": "名称",
       "type": "类型",
       "definition": "定义",

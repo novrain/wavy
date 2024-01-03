@@ -8,26 +8,22 @@
 <script setup lang="ts">
 import "@fortawesome/fontawesome-free/css/all.css"
 import '@lumino/default-theme/style/index.css'
-import { BoxPanel, TabBar, Widget } from '@lumino/widgets'
+import { BoxPanel, TabBar, TabPanel, Widget } from '@lumino/widgets'
 import { onMounted, onUnmounted, onUpdated, provide, ref } from 'vue'
 import { CustomDockPanel } from './ItemWidget'
 
-const props = withDefaults(defineProps<{
-  id?: string
-  tabsConstrained?: boolean
-  addButtonEnabled?: boolean
-}>(), { tabsConstrained: false, addButtonEnabled: false })
+const props = withDefaults(defineProps<{ id?: string } & TabPanel.IOptions & TabBar.IOptions<any>>(),
+  { tabsConstrained: false, addButtonEnabled: false, tabsMovable: true })
 
 const emits = defineEmits(['add'])
 
-const boxPanel = new BoxPanel({ direction: 'left-to-right', spacing: 0 })
-const dockPanel = new CustomDockPanel({ tabsConstrained: props.tabsConstrained, addButtonEnabled: props.addButtonEnabled })
+const boxPanel = new BoxPanel({ ...(props as any) })
+const dockPanel = new CustomDockPanel({ ...(props as any) })
 boxPanel.id = (props.id || 'panel') + '-box'
 boxPanel.addClass('lumino-box-panel')
 dockPanel.id = (props.id || 'panel') + '-dock'
 
-provide('boxPanel', boxPanel)
-provide('dockPanel', dockPanel)
+provide('container', dockPanel)
 
 const container = ref<HTMLElement | null>(null)
 

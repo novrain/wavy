@@ -23,6 +23,7 @@
       "cancel": "Cancel"
     },
     "block": {
+      "search": "Search",
       "name": "Name",
       "type": "Type",
       "definition": "Definition",

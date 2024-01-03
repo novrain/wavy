@@ -8,7 +8,7 @@
                     :item="{ id: 'session-welcome', name: t('session.welcome.welcome') }"
                     :closable="sessions.length > 0"
                     @close="onWelcomeClose">
-        <v-container class="ma-4">
+        <v-container class="ma-4 pa-0">
           <v-chip prepend-icon="mdi-cable-data"
                   size="large">
             {{ t('session.welcome.session_category') }}
@@ -80,6 +80,7 @@ const currentSessionId = ref<string | null | undefined>(null)
 
 const showWelcome = ref(true)
 
+//@ts-ignore
 const onWelcomeClose = ({ msg, widget, item }) => {
   showWelcome.value = false
 }

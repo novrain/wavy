@@ -7,8 +7,9 @@
       <LuminoWidget v-if="projects.length <= 0 || showWelcome"
                     :item="{ id: 'project-welcome', name: t('project.welcome.welcome') }"
                     :closable="projects.length > 0"
+                    @active="onWelcomeActive"
                     @close="onWelcomeClose">
-        <v-container class="ma-4">
+        <v-container class="ma-4 pa-0">
           <v-chip prepend-icon="mdi-transit-connection-horizontal"
                   size="large">
             {{ t('project.welcome.project_category') }}
@@ -69,7 +70,9 @@ import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
 import { useAppStore } from '@/store/app'
 import { useMenuStore } from '@/store/menu'
 import { useProjectStore } from '@/store/project'
+import { useSideBarStore } from '@/store/sidebar'
 import { MenuEvent } from '@/types/menu'
+import { SideBarEvent } from '@/types/sidebar'
 import { Project } from '@W/types/project'
 import { defaultId } from '@W/util/SnowflakeId'
 import { plainToInstance } from 'class-transformer'
@@ -85,6 +88,7 @@ const projectComps = {
 } as any
 
 const menusStore = useMenuStore()
+const sideBarStore = useSideBarStore()
 const projectStore = useProjectStore()
 const { projects } = storeToRefs(projectStore)
 const { t } = useI18n()
@@ -108,6 +112,7 @@ onMounted(() => {
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         handler: (_e: MenuEvent) => {
+          sideBarStore.selected = ['project']
           onNewProject()
         },
       },
@@ -119,9 +124,10 @@ onMounted(() => {
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         handler: (_e: MenuEvent) => {
+          sideBarStore.selected = ['project']
           appStore.saveCurrentProject()
         },
-        disabled: canSave
+        isDisabled: isDisabled
       },
       {
         id: 'project-saveAs',
@@ -131,9 +137,10 @@ onMounted(() => {
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         handler: (_e: MenuEvent) => {
+          sideBarStore.selected = ['project']
           appStore.saveCurrentProjectAs()
         },
-        disabled: canSave
+        isDisabled: isDisabled
       },
       {
         id: 'project-open',
@@ -143,10 +150,19 @@ onMounted(() => {
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         handler: (_e: MenuEvent) => {
+          sideBarStore.selected = ['project']
           openProject()
         }
       }
     ]
+  })
+  sideBarStore.registerSideBar({
+    id: 'project',
+    name: 'Project',
+    icon: 'mdi-view-dashboard',
+    handler: (_e: SideBarEvent) => {
+      sideBarStore.selected = ['project']
+    }
   })
 
   // if (projects.value.length <= 0) {
@@ -155,27 +171,42 @@ onMounted(() => {
   // }
 })
 
-const canSave = computed(() => {
-  return !!appStore.project.currentProject
-})
+const canSave = ref(false)
 
 const showWelcome = ref(true)
 
+//@ts-ignore
 const onWelcomeClose = ({ msg, widget, item }) => {
   showWelcome.value = false
+  currentProjectId.value = ''
+}
+
+//@ts-ignore
+const onWelcomeActive = ({ msg, widget, item }) => {
+  currentProjectId.value = '-1'
 }
 
 watch(currentProjectId, (id) => {
-  if (id) {
+  if (id && id !== '-1') {
+    canSave.value = true
     currentProject.value = projects.value.find(s => s.id === id)
     appStore.project.currentProject = currentProject.value
   } else {
+    canSave.value = false
+    appStore.project.currentProject = currentProject.value = undefined
+    if (id === '-1') {
+      return
+    }
     const newProject = projectStore.projects[0]
     if (newProject) {
       currentProjectId.value = newProject.id
     }
   }
 })
+
+const isDisabled = () => {
+  return !canSave.value
+}
 
 onDeactivated(() => {
 
@@ -193,12 +224,16 @@ const onNewProject = () => {
 const onLuminoWidgetClose = ({ msg, widget, item }: WidgetEvent) => {
   projectStore.closeProject(item as Project)
   widget.doClose(msg)
+  if (item.id === currentProjectId.value) {
+    currentProjectId.value = ''
+  }
   if (projects.value.length <= 0) {
     showWelcome.value = true
   }
 }
 
 const onLuminoWidgetActive = ({ msg, widget, item }: WidgetEvent) => {
+  currentProjectId.value = item.id
 }
 
 const onProjectNameChanged = (name: String) => {

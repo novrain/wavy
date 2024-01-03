@@ -8,6 +8,7 @@
                   item-value="id"
                   :items-per-page="-1"
                   hover
+                  :search="search"
                   class="block-table"
                   multi-sort>
       <!-- <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
@@ -30,7 +31,12 @@
           <v-divider class="mx-4"
                      inset
                      vertical></v-divider>
-          <v-spacer></v-spacer>
+          <v-text-field v-model="search"
+                        :label="t('project.block.search')"
+                        prepend-inner-icon="mdi-magnify"
+                        single-line
+                        variant="outlined"
+                        hide-details></v-text-field>
           <v-btn icon="mdi-content-save"
                  class="ml-2 mr-2"
                  primary
@@ -44,7 +50,7 @@
             <template v-slot:activator="{ props }">
               <v-btn icon="mdi-broom"
                      class="ml-2 mr-2"
-                     :disabled="blocks.length <= 0"
+                     :disabled="!blocks || blocks.length <= 0"
                      v-bind="props"
                      color="red">
               </v-btn>
@@ -161,6 +167,8 @@ const props = defineProps<{ project: Project }>()
 
 const { t } = useI18n()
 
+const search = ref('')
+
 const headers = computed(() => {
   return [
     {
@@ -175,7 +183,7 @@ const headers = computed(() => {
     {
       title: t('project.block.definition'),
       key: 'definition',
-      minWidth: '300px',
+      minWidth: '150px',
       sortable: false,
     },
     {
@@ -203,13 +211,13 @@ const onSave = () => {
 const selectedBlocks = ref([])
 
 const clearAll = () => {
-  blockOnlyProject.removeAllBlock()
+  blockOnlyProject?.removeAllBlock()
   tempIndexSet.clearAll()
 }
 
 const removeSelected = () => {
-  selectedBlocks.value.forEach(block => {
-    blockOnlyProject.deleteBlock(block)
+  selectedBlocks.value.forEach((block: Block) => {
+    blockOnlyProject?.deleteBlock(block)
     tempIndexSet.clear(block.tempIndex)
   })
   selectedBlocks.value = []
@@ -251,6 +259,14 @@ const sessionIsConnected = computed(() => {
 
   :deep(.v-selection-control) {
     font-size: 16px;
+  }
+
+  :deep(.v-table__wrapper) {
+
+    tr,
+    td {
+      padding: 1px 5px;
+    }
   }
 }
 </style>

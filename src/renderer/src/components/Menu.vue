@@ -15,6 +15,7 @@
         <v-list-item v-for="(item) in ((m?.items || []) as MenuComposite[])"
                      :key="item?.id"
                      :value="item"
+                     :disabled="item.isDisabled && item.isDisabled()"
                      @click="() => {
                        if (item?.handler) {
                          item?.handler({ menu: item })
@@ -40,7 +41,7 @@ const { t } = useI18n()
 const menusStore = useMenuStore()
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .menu {
   gap: 10px;
 

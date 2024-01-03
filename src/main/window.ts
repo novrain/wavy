@@ -47,7 +47,7 @@ export class Window {
   get visible$(): Observable<boolean> { return this.visible }
   get closed$(): Observable<void> { return this.closed }
 
-  get browserWindow (){
+  get browserWindow() {
     return this.window
   }
 
@@ -61,10 +61,10 @@ export class Window {
 
     const maximized = this.windowConfig.get('maximized')
     const bwOptions: BrowserWindowConstructorOptions = {
-      width: 1200,
+      width: 1300,
       height: 800,
       title: 'Wavy',
-      minWidth: 1200,
+      minWidth: 1300,
       minHeight: 800,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),

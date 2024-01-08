@@ -89,6 +89,10 @@ onMounted(async () => {
     window.hostWindow.onUnMaximized(() => {
       windowStore.isMaximized = false
     })
+    window.hostWindow.onClose(() => {
+      // check can close 
+      window.hostWindow.exit()
+    })
   }
   menusStore.registerMenu({
     id: 'help',

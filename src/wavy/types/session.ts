@@ -56,5 +56,6 @@ export interface AbstractSession {
   open(): any | Promise<any>,
   close(): any | Promise<any>,
   send(data: Uint8Array, echo: boolean, raw: string | undefined): any | Promise<any>,
-  on(event: string, listener: (event: any) => void): any
+  addEventListener(event: string, listener: (event: any) => void): any
+  removeEventListener(event: string, listener: (event: any) => void): any
 }

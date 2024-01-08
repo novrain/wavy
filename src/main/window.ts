@@ -68,7 +68,7 @@ export class Window {
       minHeight: 800,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
-        nodeIntegration: true,
+        nodeIntegration: false,
         backgroundThrottling: false,
         contextIsolation: true,
       },
@@ -315,7 +315,7 @@ export class Window {
     this.window!.on('close', event => {
       if (!this.closing) {
         event.preventDefault()
-        this.send('host:window-close-request')
+        this.send('renderer:window-close')
         return
       }
       this.windowConfig.set('windowBoundaries', this.windowBounds)
@@ -355,42 +355,42 @@ export class Window {
       })
     })
 
-    ipcMain.on('window:minimize', event => {
+    ipcMain.on('main:minimize', event => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
       this.window!.minimize()
     })
 
-    ipcMain.on('window:set-bounds', (event, bounds) => {
+    ipcMain.on('main:set-bounds', (event, bounds) => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
       this.window!.setBounds(bounds)
     })
 
-    ipcMain.on('window:set-always-on-top', (event, flag) => {
+    ipcMain.on('main:set-always-on-top', (event, flag) => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
       this.window!.setAlwaysOnTop(flag)
     })
 
-    ipcMain.on('window:set-vibrancy', (event, enabled, type) => {
+    ipcMain.on('main:set-vibrancy', (event, enabled, type) => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
       this.setVibrancy(enabled, type)
     })
 
-    ipcMain.on('window:set-title', (event, title) => {
+    ipcMain.on('main:set-title', (event, title) => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
       this.window!.setTitle(title)
     })
 
-    ipcMain.on('window:bring-to-front', event => {
+    ipcMain.on('main:bring-to-front', event => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
@@ -400,7 +400,7 @@ export class Window {
       this.present()
     })
 
-    ipcMain.on('window:close', event => {
+    ipcMain.on('main:close', event => {
       if (!this.window || event.sender !== this.window!.webContents) {
         return
       }
@@ -408,7 +408,7 @@ export class Window {
       this.window!.close()
     })
 
-    ipcMain.on('window:set-touch-bar', (_event, segments, selectedIndex) => {
+    ipcMain.on('main:set-touch-bar', (_event, segments, selectedIndex) => {
       this.touchBarControl.segments = segments.map((s: any) => ({
         label: s.label,
         icon: s.hasActivity ? activityIcon : undefined,
@@ -418,7 +418,7 @@ export class Window {
 
     // this.window!.webContents.on('new-window', (event: any) => event.preventDefault())
 
-    ipcMain.on('window:set-disable-vibrancy-while-dragging', (_event, value) => {
+    ipcMain.on('main:set-disable-vibrancy-while-dragging', (_event, value) => {
       this.disableVibrancyWhileDragging = value
     })
 
@@ -438,24 +438,24 @@ export class Window {
     this.window!.on('move', onBoundsChange)
     this.window!.on('resize', onBoundsChange)
 
-    // ipcMain.on('window:set-traffic-light-position', (_event, x, y) => {
+    // ipcMain.on('main:set-traffic-light-position', (_event, x, y) => {
     //   this.window!.setTrafficLightPosition({ x, y })
     // })
 
-    ipcMain.on('window:set-opacity', (_event, opacity) => {
+    ipcMain.on('main:set-opacity', (_event, opacity) => {
       this.window!.setOpacity(opacity)
     })
 
-    ipcMain.on('window:set-progress-bar', (_event, value) => {
+    ipcMain.on('main:set-progress-bar', (_event, value) => {
       this.window!.setProgressBar(value, { mode: value < 0 ? 'none' : 'normal' })
     })
 
     // 
-    ipcMain.handle('window:isMaximized', () => {
+    ipcMain.handle('main:isMaximized', () => {
       return this.window!.isMaximized()
     })
 
-    ipcMain.on('window:toggleMaximize', () => {
+    ipcMain.on('main:toggleMaximize', () => {
       this.window!.isMaximized() ? this.window!.unmaximize() : this.window!.maximize()
     })
 

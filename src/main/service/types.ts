@@ -10,6 +10,7 @@ export interface HostWindowService {
   minimize(): void
   onMaximized(listener: any): void
   onUnMaximized(listener: any): void
+  onClose(listener: any): void
   openExternal(url: string): void
   exit(): void
 }
@@ -18,7 +19,8 @@ export interface SerialPortService {
   listPorts(): Promise<String[]>
   connect(id: string, options: any): Promise<Result>
   disconnect(id: string): Promise<boolean>
-  on(id: string, event: string, listener: any): void
+  addEventListener(id: string, event: string, listener: any): void
+  removeEventListener(id: string, event: string, listener: any): void
   write(id: string, data: any): Promise<void>
 }
 

@@ -205,7 +205,7 @@ watch(paths, (newPaths) => {
   }
 }, { immediate: true })
 
-const send = () => {
+const send = async () => {
   if (!window.serialPort) {
     return
   }
@@ -222,13 +222,13 @@ const send = () => {
       d = textEncoder.encode(command.value)
     }
     if (d) {
-      props.session.send(d)
+      const r = await props.session.send(d)
       onData(command.value, 'out')
     }
   }
 }
 
-const onData = (d: Uint8Array | string, type: 'in' | 'out') => {
+const onData = (d: Uint8Array | string, type: 'in' | 'out' | 'error') => {
   // if (data.value.length > 10000) {
 
   // }
@@ -278,18 +278,25 @@ const connect = async () => {
       if (r.result) {
         // props.session.name = options.path
         emits('nameChanged', { session: props.session, name: options.path })
-        session.on('data', onData)
-        session.on('echo', onEcho)
-        session.on('close', onClose)
-        session.on('error', onError)
+        session.addEventListener('data', onData)
+        session.addEventListener('echo', onEcho)
+        session.addEventListener('close', onClose)
+        session.addEventListener('error', onError)
       }
     }).catch((e: any) => { console.log(e) })
   }
 }
 
 const disconnect = async () => {
-  props.session.close().then((r: boolean) => {
+  const session = props.session
+  session.close().then((r: boolean) => {
     connected.value = !r
+    if (r) {
+      session.removeEventListener('data', onData)
+      session.removeEventListener('echo', onEcho)
+      session.removeEventListener('close', onClose)
+      session.removeEventListener('error', onError)
+    }
   })
     .catch((e: any) => { console.log(e) })
 }

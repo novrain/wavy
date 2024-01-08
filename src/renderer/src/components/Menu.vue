@@ -15,7 +15,7 @@
         <v-list-item v-for="(item) in ((m?.items || []) as MenuComposite[])"
                      :key="item?.id"
                      :value="item"
-                     :disabled="item.isDisabled && item.isDisabled()"
+                     :disabled="item?.isDisabled && item?.isDisabled()"
                      @click="() => {
                        if (item?.handler) {
                          item?.handler({ menu: item })

@@ -2,7 +2,8 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron'
 import { Application } from './app'
 import { parseArgs } from './cli'
 import ProjectServiceInMain from './service/ProjectServiceInMain'
-import electronDebug = require('electron-debug')
+import electronDebug from 'electron-debug'
+import SerialPortServiceInMain from './service/SerialPortServiceInMain'
 
 if (!process.env.TABBY_PLUGINS) {
   process.env.TABBY_PLUGINS = ''
@@ -63,8 +64,10 @@ app.on('ready', async () => {
   application.init()
 
   const projectService = new ProjectServiceInMain()
+  const serialPortService = new SerialPortServiceInMain()
   const window = await application.newWindow({ hidden: argv.hidden })
   projectService.window = window.browserWindow as BrowserWindow
+  serialPortService.window = window.browserWindow as BrowserWindow
   // await window.ready
   window.passCliArguments(process.argv, process.cwd(), false)
   window.focus()

@@ -119,13 +119,24 @@ export default class RawSerialPortSession extends EventEmitter implements Abstra
     }
   }
 
-  on<T extends string | symbol>(event: T, listener: (...args: any[]) => void, context?: any): this {
+  addEventListener(event: string, listener: (...args: any[]) => void): this {
     if (event === 'echo') {
-      this.addListener(event, listener)
+      super.addListener(event, listener)
       return this
     }
     if (window.serialPort) {
-      window.serialPort.on(this.id, event.toString(), listener)
+      window.serialPort.addEventListener(this.id, event.toString(), listener)
+    }
+    return this
+  }
+
+  removeEventListener(event: string, listener: (...args: any[]) => void) {
+    if (event === 'echo') {
+      super.removeListener(event, listener)
+      return this
+    }
+    if (window.serialPort) {
+      window.serialPort.removeEventListener(this.id, event.toString(), listener)
     }
     return this
   }

@@ -16,6 +16,9 @@ export default {
   onUnMaximized(listener: any) {
     ipcRenderer.on('renderer:window-unmaximized', listener)
   },
+  onClose(listener: any) {
+    ipcRenderer.on('renderer:window-close', listener)
+  },
   openExternal(url: string) {
     shell.openExternal(url)
   },

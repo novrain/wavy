@@ -315,7 +315,7 @@ export class Window {
     this.window!.on('close', event => {
       if (!this.closing) {
         event.preventDefault()
-        this.send('host:window-close-request')
+        this.send('renderer:window-close')
         return
       }
       this.windowConfig.set('windowBoundaries', this.windowBounds)

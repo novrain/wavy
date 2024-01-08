@@ -2,13 +2,13 @@ import { ipcRenderer, shell } from 'electron'
 
 export default {
   isMaximized() {
-    return ipcRenderer.invoke('window:isMaximized')
+    return ipcRenderer.invoke('main:isMaximized')
   },
   toggleMaximize() {
-    ipcRenderer.send('window:toggleMaximize')
+    ipcRenderer.send('main:toggleMaximize')
   },
   minimize() {
-    ipcRenderer.send('window:minimize')
+    ipcRenderer.send('main:minimize')
   },
   onMaximized(listener: any) {
     ipcRenderer.on('renderer:window-maximized', listener)
@@ -23,6 +23,6 @@ export default {
     shell.openExternal(url)
   },
   exit() {
-    ipcRenderer.send('window:close')
+    ipcRenderer.send('main:close')
   }
 }

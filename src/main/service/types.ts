@@ -10,6 +10,7 @@ export interface HostWindowService {
   minimize(): void
   onMaximized(listener: any): void
   onUnMaximized(listener: any): void
+  onClose(listener: any): void
   openExternal(url: string): void
   exit(): void
 }

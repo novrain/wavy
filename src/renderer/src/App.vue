@@ -73,7 +73,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSideBarStore } from './store/sidebar'
 
-const { t } = useI18n()
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const windowStore = hostWindowStore()
 const menusStore = useMenuStore()
@@ -93,6 +93,12 @@ onMounted(async () => {
       // check can close 
       window.hostWindow.exit()
     })
+
+    let l = await window.hostWindow.locale()
+    if (l.indexOf('-')) {
+      l = l.substring(0, l.indexOf('-'))
+      locale.value = l
+    }
   }
   menusStore.registerMenu({
     id: 'help',
@@ -158,8 +164,6 @@ watch(() => sideBarStore.selected, () => {
   console.log(sizeOfLeft.value)
 }, { immediate: true })
 
-onMounted(() => {
-})
 </script>
 
 <style lang="scss" scoped>

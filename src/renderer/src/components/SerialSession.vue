@@ -161,7 +161,7 @@ const textDecoder = new TextDecoder()
 const textEncoder = new TextEncoder()
 const hexRegex = /^[0-9a-fA-F\r\n]+$/
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const serialStore = useSerialStore()
 const { paths } = storeToRefs(serialStore)

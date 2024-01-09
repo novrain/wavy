@@ -50,7 +50,7 @@ import { Block, DecimalBlock } from '@W/frame/Block'
 import { Project } from '@W/types/project'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const props = defineProps<{ block: Block, project: Project, index: number, direction?: 'row' | 'column' }>()
 const decimalBlock = props.block as DecimalBlock

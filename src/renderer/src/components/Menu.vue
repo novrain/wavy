@@ -36,7 +36,7 @@ import { useMenuStore } from '@/store/menu'
 import { MenuComposite } from '@/types/menu'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const menusStore = useMenuStore()
 </script>

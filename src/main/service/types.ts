@@ -13,6 +13,7 @@ export interface HostWindowService {
   onClose(listener: any): void
   openExternal(url: string): void
   exit(): void
+  locale(): Promise<string>
 }
 
 export interface SerialPortService {

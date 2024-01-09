@@ -91,7 +91,7 @@ const menusStore = useMenuStore()
 const sideBarStore = useSideBarStore()
 const projectStore = useProjectStore()
 const { projects } = storeToRefs(projectStore)
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const currentProject = ref<Project | null | undefined>(null)
 const currentProjectId = ref<string | null | undefined>(null)

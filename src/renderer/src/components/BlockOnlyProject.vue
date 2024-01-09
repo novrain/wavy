@@ -165,7 +165,7 @@ const appStore = useAppStore()
 
 const props = defineProps<{ project: Project }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const search = ref('')
 

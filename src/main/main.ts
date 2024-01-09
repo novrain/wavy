@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron'
 import { Application } from './app'
 import { parseArgs } from './cli'
 import ProjectServiceInMain from './service/ProjectServiceInMain'
@@ -15,6 +15,14 @@ const application = new Application()
 
 ipcMain.on('app:new-window', () => {
   application.newWindow()
+})
+
+ipcMain.handle('main:getLocale', () => {
+  return app.getSystemLocale()
+})
+
+ipcMain.on('main:openExternal', (event: Electron.IpcMainInvokeEvent, url: string) => {
+  shell.openExternal(url)
 })
 
 app.on('activate', () => {

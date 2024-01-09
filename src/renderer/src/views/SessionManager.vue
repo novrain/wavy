@@ -73,7 +73,7 @@ const sessionComps = {
 const menusStore = useMenuStore()
 const sessionStore = useSessionStore()
 const { sessions } = storeToRefs(sessionStore)
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const currentSession = ref<Session | null | undefined>(null)
 const currentSessionId = ref<string | null | undefined>(null)

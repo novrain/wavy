@@ -24,6 +24,9 @@ const DefaultHostWindowService = {
   },
   exit() {
     ipcRenderer.send('main:close')
+  },
+  locale() {
+    return ipcRenderer.invoke('main:getLocale')
   }
 }
 

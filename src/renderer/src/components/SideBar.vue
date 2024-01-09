@@ -20,7 +20,7 @@ import { useI18n } from 'vue-i18n'
 defineProps(['location', 'selected'])
 const emits = defineEmits(['update:selected'])
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const sideBarStore = useSideBarStore()
 

@@ -20,7 +20,7 @@ const DefaultHostWindowService = {
     ipcRenderer.on('renderer:window-close', listener)
   },
   openExternal(url: string) {
-    shell.openExternal(url)
+    ipcRenderer.send('main:openExternal', url)
   },
   exit() {
     ipcRenderer.send('main:close')

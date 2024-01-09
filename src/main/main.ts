@@ -17,6 +17,10 @@ ipcMain.on('app:new-window', () => {
   application.newWindow()
 })
 
+ipcMain.on('main:openExternal', (event: Electron.IpcMainInvokeEvent, url: string) => {
+  shell.openExternal(url)
+})
+
 app.on('activate', () => {
   if (!application.hasWindows()) {
     application.newWindow()

@@ -63,13 +63,20 @@ onUpdated(() => {
 .lumino-container {
   display: flex;
   flex: 1;
+  background-color: rgb(var(--v-theme-background));
 
   :deep(.lm-mod-current) {
-    border-top: #1867C060 2px solid;
+    border-top: rgb(var(--v-theme-secondary)) 2px solid !important;
   }
 
   :deep(.lumino-tab-active) {
-    border-top: #1867C0 2px solid;
+    border-top: rgb(var(--v-theme-primary)) 2px solid !important;
+  }
+
+  :deep(.lm-TabBar),
+  :deep(.lm-TabBar-content),
+  :deep(.lm-TabBar-addButton) {
+    border-color: rgba(var(--v-border-color), var(--v-border-opacity));
   }
 
   :deep(.lumino-box-panel),
@@ -78,9 +85,9 @@ onUpdated(() => {
     flex: 1;
 
     .lumino-content {
-      border: 1px solid #c0c0c0;
+      border-color: rgba(var(--v-border-color), var(--v-border-opacity));
       border-top: none;
-      background: white;
+      background-color: rgb(var(--v-theme-background));
       position: relative;
       overflow: auto;
       display: flex;

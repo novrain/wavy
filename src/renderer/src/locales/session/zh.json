@@ -13,7 +13,8 @@
     },
     "options": {
       "enableTimestamp": "时间戳",
-      "enableNewline": "自动换行"
+      "enableNewline": "自动换行",
+      "enableSendSelect": "仅发送选择部分"
     },
     "command": {
       "label": "指令",

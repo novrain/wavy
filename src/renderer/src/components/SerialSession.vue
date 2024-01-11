@@ -93,13 +93,16 @@
         </div>
       </div>
     </v-form>
-    <session-textarea class="d-flex flex-1-1 flex-column mt-2 mb-4 session-data"
-                      :label="t('session.data.label')"
-                      v-model="dataAsText"
-                      :editable="false"></session-textarea>
+    <v-container class="pa-0 d-flex flex-1-1 flex-column mt-2 mb-4 session-data">
+      <session-textarea class=""
+                        :label="t('session.data.label')"
+                        v-model="dataAsText"
+                        :editable="false"></session-textarea>
+    </v-container>
     <v-container class="pa-0 d-flex align-center mb-4 session-command">
-      <session-textarea class="d-flex flex-1-1 flex-column mr-2 session-command-input"
+      <session-textarea class="session-command-input"
                         v-model="command"
+                        @update:model-select="onSelect"
                         :label="t('session.command.label')"></session-textarea>
       <v-container class="pa-0 d-flex flex-column h-100 session-command-control">
         <v-checkbox class="flex-0-0"
@@ -110,6 +113,11 @@
         <v-checkbox class="flex-0-0"
                     :label="t('session.options.enableNewline')"
                     v-model="enableNewline"
+                    color="primary"
+                    hide-details></v-checkbox>
+        <v-checkbox class="flex-0-0"
+                    :label="t('session.options.enableSendSelect')"
+                    v-model="enableSendSelect"
                     color="primary"
                     hide-details></v-checkbox>
         <v-radio-group class="flex-0-0"
@@ -147,13 +155,13 @@
   </v-container>
 </template>
 <script setup lang="ts">
-import { createDefaultSerialOptions, SERIAL_BAUD_RATES, SERIAL_DATA_BITS, SERIAL_STOP_BITS, SERIAL_PARITIES } from '@W/types/session'
-import { reactive, ref, watch, onUnmounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
-import SessionTextarea from './SessionTextarea.vue'
 import { useSerialStore } from '@/store/serial'
+import { SERIAL_BAUD_RATES, SERIAL_DATA_BITS, SERIAL_PARITIES, SERIAL_STOP_BITS, createDefaultSerialOptions } from '@W/types/session'
 import { Buffer } from 'buffer'
+import { storeToRefs } from 'pinia'
+import { onUnmounted, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import SessionTextarea from './SessionTextarea.vue'
 
 const emits = defineEmits(['nameChanged'])
 
@@ -179,6 +187,7 @@ const advance = ref(false)
 const connected = ref(false)
 const enableTimestamp = ref(true)
 const enableNewline = ref(true)
+const enableSendSelect = ref(false)
 const format = ref('hex')
 const data = ref<{ t: Date, d: Uint8Array | string }[]>([])
 const dataAsText = ref('')
@@ -205,25 +214,32 @@ watch(paths, (newPaths) => {
   }
 }, { immediate: true })
 
+const selectCommand = ref(undefined)
+
+const onSelect = (v: string) => {
+  selectCommand.value = v
+}
+
 const send = async () => {
   if (!window.serialPort) {
     return
   }
   info.value = ''
-  if (command.value) {
+  const cmd = enableSendSelect.value ? selectCommand.value : command.value
+  if (cmd) {
     let d: Uint8Array | null = null
     if (format.value === 'hex') {
-      if (command.value.length % 2 === 0 && hexRegex.test(command.value)) {
-        d = Buffer.from(command.value, 'hex')
+      if (cmd.length % 2 === 0 && hexRegex.test(cmd)) {
+        d = Buffer.from(cmd, 'hex')
       } else {
         info.value = "Error: Invalid Hex String."
       }
     } else {
-      d = textEncoder.encode(command.value)
+      d = textEncoder.encode(cmd)
     }
     if (d) {
       const r = await props.session.send(d)
-      onData(command.value, 'out')
+      onData(cmd, 'out')
     }
   }
 }
@@ -326,7 +342,7 @@ onUnmounted(disconnect)
 }
 
 .session-command-control {
-  width: 120px;
+  width: 140px;
 }
 
 .session-command-input {

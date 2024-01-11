@@ -231,3 +231,34 @@ watch(() => sideBarStore.selected, () => {
   }
 }
 </style>
+
+<style type="scss">
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: rgba(var(--v-border-color), var(--v-border-opacity));
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--v-border-color), var(--v-border-opacity));
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 5px;
+  cursor: pointer !important;
+
+  &:hover {
+    background-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    cursor: pointer !important;
+  }
+}
+</style>

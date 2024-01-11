@@ -66,7 +66,9 @@ const clear = () => {
 const selectAll = () => {
   textareaEl.disabled = false
   textareaEl!.select()
-  textareaEl.disabled = true
+  if (props.editable === false) {
+    textareaEl.disabled = true
+  }
 }
 
 const copy = async () => {

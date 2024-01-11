@@ -89,7 +89,7 @@ const menusStore = useMenuStore()
 
 const theme = useTheme()
 
-const onThemeChange = (v: boolean) => {
+const onThemeChange = (v: boolean | null) => {
   theme.global.name.value = v ? 'light' : 'dark'
 }
 

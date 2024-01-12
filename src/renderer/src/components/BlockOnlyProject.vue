@@ -9,8 +9,7 @@
                   :items-per-page="-1"
                   hover
                   :search="search"
-                  class="block-table"
-                  multi-sort>
+                  class="block-table">
       <!-- <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
         <tr>
           <template v-for="column in columns"
@@ -174,11 +173,13 @@ const headers = computed(() => {
     {
       title: t('project.block.name'),
       key: 'name',
-      width: '100px'
+      width: '100px',
+      sortable: false
     },
     {
       title: t('project.block.type'),
       key: 'type',
+      sortable: false,
     },
     {
       title: t('project.block.definition'),

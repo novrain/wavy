@@ -16,6 +16,7 @@ export default class ProjectServiceInMain {
     ipcMain.handle('project:openProject', this.openProject)
     ipcMain.handle('project:saveProject', this.saveProject)
     ipcMain.handle('project:saveProjectAs', this.saveProjectAs)
+    ipcMain.handle('project:saveTextAs', this.saveTextAs)
   }
 
   openProject = (event: Electron.IpcMainInvokeEvent): Promise<{ canceled: boolean, result: boolean, project?: string, name?: string, path?: string }> => {
@@ -89,6 +90,38 @@ export default class ProjectServiceInMain {
           projectCls.name = fileName
           projectCls.project.name = fileName
           fs.writeFileSync(fullPath, JSON.stringify(projectCls))
+          resolve({ canceled: false, result: true, name: fileName, path: dirname })
+        } else {
+          resolve({ canceled: true, result: false })
+        }
+      }).catch(() => {
+        resolve({ canceled: true, result: false })
+      })
+    })
+  }
+
+  saveTextAs = (event: Electron.IpcMainInvokeEvent,
+    text: string): Promise<{ canceled: boolean, result: boolean, name?: string | undefined, path?: string | undefined }> => {
+    return new Promise((resolve, reject) => {
+      const options = {
+        filters: [
+          {
+            name: 'Wavy Data', extensions: ['txt']
+          }
+        ]
+      }
+      let promise = undefined
+      if (this._window) {
+        promise = dialog.showSaveDialog(this._window, options)
+      } else {
+        promise = dialog.showSaveDialog(options)
+      }
+      promise.then(r => {
+        if (!r.canceled && r.filePath) {
+          const fullPath = r.filePath
+          const dirname = nPath.dirname(fullPath)
+          const fileName = nPath.basename(fullPath, '.txt')
+          fs.writeFileSync(fullPath, text)
           resolve({ canceled: false, result: true, name: fileName, path: dirname })
         } else {
           resolve({ canceled: true, result: false })

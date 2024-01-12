@@ -181,7 +181,10 @@ const copy = async () => {
 }
 
 const save = async () => {
-
+  window.projectService.saveTextAs(textareaEl.value).then(r => {
+    if (!r.result) {
+    }
+  })
 }
 </script>
 

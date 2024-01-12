@@ -28,5 +28,6 @@ export interface SerialPortService {
 export interface ProjectService {
   openProject(): Promise<{ canceled: boolean, result: boolean, project?: string, name?: string, path?: string }>
   saveProject(project: string, name: string, path: string): Promise<{ result: boolean }>
-  saveProjectAs(project: string, name?: string, path?: string): Promise<{ canceled: boolean, name?: string, path?: string }>
+  saveProjectAs(project: string, name?: string, path?: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }>
+  saveTextAs(text: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }>
 }

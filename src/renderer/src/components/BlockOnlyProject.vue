@@ -131,7 +131,7 @@
             <div class='d-flex'>
               <v-btn icon="mdi-plus"
                      class="mr-1"
-                     @click="() => onNewBlock(item, index)"></v-btn>
+                     @click="() => onNewBlock(item, index + 1)"></v-btn>
               <v-btn icon="mdi-minus"
                      class="mr-1"
                      @click="() => deleteBlock(item, index)"></v-btn>

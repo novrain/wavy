@@ -214,7 +214,7 @@ watch(paths, (newPaths) => {
   }
 }, { immediate: true })
 
-const selectCommand = ref(undefined)
+const selectCommand = ref<string | undefined>(undefined)
 
 const onSelect = (v: string) => {
   selectCommand.value = v

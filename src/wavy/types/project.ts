@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer'
 import 'reflect-metadata'
-import { FrameProject } from "../frame/FrameProject"
+import { FrameProject } from '../frame/FrameProject'
 
 export type ProjectType = 'BlockOnly' | 'Frame'
 

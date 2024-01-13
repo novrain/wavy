@@ -1,6 +1,6 @@
 // Utilities
-import { Session } from '@/types/session'
 import { Project } from '@W/types/project'
+import { Session } from '@/types/session'
 import { instanceToPlain } from 'class-transformer'
 import { defineStore } from 'pinia'
 

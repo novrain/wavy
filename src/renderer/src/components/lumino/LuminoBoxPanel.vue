@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import "@fortawesome/fontawesome-free/css/all.css"
 import '@lumino/default-theme/style/index.css'
-import { BoxPanel, TabBar, DockPanel, Widget } from '@lumino/widgets'
+import { BoxPanel, DockPanel, TabBar, Widget } from '@lumino/widgets'
 import { onMounted, onUnmounted, onUpdated, provide, ref } from 'vue'
 import { CustomDockPanel } from './ItemWidget'
 

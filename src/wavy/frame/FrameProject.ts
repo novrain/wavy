@@ -17,7 +17,7 @@ import {
   Suite,
   UndefinableFrame,
   WavyItem
-} from "./Frame"
+} from './Frame'
 
 type UndefinableWavyItem = WavyItem | undefined
 

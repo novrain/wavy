@@ -79,8 +79,8 @@ import { Pane, Splitpanes } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useSideBarStore } from './store/sidebar'
 import { useTheme } from 'vuetify/lib/framework.mjs'
+import { useSideBarStore } from './store/sidebar'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

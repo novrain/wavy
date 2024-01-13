@@ -1,5 +1,5 @@
-import { dialog, ipcMain } from "electron"
-import { BrowserWindow } from "electron/main"
+import { dialog, ipcMain } from 'electron'
+import { BrowserWindow } from 'electron/main'
 import fs from 'fs'
 import nPath from 'path'
 

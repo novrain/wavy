@@ -1,8 +1,8 @@
 import {
   DecimalBlock,
   StringBlock
-} from "../frame/Block"
-import { DataFrame } from "../frame/Frame"
+} from '../frame/Block'
+import { DataFrame } from '../frame/Frame'
 
 test('frames', () => {
   let f = new DataFrame('f1', 'f1')

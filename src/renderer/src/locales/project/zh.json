@@ -45,6 +45,11 @@
       "padSide": "补齐位置",
       "encoding": "编码",
       "padToLength": "补齐长度"
+    },
+    "delayBlock": {
+      "delay": "延时",
+      "value": "延时",
+      "unit": "单位"
     }
   }
 }

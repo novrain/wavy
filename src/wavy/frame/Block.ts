@@ -11,7 +11,7 @@ export type UndefinableBuffer = Buffer | undefined
 /**
  *  数据块类型
  */
-export type BlockType = 'Ref' | 'Decimal' | 'Hex' | 'String' | 'ComputedFromPreBlock'
+export type BlockType = 'Ref' | 'Decimal' | 'Hex' | 'String' | 'ComputedFromPreBlock' | 'Delay'
 
 /**
  * 数据二次加工
@@ -30,9 +30,10 @@ export interface Block {
   name: string
   encoding: string
   __type: BlockType
-  encode(): UndefinableBuffer
+  encode(): UndefinableBuffer | any
   decode(raw: Buffer, offset: number): number
   clone(): Block
+  // get value(): any
   get type(): BlockType
 }
 
@@ -291,14 +292,64 @@ export class StringBlock implements DataBlock {
   }
 }
 
+export class DelayBlock implements Block {
+  tempIndex: number
+  encoding: string = 'none'
+  __type: BlockType = 'Delay'
+  @Exclude()
+  _value: number
+
+  constructor(
+    readonly id: string,
+    public name: string,
+    value: number = 0,
+    public unit: 'ms' | 's' = 'ms',
+  ) {
+    this.tempIndex = 0
+    this._value = value
+  }
+
+  @Expose()
+  get value(): number {
+    return this._value
+  }
+
+  set value(v: number) {
+    this._value = v
+  }
+
+  encode(): number {
+    return this.unit === 's' ? this._value * 1000 : this._value
+  }
+
+  decode(raw: Buffer, offset: number): number {
+    throw new Error('Method not implemented.')
+  }
+
+  clone(): Block {
+    let clone = new DelayBlock(
+      defaultId.nextId() + '',
+      this.name,
+      this.value,
+      this.unit
+    )
+    return clone
+  }
+
+  get type(): BlockType {
+    return this.__type
+  }
+}
+
 export const createBlock = (type: BlockType, id: string, name: string | undefined = undefined) => {
   switch (type) {
     case 'String':
       return new StringBlock(id, name || 's-block')
     case 'Decimal':
       return new DecimalBlock(id, name || 'd-block')
+    case 'Delay':
+      return new DelayBlock(id, name || 'd-block')
     default:
       return null
   }
-
 }

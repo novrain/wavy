@@ -1,6 +1,6 @@
+import messages from '@intlify/unplugin-vue-i18n/messages'
 import { createI18n } from 'vue-i18n'
 import { en, zhHans as zh } from 'vuetify/locale'
-import messages from '@intlify/unplugin-vue-i18n/messages'
 
 messages!.en.$vuetify = en
 messages!.zh.$vuetify = zh

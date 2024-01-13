@@ -3,7 +3,7 @@
                   hide-details></v-text-field></td>
   <td>
     <v-select :value="block.type"
-              @update:model-value="onTypeChanged"
+              @update:model-value="onTypeChange"
               :items="['String', 'Decimal']"
               label=""
               density="compact"
@@ -32,12 +32,15 @@ const blockComps = {
   "Decimal": DecimalBlockDefinition
 } as any
 
+const emits = defineEmits(['typeChange'])
+
 const props = defineProps<{ block: Block, project: Project, index: number }>()
 
-const onTypeChanged = (type: BlockType | string | null) => {
+const onTypeChange = (type: BlockType | string | null) => {
   const newBlock = createBlock(type as BlockType, defaultId.nextId() + '', props.block.name)
   if (newBlock) {
     props.project.project?.replaceBlock(props.block, newBlock)
+    emits('typeChange', props.block, newBlock)
   }
 }
 

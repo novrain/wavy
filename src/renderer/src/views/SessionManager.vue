@@ -39,13 +39,13 @@
   </div>
 </template>
 <script lang="ts" setup>
+import SerialSession from '@/components/SerialSession.vue'
 import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
-import SerialSession from '@/components/SerialSession.vue'
+import { useAppStore } from '@/store/app'
 import { useMenuStore } from '@/store/menu'
 import { useSessionStore } from '@/store/session'
-import { useAppStore } from '@/store/app'
 import { MenuEvent } from '@/types/menu'
 import { storeToRefs } from 'pinia'
 import { onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'

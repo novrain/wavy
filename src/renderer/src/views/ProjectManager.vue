@@ -77,7 +77,7 @@ import { Project } from '@W/types/project'
 import { defaultId } from '@W/util/SnowflakeId'
 import { plainToInstance } from 'class-transformer'
 import { storeToRefs } from 'pinia'
-import { computed, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const appStore = useAppStore()

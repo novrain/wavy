@@ -78,6 +78,9 @@ const DefaultProjectService = {
   },
   saveProjectAs(project: string, name?: string, path?: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }> {
     return ipcRenderer.invoke('project:saveProjectAs', project, name, path)
+  },
+  saveTextAs(text: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }> {
+    return ipcRenderer.invoke('project:saveTextAs', text)
   }
 }
 

@@ -45,6 +45,11 @@
       "padSide": "Pad Side",
       "encoding": "Encoding",
       "padToLength": "Pad To Length"
+    },
+    "delayBlock": {
+      "delay": "Delay",
+      "value": "Delay",
+      "unit": "unit"
     }
   }
 }

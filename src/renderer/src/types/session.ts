@@ -1,4 +1,4 @@
-import { AbstractSession, SessionOptions, SessionType } from "@W/types/session"
+import { AbstractSession, SessionOptions, SessionType } from '@W/types/session'
 import EventEmitter from 'eventemitter3'
 
 export default class RawSerialPortSession extends EventEmitter implements AbstractSession {

@@ -9,6 +9,14 @@
                src="@/assets/logo.svg" />
         <app-menu />
         <v-spacer class="drag-space"></v-spacer>
+        <v-switch class="flex-0-0"
+                  @update:modelValue="onThemeChange"
+                  true-icon="mdi-weather-sunny"
+                  false-icon="mdi-weather-night"
+                  hide-details
+                  density="compact"
+                  :modelValue="theme.global.name.value === 'light'"
+                  inset></v-switch>
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn class="ma-2"
@@ -71,12 +79,19 @@ import { Pane, Splitpanes } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useTheme } from 'vuetify/lib/framework.mjs'
 import { useSideBarStore } from './store/sidebar'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
 const windowStore = hostWindowStore()
 const menusStore = useMenuStore()
+
+const theme = useTheme()
+
+const onThemeChange = (v: boolean | null) => {
+  theme.global.name.value = v ? 'light' : 'dark'
+}
 
 onMounted(async () => {
   if (window.hostWindow) {
@@ -179,6 +194,30 @@ watch(() => sideBarStore.selected, () => {
 
   .main-content {
     position: relative;
+    background-color: rgb(var(--v-theme-background));
+
+    :deep(.splitpanes),
+    :deep(.splitpanes__pane),
+    :deep(.splitpanes__pane),
+    :deep(.lm-TabBar-tab) {
+      background-color: rgb(var(--v-theme-background));
+      border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    }
+
+    :deep(.splitpanes__splitter) {
+      border-left-color: rgb(var(--v-theme-background));
+      background-color: rgba(var(--v-border-color), var(--v-border-opacity));
+
+      &::after,
+      &::before {
+        background-color: rgb(var(--v-theme-background));
+      }
+    }
+
+    :deep(.lm-TabBar-tab) {
+      border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    }
+
 
     :deep(.left-sidebar) {
       position: unset !important;
@@ -189,6 +228,37 @@ watch(() => sideBarStore.selected, () => {
 
   :deep(.v-container) {
     max-width: 100% !important;
+  }
+}
+</style>
+
+<style type="scss">
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: rgba(var(--v-border-color), var(--v-border-opacity));
+  cursor: pointer !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--v-border-color), var(--v-border-opacity));
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 5px;
+  cursor: pointer !important;
+
+  &:hover {
+    background-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    cursor: pointer !important;
   }
 }
 </style>

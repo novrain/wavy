@@ -25,8 +25,8 @@ const createSession = (type: string): Session => {
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
-    sessions: [] as Session[]
-  }),
+    sessions: []
+  } as { sessions: Session[] }),
   actions: {
     newSession(type: SessionType): Session {
       const session = createSession(type)

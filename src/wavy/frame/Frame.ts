@@ -9,10 +9,11 @@ import {
   Block,
   BlockType,
   DecimalBlock,
+  DelayBlock,
   StringBlock,
   UndefinableBlock,
   UndefinableBuffer
-} from "./Block"
+} from './Block'
 import { FrameProject } from './FrameProject'
 
 type UndefinableFrameProject = FrameProject | undefined
@@ -103,6 +104,7 @@ export const BlockTransformer = Type(() => Object, {
       { value: RefBlock, name: 'Ref' },
       { value: DecimalBlock, name: 'Decimal' },
       { value: StringBlock, name: 'String' },
+      { value: DelayBlock, name: 'Delay' },
     ],
   },
 })

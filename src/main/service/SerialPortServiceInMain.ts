@@ -38,6 +38,8 @@ export default class DefaultSerialPortService {
             serial.on('data', (data) => this._window?.webContents.send(`serial:${id}:data`, data))
             serial.on('error', (error) => this._window?.webContents.send(`serial:${id}:error`, error))
             serial.on('close', () => this._window?.webContents.send(`serial:${id}:close`))
+          } else {
+            this.serials.delete(id)
           }
           console.log(err)
           resolve({

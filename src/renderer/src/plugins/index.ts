@@ -5,10 +5,10 @@
  */
 
 // Plugins
-import vuetify from './vuetify'
 import pinia from '../store'
-import i18n from './i18n'
 import app from './app'
+import i18n from './i18n'
+import vuetify from './vuetify'
 // import router from '../router'
 
 // Types

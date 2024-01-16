@@ -1,4 +1,4 @@
-import { app, globalShortcut, ipcMain, Menu, screen, Tray } from 'electron'
+import { app, globalShortcut, ipcMain, Menu, MenuItemConstructorOptions, screen, shell, Tray } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
 import { Subject, throttleTime } from 'rxjs'
@@ -74,9 +74,10 @@ export class Application {
     })
 
     app.on('window-all-closed', () => {
-      if (this.quitRequested || process.platform !== 'darwin') {
-        app.quit()
-      }
+      // if (this.quitRequested || process.platform !== 'darwin') {
+      //   app.quit()
+      // }
+      app.quit()
     })
   }
 
@@ -210,6 +211,52 @@ export class Application {
   }
 
   private setupMenu() {
-    // Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    const template: MenuItemConstructorOptions[] = [
+      {
+        label: app.getName(),
+        submenu: [
+          { role: 'quit' }
+        ]
+      },
+      {
+        label: 'View',
+        submenu: [
+          { role: 'togglefullscreen' },
+        ]
+      },
+      {
+        label: 'Session',
+        submenu: [
+          { type: 'separator' },
+        ]
+      },
+      {
+        label: 'Project',
+        submenu: [
+          { type: 'separator' },
+        ]
+      },
+      {
+        role: 'window',
+        submenu: [
+          { role: 'minimize' },
+          { role: 'zoom' },
+          { type: 'separator' },
+          { role: 'front' },
+        ]
+      },
+      {
+        role: 'help',
+        submenu: [
+          {
+            label: 'Github',
+            click() {
+              shell.openExternal('https://github.com/novrain/wavy')
+            }
+          }
+        ]
+      }
+    ]
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
   }
 }

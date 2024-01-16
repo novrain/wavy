@@ -77,6 +77,10 @@ export class Window {
       frame: false,
       show: false,
       backgroundColor: '#00000000',
+      trafficLightPosition: {
+        y: 16,
+        x: 10
+      }
     }
 
     if (this.windowBounds) {

@@ -10,7 +10,8 @@ export interface App {
   },
   project: {
     currentProject: Project | undefined
-  }
+  },
+  platform: string | undefined
 }
 
 export const useAppStore = defineStore('app', {
@@ -20,7 +21,8 @@ export const useAppStore = defineStore('app', {
     },
     project: {
       currentProject: undefined
-    }
+    },
+    platform: undefined
   } as App),
   actions: {
     saveCurrentProject(project: Project | undefined = undefined) {

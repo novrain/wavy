@@ -21,6 +21,10 @@ ipcMain.handle('main:getLocale', () => {
   return app.getSystemLocale()
 })
 
+ipcMain.handle('main:getPlatform', () => {
+  return process.platform
+})
+
 ipcMain.on('main:openExternal', (event: Electron.IpcMainInvokeEvent, url: string) => {
   shell.openExternal(url)
 })
@@ -58,25 +62,30 @@ if (argv.d) {
 }
 
 app.on('ready', async () => {
-  if (process.platform === 'darwin') {
-    app.dock.setMenu(Menu.buildFromTemplate([
-      {
-        label: 'New window',
-        click() {
-          // this.app.newWindow()
-          application.newWindow()
-        },
-      },
-    ]))
-  }
   application.init()
 
   const projectService = new ProjectServiceInMain()
   const serialPortService = new SerialPortServiceInMain()
-  const window = await application.newWindow({ hidden: argv.hidden })
-  projectService.window = window.browserWindow as BrowserWindow
-  serialPortService.window = window.browserWindow as BrowserWindow
-  // await window.ready
-  window.passCliArguments(process.argv, process.cwd(), false)
-  window.focus()
+
+  const newWindow = async () => {
+    const window = await application.newWindow({ hidden: argv.hidden })
+    projectService.window = window.browserWindow as BrowserWindow
+    serialPortService.window = window.browserWindow as BrowserWindow
+    // await window.ready
+    window.passCliArguments(process.argv, process.cwd(), false)
+    window.focus()
+  }
+
+  // if (process.platform === 'darwin') {
+  //   app.dock.setMenu(Menu.buildFromTemplate([
+  //     {
+  //       label: 'New window',
+  //       click() {
+  //         newWindow()
+  //       },
+  //     },
+  //   ]))
+  // }
+  
+  newWindow()
 })

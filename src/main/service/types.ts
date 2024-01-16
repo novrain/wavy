@@ -14,6 +14,7 @@ export interface HostWindowService {
   openExternal(url: string): void
   exit(): void
   locale(): Promise<string>
+  platform(): Promise<string>
 }
 
 export interface SerialPortService {

@@ -111,10 +111,7 @@ onMounted(() => {
         icon: 'mdi-alpha-p',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          onNewProject()
-        },
+        handler: onNewProjectClick,
       },
       {
         id: 'project-save',
@@ -123,10 +120,7 @@ onMounted(() => {
         icon: 'mdi-alpha-s',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          appStore.saveCurrentProject()
-        },
+        handler: onSaveProjectClick,
         isDisabled: isDisabled
       },
       {
@@ -136,10 +130,7 @@ onMounted(() => {
         icon: 'mdi-alpha-a',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          appStore.saveCurrentProjectAs()
-        },
+        handler: onSaveAsProjectClick,
         isDisabled: isDisabled
       },
       {
@@ -149,10 +140,7 @@ onMounted(() => {
         icon: 'mdi-alpha-o',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          openProject()
-        }
+        handler: onOpenProjectClick
       }
     ]
   })
@@ -170,6 +158,28 @@ onMounted(() => {
   //   currentProjectId.value = project.id
   // }
 })
+
+// handler
+
+const onNewProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  onNewProject()
+}
+
+const onSaveProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  appStore.saveCurrentProject()
+}
+
+const onSaveAsProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  appStore.saveCurrentProjectAs()
+}
+
+const onOpenProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  openProject()
+}
 
 const canSave = ref(false)
 
@@ -202,6 +212,13 @@ watch(currentProjectId, (id) => {
       currentProjectId.value = newProject.id
     }
   }
+})
+
+onMounted(() => {
+  window.projectService.onNewProject(onNewProjectClick)
+  window.projectService.onSaveProject(onSaveProjectClick)
+  window.projectService.onSaveAsProject(onSaveAsProjectClick)
+  window.projectService.onOpenProject(onOpenProjectClick)
 })
 
 const isDisabled = () => {

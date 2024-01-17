@@ -31,4 +31,12 @@ export interface ProjectService {
   saveProject(project: string, name: string, path: string): Promise<{ result: boolean }>
   saveProjectAs(project: string, name?: string, path?: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }>
   saveTextAs(text: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }>
+  onNewProject(listener: any): void
+  onSaveProject(listener: any): void
+  onSaveAsProject(listener: any): void
+  onOpenProject(listener: any): void
+}
+
+export interface SessionService {
+  onNewSession(listener: any): void
 }

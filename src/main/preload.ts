@@ -84,8 +84,31 @@ const DefaultProjectService = {
   },
   saveTextAs(text: string): Promise<{ canceled: boolean, result: boolean, name?: string, path?: string }> {
     return ipcRenderer.invoke('project:saveTextAs', text)
-  }
+  },
+  // for ipcMain --> renderer  
+  onNewProject(listener: any) {
+    ipcRenderer.on('renderer:project-new', listener)
+  },
+  onSaveProject(listener: any) {
+    ipcRenderer.on('renderer:project-save', listener)
+  },
+  onSaveAsProject(listener: any) {
+    ipcRenderer.on('renderer:project-saveAs', listener)
+  },
+  onOpenProject(listener: any) {
+    ipcRenderer.on('renderer:project-open', listener)
+  },
 }
 
 // file service
 contextBridge.exposeInMainWorld('projectService', DefaultProjectService)
+
+const DefaultSessionService = {
+  // for ipcMain --> renderer  
+  onNewProject(listener: any) {
+    ipcRenderer.on('renderer:session-new', listener)
+  },
+}
+
+// file service
+contextBridge.exposeInMainWorld('sessionService', DefaultSessionService)

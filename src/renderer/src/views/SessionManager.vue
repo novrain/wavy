@@ -98,9 +98,7 @@ onMounted(() => {
         icon: 'mdi-alpha-s',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          onNewSession()
-        },
+        handler: onNewSessionClick,
       }
     ]
   })
@@ -110,6 +108,14 @@ onMounted(() => {
   // }
   // @Todo move
   listPorts()
+})
+
+const onNewSessionClick = (_e: MenuEvent) => {
+  onNewSession()
+}
+
+onMounted(() => {
+  window.sessionService.onNewSession(onNewSessionClick)
 })
 
 onDeactivated(() => {

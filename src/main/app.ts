@@ -227,13 +227,41 @@ export class Application {
       {
         label: 'Session',
         submenu: [
-          { type: 'separator' },
+          {
+            label: 'New',
+            click: () => {
+              this.send('renderer:session-new')
+            }
+          },
         ]
       },
       {
         label: 'Project',
         submenu: [
-          { type: 'separator' },
+          {
+            label: 'New',
+            click: () => {
+              this.send('renderer:project-new')
+            }
+          },
+          {
+            label: 'Save',
+            click: () => {
+              this.send('renderer:project-save')
+            }
+          },
+          {
+            label: 'Save As',
+            click: () => {
+              this.send('renderer:project-saveAs')
+            }
+          },
+          {
+            label: 'Open',
+            click: () => {
+              this.send('renderer:project-open')
+            }
+          },
         ]
       },
       {

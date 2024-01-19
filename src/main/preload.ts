@@ -105,7 +105,7 @@ contextBridge.exposeInMainWorld('projectService', DefaultProjectService)
 
 const DefaultSessionService = {
   // for ipcMain --> renderer  
-  onNewProject(listener: any) {
+  onNewSession(listener: any) {
     ipcRenderer.on('renderer:session-new', listener)
   },
 }

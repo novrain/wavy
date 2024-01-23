@@ -1,0 +1,40 @@
+@import '@lumino/default-theme/style/index.css';
+
+.lm-mod-current {
+  border-top: rgb(var(--v-theme-secondary)) 2px solid !important;
+}
+
+.lumino-tab-active {
+  border-top: rgb(var(--v-theme-primary)) 2px solid !important;
+}
+
+.lm-TabBar,
+.lm-TabBar-content,
+.lm-TabBar-tab,
+.lm-TabBar-addButton {
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
+.lm-TabBar-tab {
+  background-color: rgb(var(--v-theme-background)) !important;
+}
+
+.lm-TabBar-tab.lm-mod-closable>.lm-TabBar-tabCloseIcon {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.lm-TabBar-tab.lm-mod-closable>.lm-TabBar-tabCloseIcon:before {
+  content: none !important;
+}
+
+.lm-TabBar .lm-TabBar-addButton {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+.lm-TabBar .lm-TabBar-addButton:before {
+  content: none !important;
+}

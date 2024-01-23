@@ -10,13 +10,13 @@
                     @close="onWelcomeClose">
         <v-container class="ma-4 pa-0">
           <v-chip prepend-icon="mdi-cable-data"
-                  size="large">
+                  size="default">
             {{ t('session.welcome.session_category') }}
           </v-chip>
           <v-divider class="mt-2 mb-2"></v-divider>
           <v-container class="d-flex ma-0 pa-0">
             <v-btn prepend-icon="mdi-serial-port"
-                   size="x-large"
+                   size="default"
                    variant="tonal"
                    stacked
                    @click="onNewSession">

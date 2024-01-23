@@ -208,8 +208,7 @@ watch(() => sideBarStore.selected, () => {
 
     :deep(.splitpanes),
     :deep(.splitpanes__pane),
-    :deep(.splitpanes__pane),
-    :deep(.lm-TabBar-tab) {
+    :deep(.splitpanes__pane) {
       background-color: rgb(var(--v-theme-background));
       border-color: rgba(var(--v-border-color), var(--v-border-opacity));
     }

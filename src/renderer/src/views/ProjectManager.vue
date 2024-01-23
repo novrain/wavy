@@ -11,13 +11,14 @@
                     @close="onWelcomeClose">
         <v-container class="ma-4 pa-0">
           <v-chip prepend-icon="mdi-transit-connection-horizontal"
-                  size="large">
+                  size="default">
             {{ t('project.welcome.project_category') }}
           </v-chip>
           <v-divider class="mt-2 mb-2"></v-divider>
           <v-container class="d-flex ma-0 pa-0">
-            <v-btn prepend-icon="mdi-semantic-web"
-                   size="x-large"
+            <v-btn class="mr-2"
+                   prepend-icon="mdi-semantic-web"
+                   size="default"
                    variant="tonal"
                    @click="onNewProject"
                    stacked>

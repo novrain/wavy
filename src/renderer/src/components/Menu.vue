@@ -15,7 +15,7 @@
         <v-list-item v-for="(item) in ((m?.items || []) as MenuComposite[])"
                      :key="item?.id"
                      :value="item"
-                     :disabled="item?.isDisabled && item?.isDisabled()"
+                     :disabled="item?.isDisabled as any"
                      @click="() => {
                        if (item?.handler) {
                          item?.handler({ menu: item })
@@ -34,11 +34,13 @@
 <script lang="ts" setup>
 import { useMenuStore } from '@/store/menu'
 import { MenuComposite } from '@/types/menu'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const menusStore = useMenuStore()
+
 </script>
 
 <style lang="scss" scoped>

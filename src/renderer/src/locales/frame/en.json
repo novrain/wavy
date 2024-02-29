@@ -1,0 +1,61 @@
+{
+  "wavyItem": {
+    "wavyItem": {
+      "name": "Name",
+      "type": "Type"
+    }
+  },
+  "block": {
+    "block": {
+      "search": "Search",
+      "name": "Name",
+      "type": "Type",
+      "definition": "Definition",
+      "actions": "",
+      "blocks": "Command Blocks"
+    },
+    "stringBlock": {
+      "value": "Value",
+      "pad": "Pad",
+      "padSide": "Pad Side",
+      "encoding": "Encoding",
+      "padToLength": "Pad To Length"
+    },
+    "decimalBlock": {
+      "value": "Value",
+      "numberType": "Number Type",
+      "endian": "Endian",
+      "pad": "Pad",
+      "padSide": "Pad Side",
+      "encoding": "Encoding",
+      "padToLength": "Pad To Length"
+    },
+    "delayBlock": {
+      "delay": "Delay",
+      "value": "Delay",
+      "unit": "unit"
+    },
+    "refBlock": {
+      "ref": "Reference"
+    },
+    "dialog": {
+      "hint": "Warning",
+      "clearAll": "Are you sure to remove all blocks?",
+      "deleteSelected": "Are you sure to remove the selected blocks?",
+      "confirm": "Ok",
+      "cancel": "Cancel"
+    }
+  },
+  "frame": {
+    "preDelay": "Pre-Delay",
+    "postDelay": "Post Delay",
+    "dataFrame": {
+      "blocks": "Blocks",
+      "frameMode": "Frame Mode",
+      "tableMode": "Table Mode"
+    },
+    "refFrame": {
+      "ref": "Reference"
+    }
+  }
+}

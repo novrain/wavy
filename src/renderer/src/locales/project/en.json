@@ -1,11 +1,23 @@
 {
   "project": {
+    "block": {
+      "blocks": "Command Blocks"
+    },
+    "frame": {
+      "basic_blocks": "Basic Block",
+      "frames": "Frames & Suites",
+      "block_new": "New Block",
+      "block_edit": "Edit Block",
+      "wavyItem_new": "New Frame/Suite",
+      "wavyItem_edit": "Edit Frame/Suite"
+    },
     "welcome": {
       "welcome": "Welcome",
       "project_category": "Project"
     },
     "types": {
-      "block": "Block Only"
+      "block": "Block Only",
+      "frame": "Frames & Suite"
     },
     "menu": {
       "project": "Project",
@@ -17,39 +29,8 @@
     "dialog": {
       "hint": "Warning",
       "reload": "The project has already been opened. Would you like to reload?",
-      "clearAll": "Are you sure to remove all blocks?",
-      "deleteSelected": "Are you sure to remove the selected blocks?",
       "confirm": "Ok",
       "cancel": "Cancel"
-    },
-    "block": {
-      "search": "Search",
-      "name": "Name",
-      "type": "Type",
-      "definition": "Definition",
-      "actions": "",
-      "blocks": "Command Blocks"
-    },
-    "stringBlock": {
-      "value": "Value",
-      "pad": "Pad",
-      "padSide": "Pad Side",
-      "encoding": "Encoding",
-      "padToLength": "Pad To Length"
-    },
-    "decimalBlock": {
-      "value": "Value",
-      "numberType": "Number Type",
-      "endian": "Endian",
-      "pad": "Pad",
-      "padSide": "Pad Side",
-      "encoding": "Encoding",
-      "padToLength": "Pad To Length"
-    },
-    "delayBlock": {
-      "delay": "Delay",
-      "value": "Delay",
-      "unit": "unit"
     }
   }
 }

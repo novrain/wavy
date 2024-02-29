@@ -1,15 +1,12 @@
 <template >
   <div
        :class="`${direction === 'column' ? 'column' : 'd-flex flex-row'} ${direction === 'column' && hideDetails ? 'column-hide-details' : ''}`">
-    <v-text-field v-model="delayBlock.value"
-                  type="number"
-                  class="mr-1 flex-1-1"
-                  :label="t('block.delayBlock.value')"
-                  hide-details></v-text-field>
-    <v-select v-model="delayBlock.unit"
+    <v-select v-model="refBlock.refId"
               class="mr-1 w-11"
-              :items="['ms', 's']"
-              :label="t('block.delayBlock.unit')"
+              :items="refBlocks"
+              item-title="name"
+              item-value="id"
+              :label="t('block.refBlock.ref')"
               density="compact"
               hide-details
               required></v-select>
@@ -17,13 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import { Block, DelayBlock } from '@W/frame/Block'
+import { Block } from '@W/frame/Block'
+import { RefBlock } from '@W/frame/Frame'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const props = defineProps<{ block: Block, index: number, direction?: 'row' | 'column', hideDetails?: boolean }>()
-const delayBlock = props.block as DelayBlock
+const props = withDefaults(defineProps<{ block: Block, index: number, direction?: 'row' | 'column', refBlocks?: Block[], hideDetails?: boolean }>(), {
+  refBlocks: () => []
+})
+const refBlock = props.block as RefBlock
 
 </script>
 

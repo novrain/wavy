@@ -1,4 +1,6 @@
 import { Block } from '../frame/Block'
+import { Frame, Suite, WavyItem } from '../frame/Frame'
+import { FrameProject } from '../frame/FrameProject'
 import { AbstractSession as Session } from '../types/session'
 
 export interface Executor {
@@ -6,6 +8,15 @@ export interface Executor {
   executeBlocksToSession: (session: Session, blocks: Block[]) => Promise<any>
   executeBlockToSessions: (session: Session[], block: Block) => Promise<any>
   executeBlocksToSessions: (session: Session[], blocks: Block[]) => Promise<any>
+  // project 
+  executeFrameToSession: (session: Session, frame: Frame) => Promise<any>
+  executeFrameToSessions: (sessions: Session[], frame: Frame) => Promise<any>
+  executeSuiteToSession: (session: Session, suite: Suite) => Promise<any>
+  executeSuiteToSessions: (sessions: Session[], suite: Suite) => Promise<any>
+  executeWavyItemToSession: (session: Session, wavyItem: WavyItem) => Promise<any>
+  executeWavyItemToSessions: (sessions: Session[], wavyItem: WavyItem) => Promise<any>
+  executeProjectToSession: (session: Session, project: FrameProject) => Promise<any>
+  executeProjectToSessions: (sessions: Session[], project: FrameProject) => Promise<any>
   stop(): void
 }
 
@@ -35,7 +46,7 @@ export class DefaultExecutor implements Executor {
     }
     const data = block.encode()
     if (data) {
-      return await session.send(data, true, data.toString(block.encoding))
+      return await session.send(data, true, block.toString())
     }
   }
 
@@ -74,6 +85,78 @@ export class DefaultExecutor implements Executor {
     return Promise.all(promises)
     // for (const s of sessions) {
     //   await this.executeBlocksToSession(s, blocks)
+    // }
+  }
+
+  // project 
+  executeFrameToSession = async (session: Session, frame: Frame): Promise<any> => {
+    await delay(frame.preDelay)
+    const data = frame.encode()
+    if (data) {
+      return await session.send(data, true, frame.toString())
+    }
+    await delay(frame.postDelay)
+  }
+
+  executeFrameToSessions = async (sessions: Session[], frame: Frame): Promise<any> => {
+    const promises: Promise<any>[] = []
+    for (const s of sessions) {
+      promises.push(this.executeFrameToSession(s, frame))
+    }
+    return Promise.all(promises)
+  }
+
+  executeWavyItemToSession = async (session: Session, wavyItem: WavyItem) => {
+    switch (wavyItem.__type) {
+      case 'Data':
+      case 'Ref':
+        await this.executeFrameToSession(session, wavyItem as Frame)
+        break
+      case 'Suite':
+        await this.executeSuiteToSession(session, wavyItem as Suite)
+        break
+    }
+  }
+
+  executeWavyItemToSessions = async (sessions: Session[], wavyItem: WavyItem): Promise<any> => {
+    const promises: Promise<any>[] = []
+    for (const s of sessions) {
+      promises.push(this.executeWavyItemToSession(s, wavyItem))
+    }
+    return Promise.all(promises)
+  }
+
+  executeSuiteToSession = async (session: Session, suite: Suite): Promise<any> => {
+    const wavyItems = suite.wavyItems
+    for (const wavyItem of wavyItems) {
+      await this.executeWavyItemToSession(session, wavyItem)
+    }
+  }
+
+  executeSuiteToSessions = async (sessions: Session[], suite: Suite): Promise<any> => {
+    const promises: Promise<any>[] = []
+    for (const s of sessions) {
+      promises.push(this.executeSuiteToSession(s, suite))
+    }
+    return Promise.all(promises)
+  }
+
+  executeProjectToSession = async (session: Session, project: FrameProject): Promise<any> => {
+    project.injectProjectToRef()
+    const wavyItems = project.wavyItems
+    for (const wavyItem of wavyItems) {
+      await this.executeWavyItemToSession(session, wavyItem)
+    }
+  }
+
+  executeProjectToSessions = async (sessions: Session[], project: FrameProject): Promise<any> => {
+    const promises: Promise<any>[] = []
+    for (const s of sessions) {
+      promises.push(this.executeProjectToSession(s, project))
+    }
+    return Promise.all(promises)
+    // for (const s of sessions) {
+    //   await this.executeProjectToSession(s, project)
     // }
   }
 }

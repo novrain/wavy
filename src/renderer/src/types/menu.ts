@@ -1,3 +1,4 @@
+import { ComputedRef } from 'vue'
 
 type Menu = {
   id: string
@@ -6,7 +7,7 @@ type Menu = {
   name: string
   nameKey?: string
   handler?: MenuItemEventHandler
-  isDisabled?: MenuItemIsDisabled
+  isDisabled?: ComputedRef<boolean>
 }
 
 export type MenuItem = Menu & { items: undefined, handler: MenuItemEventHandler }
@@ -21,7 +22,8 @@ export interface MenuItemEventHandler {
   (event: MenuEvent): void | Promise<void>
 }
 
-export interface MenuItemIsDisabled {
-  (): boolean
-}
+// export interface MenuItemIsDisabled {
+//   (): boolean
+// }
 
+export type MenuItemIsDisabled = ComputedRef<boolean>

@@ -20,9 +20,17 @@
                    prepend-icon="mdi-semantic-web"
                    size="default"
                    variant="tonal"
-                   @click="onNewProject"
+                   @click="() => onNewProject()"
                    stacked>
               {{ t('project.types.block') }}
+            </v-btn>
+            <v-btn class="mr-2"
+                   prepend-icon="mdi-view-array-outline"
+                   size="default"
+                   variant="tonal"
+                   @click="() => onNewProject('Frame')"
+                   stacked>
+              {{ t('project.types.frame') }}
             </v-btn>
           </v-container>
         </v-container>
@@ -65,6 +73,7 @@
 </template>
 <script lang="ts" setup>
 import BlokOnlyProject from '@/components/BlockOnlyProject.vue'
+import FrameProject from '@/components/FrameProject.vue'
 import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
@@ -74,10 +83,11 @@ import { useProjectStore } from '@/store/project'
 import { useSideBarStore } from '@/store/sidebar'
 import { MenuEvent } from '@/types/menu'
 import { SideBarEvent } from '@/types/sidebar'
-import { Project } from '@W/types/project'
+import { Project, ProjectType } from '@W/types/project'
 import { defaultId } from '@W/util/SnowflakeId'
 import { plainToInstance } from 'class-transformer'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -85,7 +95,8 @@ const appStore = useAppStore()
 
 //
 const projectComps = {
-  'BlockOnly': BlokOnlyProject
+  'BlockOnly': BlokOnlyProject,
+  'Frame': FrameProject
 } as any
 
 const menusStore = useMenuStore()
@@ -222,9 +233,9 @@ onMounted(() => {
   window.projectService.onOpenProject(onOpenProjectClick)
 })
 
-const isDisabled = () => {
+const isDisabled = computed(() => {
   return !canSave.value
-}
+})
 
 onDeactivated(() => {
 
@@ -234,8 +245,8 @@ onUnmounted(() => {
 
 })
 
-const onNewProject = () => {
-  const project = projectStore.newProject('BlockOnly')
+const onNewProject = (type: ProjectType = 'BlockOnly') => {
+  const project = projectStore.newProject(type)
   currentProjectId.value = project.id
 }
 

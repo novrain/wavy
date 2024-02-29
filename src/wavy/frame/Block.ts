@@ -25,14 +25,15 @@ type DataProcessing = 'None' | 'Repeat'
 type Endian = 'BigEndian' | 'LittleEndian'
 
 export interface Block {
-  tempIndex: number,
+  tempIndex?: number,
   readonly id: string
   name: string
   encoding: string
   __type: BlockType
   encode(): UndefinableBuffer | any
   decode(raw: Buffer, offset: number): number
-  clone(): Block
+  toString(): string
+  clone(withIdentify: boolean): Block
   // get value(): any
   get type(): BlockType
 }
@@ -72,7 +73,7 @@ export class DecimalBlock implements DataBlock {
   @Exclude()
   _value: number | bigint = 0
   strValue: string
-  tempIndex: number
+  tempIndex?: number
 
   constructor(
     readonly id: string,
@@ -87,7 +88,6 @@ export class DecimalBlock implements DataBlock {
   ) {
     this._value = value || this._value
     this.strValue = this._value + ''
-    this.tempIndex = 0
   }
 
   get type(): BlockType {
@@ -203,9 +203,13 @@ export class DecimalBlock implements DataBlock {
     throw new Error('Method not implemented.')
   }
 
-  clone(): Block {
+  toString(): string {
+    return this.encode()?.toString(this.encoding) || 'Oops, Encode Error!'
+  }
+
+  clone(withIdentify: boolean = false): Block {
     let clone = new DecimalBlock(
-      defaultId.nextId() + '',
+      withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.value,
       this.numberType,
@@ -215,6 +219,9 @@ export class DecimalBlock implements DataBlock {
       this.padSide,
       this.pad
     )
+    if (withIdentify) {
+      clone.tempIndex = this.tempIndex
+    }
     return clone
   }
 }
@@ -226,10 +233,10 @@ type StringEncoding = 'hex' | 'base64' | 'ascii'
  * String Data Block
  */
 export class StringBlock implements DataBlock {
-
+  // @Expose({ name: 'type' })
   __type: BlockType = 'String'
   strValue: string = '0'
-  tempIndex: number
+  tempIndex?: number
 
   constructor(
     readonly id: string,
@@ -242,7 +249,6 @@ export class StringBlock implements DataBlock {
     public pad: number | string = 0
   ) {
     this.strValue = value
-    this.tempIndex = 0
   }
 
   get type(): BlockType {
@@ -277,9 +283,13 @@ export class StringBlock implements DataBlock {
     throw new Error('Method not implemented.')
   }
 
-  clone(): Block {
+  toString(): string {
+    return this.encode()?.toString(this.encoding) || 'Oops, Encode Error!'
+  }
+
+  clone(withIdentify: boolean = false): Block {
     let clone = new StringBlock(
-      defaultId.nextId() + '',
+      withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.value,
       this.encoding,
@@ -288,13 +298,17 @@ export class StringBlock implements DataBlock {
       this.padSide,
       this.pad
     )
+    if (withIdentify) {
+      clone.tempIndex = this.tempIndex
+    }
     return clone
   }
 }
 
 export class DelayBlock implements Block {
-  tempIndex: number
+  tempIndex?: number
   encoding: string = 'none'
+  // @Expose({ name: 'type' })
   __type: BlockType = 'Delay'
   @Exclude()
   _value: number
@@ -305,7 +319,6 @@ export class DelayBlock implements Block {
     value: number = 0,
     public unit: 'ms' | 's' = 'ms',
   ) {
-    this.tempIndex = 0
     this._value = value
   }
 
@@ -319,37 +332,31 @@ export class DelayBlock implements Block {
   }
 
   encode(): number {
-    return this.unit === 's' ? this._value * 1000 : this._value
+    return this.unit === 's' ? this._value * 1000 : this._value * 1
   }
 
   decode(raw: Buffer, offset: number): number {
     throw new Error('Method not implemented.')
   }
 
-  clone(): Block {
+  toString(): string {
+    return this.encode() + this.unit
+  }
+
+  clone(withIdentify: boolean = false): Block {
     let clone = new DelayBlock(
-      defaultId.nextId() + '',
+      withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.value,
       this.unit
     )
+    if (withIdentify) {
+      clone.tempIndex = this.tempIndex
+    }
     return clone
   }
 
   get type(): BlockType {
     return this.__type
-  }
-}
-
-export const createBlock = (type: BlockType, id: string, name: string | undefined = undefined) => {
-  switch (type) {
-    case 'String':
-      return new StringBlock(id, name || 's-block')
-    case 'Decimal':
-      return new DecimalBlock(id, name || 'd-block')
-    case 'Delay':
-      return new DelayBlock(id, name || 'd-block')
-    default:
-      return null
   }
 }

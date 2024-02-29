@@ -1,0 +1,61 @@
+{
+  "wavyItem": {
+    "wavyItem": {
+      "name": "名称",
+      "type": "类型"
+    }
+  },
+  "block": {
+    "block": {
+      "search": "查询",
+      "name": "名称",
+      "type": "类型",
+      "definition": "定义",
+      "actions": "",
+      "blocks": "指令定义"
+    },
+    "stringBlock": {
+      "value": "值",
+      "pad": "补齐",
+      "padSide": "补齐位置",
+      "encoding": "编码",
+      "padToLength": "补齐长度"
+    },
+    "decimalBlock": {
+      "value": "值",
+      "numberType": "数值类型",
+      "endian": "字节序",
+      "pad": "补齐",
+      "padSide": "补齐位置",
+      "encoding": "编码",
+      "padToLength": "补齐长度"
+    },
+    "delayBlock": {
+      "delay": "延时",
+      "value": "延时",
+      "unit": "单位"
+    },
+    "refBlock": {
+      "ref": "引用"
+    },
+    "dialog": {
+      "hint": "警告",
+      "clearAll": "确定删除所有命令块?",
+      "deleteSelected": "确定删除所选命令块?",
+      "confirm": "确认",
+      "cancel": "取消"
+    }
+  },
+  "frame": {
+    "preDelay": "前延时",
+    "postDelay": "后延时",
+    "dataFrame": {
+      "blocks": "数据块",
+      "frameMode": "帧模式",
+      "tableMode": "表格模式"
+    },
+    "refFrame": {
+      "ref": "引用"
+    }
+  }
+}

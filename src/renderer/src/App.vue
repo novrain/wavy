@@ -186,7 +186,6 @@ watch(() => sideBarStore.selected, () => {
   } else {
     sizeOfLeft.value = 100
   }
-  console.log(sizeOfLeft.value)
 }, { immediate: true })
 
 </script>
@@ -242,6 +241,11 @@ watch(() => sideBarStore.selected, () => {
 </style>
 
 <style type="scss">
+div {
+  cursor: default;
+  user-select: none;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -269,5 +273,23 @@ watch(() => sideBarStore.selected, () => {
     background-color: rgba(var(--v-border-color), var(--v-border-opacity));
     cursor: pointer !important;
   }
+}
+
+.v-popper__wrapper .v-popper__inner {
+  background-color: rgb(var(--v-theme-surface)) !important;
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+  color: rgb(var(--v-theme-on-surface)) !important;
+}
+
+.v-popper__wrapper .v-popper__arrow-container .v-popper__arrow-inner {
+  border-color: rgb(var(--v-theme-surface)) !important;
+}
+
+.v-popper__wrapper .v-popper__arrow-container .v-popper__arrow-outer {
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+}
+
+.v-list-group {
+  --prepend-width: 10px !important;
 }
 </style>

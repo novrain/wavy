@@ -9,6 +9,7 @@ import pinia from '../store'
 import app from './app'
 import i18n from './i18n'
 import vuetify from './vuetify'
+import floatingVue from './floating_vue'
 // import router from '../router'
 
 // Types
@@ -21,4 +22,5 @@ export function registerPlugins(vueApp: App) {
     // .use(router)
     .use(pinia)
     .use(app)
+    .use(floatingVue)
 }

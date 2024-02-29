@@ -1,6 +1,6 @@
 {
   "name": "demo wavy project",
-  "frames": [
+  "wavyItems": [
     {
       "id": "f1",
       "name": "f1",

@@ -27,7 +27,17 @@
 - 支持中文/英文
 
 <img src="docs/imgs/dark.png" alt="dark.png" width="800"/>
+
 <img src="docs/imgs/light.png" alt="light.png" width="800"/>
+
+- 支持数据帧/Suite工程: 可以构建复杂的指令帧，例如按照Modbus协议构建可以重复使用的数据指令集。
+  - Frame/Reference
+  - Suite
+  
+<img src="docs/imgs/frame-frame.png" alt="frame-frame" width="300"/>
+<img src="docs/imgs/frame-table.png" alt="frame-table" width="300"/>
+
+<img src="docs/imgs/frame-project.png" alt="frame-project" width="800"/>
 
 ## 安装
 

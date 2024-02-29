@@ -5,7 +5,8 @@ module.exports = {
   packagerConfig: {
     icon: "./src/renderer/src/assets/logo",
     asar: true,
-    name: "Wavy"
+    name: "Wavy",
+    oxsSign: {}
   },
   rebuildConfig: {},
   makers: [
@@ -35,6 +36,15 @@ module.exports = {
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
+    },
+    {
+      name: '@electron-forge/maker-dmg',
+      config: {
+        format: 'ULFO',
+        icon: "./src/renderer/src/assets/logo.icns",
+        background: "./src/renderer/src/assets/background.png",
+        debug: true
+      }
     },
     {
       name: '@electron-forge/maker-deb',

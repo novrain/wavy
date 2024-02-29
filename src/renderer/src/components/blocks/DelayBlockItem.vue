@@ -1,14 +1,15 @@
 <template >
-  <div :class="`d-flex ${direction === 'column' ? 'flex-column' : 'flex-row'}`">
+  <div
+       :class="`${direction === 'column' ? 'column' : 'd-flex flex-row'} ${direction === 'column' && hideDetails ? 'column-hide-details' : ''}`">
     <v-text-field v-model="delayBlock.value"
                   type="number"
                   class="mr-1 flex-1-1"
-                  :label="t('project.delayBlock.value')"
+                  :label="t('block.delayBlock.value')"
                   hide-details></v-text-field>
     <v-select v-model="delayBlock.unit"
               class="mr-1 w-11"
               :items="['ms', 's']"
-              :label="t('project.delayBlock.unit')"
+              :label="t('block.delayBlock.unit')"
               density="compact"
               hide-details
               required></v-select>
@@ -17,12 +18,11 @@
 
 <script setup lang="ts">
 import { Block, DelayBlock } from '@W/frame/Block'
-import { Project } from '@W/types/project'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const props = defineProps<{ block: Block, project: Project, index: number, direction?: 'row' | 'column' }>()
+const props = defineProps<{ block: Block, index: number, direction?: 'row' | 'column', hideDetails?: boolean }>()
 const delayBlock = props.block as DelayBlock
 
 </script>
@@ -33,10 +33,15 @@ const delayBlock = props.block as DelayBlock
   flex-grow: 0;
 }
 
-.flex-column {
+.column {
   .v-input {
-    margin: 10px;
     width: auto;
+  }
+}
+
+.column-hide-details {
+  .v-input {
+    margin: 10px 0;
   }
 }
 
@@ -44,8 +49,12 @@ const delayBlock = props.block as DelayBlock
   width: 5%;
 }
 
-.w-11 {
-  width: 11%;
+.w-10 {
+  width: 10%;
+}
+
+.w-13 {
+  width: 13%;
 }
 
 .w-20 {

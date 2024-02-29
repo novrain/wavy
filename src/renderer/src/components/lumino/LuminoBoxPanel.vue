@@ -6,11 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import "@fortawesome/fontawesome-free/css/all.css"
-import '@lumino/default-theme/style/index.css'
 import { BoxPanel, DockPanel, TabBar, Widget } from '@lumino/widgets'
 import { onMounted, onUnmounted, onUpdated, provide, ref } from 'vue'
 import { CustomDockPanel } from './ItemWidget'
+import './theme.css'
 
 const props = withDefaults(defineProps<{ id?: string } & BoxPanel.IOptions & DockPanel.IOptions>(),
   { tabsConstrained: false, addButtonEnabled: false, tabsMovable: true })
@@ -60,38 +59,5 @@ onUpdated(() => {
 </script>
 
 <style lang="scss" scoped>
-.lumino-container {
-  display: flex;
-  flex: 1;
-  background-color: rgb(var(--v-theme-background));
-
-  :deep(.lm-mod-current) {
-    border-top: rgb(var(--v-theme-secondary)) 2px solid !important;
-  }
-
-  :deep(.lumino-tab-active) {
-    border-top: rgb(var(--v-theme-primary)) 2px solid !important;
-  }
-
-  :deep(.lm-TabBar),
-  :deep(.lm-TabBar-content),
-  :deep(.lm-TabBar-addButton) {
-    border-color: rgba(var(--v-border-color), var(--v-border-opacity));
-  }
-
-  :deep(.lumino-box-panel),
-  :deep(#panel-box) {
-    display: flex;
-    flex: 1;
-
-    .lumino-content {
-      border-color: rgba(var(--v-border-color), var(--v-border-opacity));
-      border-top: none;
-      background-color: rgb(var(--v-theme-background));
-      position: relative;
-      overflow: auto;
-      display: flex;
-    }
-  }
-}
+@import './common.scss';
 </style>

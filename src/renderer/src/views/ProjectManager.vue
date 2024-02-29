@@ -11,17 +11,26 @@
                     @close="onWelcomeClose">
         <v-container class="ma-4 pa-0">
           <v-chip prepend-icon="mdi-transit-connection-horizontal"
-                  size="large">
+                  size="default">
             {{ t('project.welcome.project_category') }}
           </v-chip>
           <v-divider class="mt-2 mb-2"></v-divider>
           <v-container class="d-flex ma-0 pa-0">
-            <v-btn prepend-icon="mdi-semantic-web"
-                   size="x-large"
+            <v-btn class="mr-2"
+                   prepend-icon="mdi-semantic-web"
+                   size="default"
                    variant="tonal"
-                   @click="onNewProject"
+                   @click="() => onNewProject()"
                    stacked>
               {{ t('project.types.block') }}
+            </v-btn>
+            <v-btn class="mr-2"
+                   prepend-icon="mdi-view-array-outline"
+                   size="default"
+                   variant="tonal"
+                   @click="() => onNewProject('Frame')"
+                   stacked>
+              {{ t('project.types.frame') }}
             </v-btn>
           </v-container>
         </v-container>
@@ -64,6 +73,7 @@
 </template>
 <script lang="ts" setup>
 import BlokOnlyProject from '@/components/BlockOnlyProject.vue'
+import FrameProject from '@/components/FrameProject.vue'
 import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
@@ -73,10 +83,11 @@ import { useProjectStore } from '@/store/project'
 import { useSideBarStore } from '@/store/sidebar'
 import { MenuEvent } from '@/types/menu'
 import { SideBarEvent } from '@/types/sidebar'
-import { Project } from '@W/types/project'
+import { Project, ProjectType } from '@W/types/project'
 import { defaultId } from '@W/util/SnowflakeId'
 import { plainToInstance } from 'class-transformer'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -84,7 +95,8 @@ const appStore = useAppStore()
 
 //
 const projectComps = {
-  'BlockOnly': BlokOnlyProject
+  'BlockOnly': BlokOnlyProject,
+  'Frame': FrameProject
 } as any
 
 const menusStore = useMenuStore()
@@ -111,10 +123,7 @@ onMounted(() => {
         icon: 'mdi-alpha-p',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          onNewProject()
-        },
+        handler: onNewProjectClick,
       },
       {
         id: 'project-save',
@@ -123,10 +132,7 @@ onMounted(() => {
         icon: 'mdi-alpha-s',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          appStore.saveCurrentProject()
-        },
+        handler: onSaveProjectClick,
         isDisabled: isDisabled
       },
       {
@@ -136,10 +142,7 @@ onMounted(() => {
         icon: 'mdi-alpha-a',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          appStore.saveCurrentProjectAs()
-        },
+        handler: onSaveAsProjectClick,
         isDisabled: isDisabled
       },
       {
@@ -149,10 +152,7 @@ onMounted(() => {
         icon: 'mdi-alpha-o',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: MenuEvent) => {
-          sideBarStore.selected = ['project']
-          openProject()
-        }
+        handler: onOpenProjectClick
       }
     ]
   })
@@ -170,6 +170,28 @@ onMounted(() => {
   //   currentProjectId.value = project.id
   // }
 })
+
+// handler
+
+const onNewProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  onNewProject()
+}
+
+const onSaveProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  appStore.saveCurrentProject()
+}
+
+const onSaveAsProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  appStore.saveCurrentProjectAs()
+}
+
+const onOpenProjectClick = (_e: MenuEvent) => {
+  sideBarStore.selected = ['project']
+  openProject()
+}
 
 const canSave = ref(false)
 
@@ -204,9 +226,16 @@ watch(currentProjectId, (id) => {
   }
 })
 
-const isDisabled = () => {
+onMounted(() => {
+  window.projectService.onNewProject(onNewProjectClick)
+  window.projectService.onSaveProject(onSaveProjectClick)
+  window.projectService.onSaveAsProject(onSaveAsProjectClick)
+  window.projectService.onOpenProject(onOpenProjectClick)
+})
+
+const isDisabled = computed(() => {
   return !canSave.value
-}
+})
 
 onDeactivated(() => {
 
@@ -216,8 +245,8 @@ onUnmounted(() => {
 
 })
 
-const onNewProject = () => {
-  const project = projectStore.newProject('BlockOnly')
+const onNewProject = (type: ProjectType = 'BlockOnly') => {
+  const project = projectStore.newProject(type)
   currentProjectId.value = project.id
 }
 

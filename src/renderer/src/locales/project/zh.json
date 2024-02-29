@@ -1,11 +1,23 @@
 {
   "project": {
+    "block": {
+      "blocks": "指令定义"
+    },
+    "frame": {
+      "basic_blocks": "基础指令块",
+      "frames": "组合命令集",
+      "block_new": "新建指令块",
+      "block_edit": "编辑指令块",
+      "wavyItem_new": "新建组合命令集",
+      "wavyItem_edit": "编辑组合命令集"
+    },
     "welcome": {
       "welcome": "欢迎页",
       "project_category": "工程"
     },
     "types": {
-      "block": "简单指令块"
+      "block": "简单指令块",
+      "frame": "组合命令集"
     },
     "menu": {
       "project": "工程",
@@ -17,39 +29,8 @@
     "dialog": {
       "hint": "警告",
       "reload": "工程已经打开, 重新加载?",
-      "clearAll": "确定删除所有命令块?",
-      "deleteSelected": "确定删除所选命令块?",
       "confirm": "确认",
       "cancel": "取消"
-    },
-    "block": {
-      "search": "查询",
-      "name": "名称",
-      "type": "类型",
-      "definition": "定义",
-      "actions": "",
-      "blocks": "指令定义"
-    },
-    "stringBlock": {
-      "value": "值",
-      "pad": "补齐",
-      "padSide": "补齐位置",
-      "encoding": "编码",
-      "padToLength": "补齐长度"
-    },
-    "decimalBlock": {
-      "value": "值",
-      "numberType": "数值类型",
-      "endian": "字节序",
-      "pad": "补齐",
-      "padSide": "补齐位置",
-      "encoding": "编码",
-      "padToLength": "补齐长度"
-    },
-    "delayBlock": {
-      "delay": "延时",
-      "value": "延时",
-      "unit": "单位"
     }
   }
 }

@@ -1,58 +1,60 @@
 <template >
-  <div :class="`d-flex ${direction === 'column' ? 'flex-column' : 'flex-row'}`">
+  <div
+       :class="`${direction === 'column' ? 'column' : 'd-flex flex-row'} ${direction === 'column' && hideDetails ? 'column-hide-details' : ''}`">
     <v-text-field v-model="decimalBlock.value"
                   class="mr-1 flex-1-1"
                   width="40px"
-                  :label="t('project.decimalBlock.value')"
-                  hide-details></v-text-field>
+                  :label="t('block.decimalBlock.value')"
+                  :hide-details="hideDetails"></v-text-field>
     <v-select v-model="decimalBlock.numberType"
               class="mr-1 w-10"
               :items="['UInt8', 'Int8', 'UInt16', 'Int16', 'UInt32', 'Int32', 'UInt64', 'Int64', 'Float', 'Double']"
-              :label="t('project.decimalBlock.numberType')"
+              :label="t('block.decimalBlock.numberType')"
               density="compact"
-              hide-details
+              :hide-details="hideDetails"
               required></v-select>
     <v-select v-model="decimalBlock.encoding"
               class="mr-1 w-10"
               :items="['hex', 'base64', 'ascii']"
-              :label="t('project.decimalBlock.encoding')"
+              :label="t('block.decimalBlock.encoding')"
               density="compact"
-              hide-details
+              :hide-details="hideDetails"
               required></v-select>
     <v-select v-model="decimalBlock.endian"
               class="mr-1 w-13"
               :items="['BigEndian', 'LittleEndian']"
-              :label="t('project.decimalBlock.endian')"
+              :label="t('block.decimalBlock.endian')"
               density="compact"
-              hide-details
+              :hide-details="hideDetails"
               required></v-select>
     <v-text-field v-model="decimalBlock.pad"
                   class="mr-1 w-10"
-                  :label="t('project.decimalBlock.pad')"
-                  hide-details></v-text-field>
+                  :label="t('block.decimalBlock.pad')"
+                  :hide-details="hideDetails"></v-text-field>
     <v-select v-model="decimalBlock.padSide"
               class="mr-1 w-10"
               :items="['Start', 'End']"
-              :label="t('project.decimalBlock.padSide')"
+              :label="t('block.decimalBlock.padSide')"
               density="compact"
-              hide-details
+              :hide-details="hideDetails"
               required></v-select>
     <v-text-field v-model="decimalBlock.padToLength"
                   class="mr-1 w-10"
-                  :label="t('project.decimalBlock.padToLength')"
+                  :label="t('block.decimalBlock.padToLength')"
                   type="number"
-                  hide-details></v-text-field>
+                  :hide-details="hideDetails"></v-text-field>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Block, DecimalBlock } from '@W/frame/Block'
-import { Project } from '@W/types/project'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const props = defineProps<{ block: Block, project: Project, index: number, direction?: 'row' | 'column' }>()
+const props = withDefaults(defineProps<{ block: Block, index: number, direction?: 'row' | 'column', hideDetails?: boolean }>(), {
+  hideDetails: true
+})
 const decimalBlock = props.block as DecimalBlock
 
 </script>
@@ -63,10 +65,15 @@ const decimalBlock = props.block as DecimalBlock
   flex-grow: 0;
 }
 
-.flex-column {
+.column {
   .v-input {
-    margin: 10px;
     width: auto;
+  }
+}
+
+.column-hide-details {
+  .v-input {
+    margin: 10px 0;
   }
 }
 

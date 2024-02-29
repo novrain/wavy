@@ -16,13 +16,12 @@ import {
   RefFrame,
   Suite,
   UndefinableFrame,
+  UndefinableWavyItem,
   WavyItem
 } from './Frame'
 
-type UndefinableWavyItem = WavyItem | undefined
-
 export class FrameProject {
-  @Expose({ name: 'frames' })
+  @Expose({ name: 'wavyItems' })
   @Type(() => Object, {
     discriminator: {
       property: '__type',
@@ -33,19 +32,19 @@ export class FrameProject {
       ],
     },
   })
-  _frames: WavyItem[] = []
+  _wavyItems: WavyItem[] = []
   @Expose({ name: 'blocks' })
   @BlockTransformer
-  private _blocks: Block[] = []
+  _blocks: Block[] = []
 
   constructor(
     readonly id: string,
     public name: string,
-    frames?: WavyItem[],
+    wavyItems?: WavyItem[],
     blocks?: Block[]
   ) {
-    if (frames) {
-      this._frames = frames
+    if (wavyItems) {
+      this._wavyItems = wavyItems
     }
     if (blocks) {
       this._blocks = blocks
@@ -54,8 +53,9 @@ export class FrameProject {
   }
 
   injectProjectToRef(): void {
-    this._frames.forEach((f => {
+    this._wavyItems.forEach((f => {
       f.project = this
+      f.injectProjectToRef()
     }))
     this._blocks.forEach((b => {
       if (b instanceof RefBlock) {
@@ -68,12 +68,43 @@ export class FrameProject {
     return this._blocks
   }
 
+  public get wavyItems(): WavyItem[] {
+    return this._wavyItems
+  }
+
   addFrame(frame: WavyItem): void {
-    this._frames.push(frame)
+    this._wavyItems.push(frame)
+  }
+
+  addWavyItem(wavyItem: WavyItem): void {
+    this._wavyItems.push(wavyItem)
+  }
+
+  deleteWavyItem(wavyItem: number): void
+  deleteWavyItem(wavyItem: WavyItem): void
+  deleteWavyItem(wavyItem: WavyItem | number): void {
+    let index = wavyItem
+    if (typeof wavyItem !== 'number') {
+      index = this._wavyItems.indexOf(wavyItem)
+    }
+    const deletedWavyItem = this._wavyItems.splice(index as number, 1)
+    // @Todo ref broken
+  }
+
+  replaceWavyItem(oldWavyItem: number, newWavyItem: WavyItem): void
+  replaceWavyItem(oldWavyItem: WavyItem, newWavyItem: WavyItem): void
+  replaceWavyItem(oldWavyItem: WavyItem | number, newWavyItem: WavyItem): void {
+    if (typeof oldWavyItem === 'number') {
+      const wavyItem = this._wavyItems.splice(oldWavyItem, 1, newWavyItem)
+      return
+    }
+    const index = this._wavyItems.findIndex(b => oldWavyItem.id === b.id)
+    const wavyItem = this._wavyItems.splice(index, 1, newWavyItem)
+    // @Todo ref broken
   }
 
   findFrame(id: string): UndefinableFrame {
-    let f = this._frames.find((f) => {
+    let f = this._wavyItems.find((f) => {
       return f.id === id
     })
     if (f instanceof Suite) {
@@ -83,7 +114,7 @@ export class FrameProject {
   }
 
   findWavyItem(id: string): UndefinableWavyItem {
-    let f = this._frames.find((f) => {
+    let f = this._wavyItems.find((f) => {
       return f.id === id
     })
     return f
@@ -94,6 +125,9 @@ export class FrameProject {
       this._blocks.splice(after, 0, block)
     } else {
       this._blocks.push(block)
+    }
+    if (block.__type === 'Ref') {
+      (block as RefBlock).project = this
     }
   }
 
@@ -134,13 +168,13 @@ export class FrameProject {
     this._blocks.splice(0, this._blocks.length)
   }
 
-  clone(): FrameProject {
-    let cloned = new FrameProject(defaultId.nextId() + '', this.name)
-    cloned._frames = this._frames.map(f => {
-      return f.clone()
+  clone(withIdentify: boolean): FrameProject {
+    let cloned = new FrameProject(withIdentify ? this.id : defaultId.nextId() + '', this.name)
+    cloned._wavyItems = this._wavyItems.map(f => {
+      return f.clone(withIdentify)
     })
     cloned._blocks = this._blocks.map(b => {
-      return b.clone()
+      return b.clone(withIdentify)
     })
     cloned.injectProjectToRef()
     return cloned

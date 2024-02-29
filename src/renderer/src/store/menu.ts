@@ -9,6 +9,7 @@ export const useMenuStore = defineStore('menu', {
   }),
   actions: {
     registerMenu(menu: MenuComposite, parents: string[] | undefined = undefined) {
+      // @ts-ignore
       let menus: MenuComposite = this.$state.menuRoot
       if (Array.isArray(parents) && parents.length) {
         for (let i = 0; i < parents.length; i++) {

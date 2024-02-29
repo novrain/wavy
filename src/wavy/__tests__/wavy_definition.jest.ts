@@ -1,4 +1,4 @@
-import { plainToClass } from 'class-transformer'
+import { instanceToPlain, plainToClass } from 'class-transformer'
 import {
   DataBlock,
   DecimalBlock,
@@ -16,10 +16,10 @@ test('demo project', () => {
   wavy.injectProjectToRef()
   expect(wavy).not.toBeUndefined()
   expect(wavy.name).toEqual(demoPj.name)
-  // frames
-  expect(wavy._frames).not.toBeUndefined()
-  expect(wavy._frames.length).toEqual(demoPj.frames.length)
-  let f1Json = demoPj.frames[0]
+  // wavyItems
+  expect(wavy._wavyItems).not.toBeUndefined()
+  expect(wavy._wavyItems.length).toEqual(demoPj.wavyItems.length)
+  let f1Json = demoPj.wavyItems[0]
   let f1BlocksJson = f1Json.blocks
   expect(f1BlocksJson).not.toBeUndefined
   const f1 = wavy.findFrame(f1Json.id)
@@ -28,7 +28,7 @@ test('demo project', () => {
   expect(f1!.name).toEqual(f1Json.name)
   expect(f1 instanceof DataFrame).toBeTruthy()
   const dF1 = f1 as DataFrame
-  const f1Blocks = dF1.blocks
+  const f1Blocks = dF1._blocks
   expect(f1Blocks.length).toEqual(f1BlocksJson!.length)
   const rB1 = f1Blocks[0]
   expect(rB1 instanceof RefBlock).toBeTruthy()
@@ -43,4 +43,7 @@ test('demo project', () => {
   expect(b2 instanceof StringBlock).toBeTruthy()
   expect((b2 as DataBlock).strValue).toEqual('Hello wavy.')
 
+  // export 
+  const json = instanceToPlain(wavy)
+  expect(json).not.toBeNull()
 })

@@ -3,20 +3,13 @@
     <v-main class="d-flex flex-column main">
       <v-toolbar border
                  class="toolbar">
-        <v-img :width="32"
+        <v-img v-if="appStore.platform !== 'darwin'"
+               :width="32"
                class="flex-0-0 ml-2 mr-2 rounded-circle"
                cover
                src="@/assets/logo.svg" />
-        <app-menu />
+        <app-menu v-if="appStore.platform !== 'darwin'" />
         <v-spacer class="drag-space"></v-spacer>
-        <v-switch class="flex-0-0"
-                  @update:modelValue="onThemeChange"
-                  true-icon="mdi-weather-sunny"
-                  false-icon="mdi-weather-night"
-                  hide-details
-                  density="compact"
-                  :modelValue="theme.global.name.value === 'light'"
-                  inset></v-switch>
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn class="ma-2"
@@ -32,20 +25,31 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-btn class="ma-2"
-               icon='mdi-window-minimize'
-               @click="minimize"></v-btn>
-        <v-btn class="ma-2"
-               v-if="windowStore.isMaximized"
-               icon="mdi-window-restore"
-               @click="toggleMaximize"></v-btn>
-        <v-btn class="ma-2"
-               v-else
-               icon="mdi-window-maximize"
-               @click="toggleMaximize"></v-btn>
-        <v-btn class="ma-2"
-               icon="mdi-window-close"
-               @click="closeApp"></v-btn>
+        <v-switch class="flex-0-0 mr-2"
+                  @update:modelValue="onThemeChange"
+                  true-icon="mdi-weather-sunny"
+                  false-icon="mdi-weather-night"
+                  hide-details
+                  density="compact"
+                  :modelValue="theme.global.name.value === 'light'"
+                  inset></v-switch>
+        <div v-if="appStore.platform !== 'darwin'"
+             class="d-flex">
+          <v-btn class="ma-2"
+                 icon='mdi-window-minimize'
+                 @click="minimize"></v-btn>
+          <v-btn class="ma-2"
+                 v-if="windowStore.isMaximized"
+                 icon="mdi-window-restore"
+                 @click="toggleMaximize"></v-btn>
+          <v-btn class="ma-2"
+                 v-else
+                 icon="mdi-window-maximize"
+                 @click="toggleMaximize"></v-btn>
+          <v-btn class="ma-2"
+                 icon="mdi-window-close"
+                 @click="closeApp"></v-btn>
+        </div>
       </v-toolbar>
       <v-container class="d-flex flex-1-1 ma-0 pa-0 main-content">
         <splitpanes class="default-theme flex-1-1"
@@ -70,6 +74,7 @@
 <script setup lang="ts">
 import AppMenu from '@/components/Menu.vue'
 import SideBar from '@/components/SideBar.vue'
+import { useAppStore } from '@/store/app'
 import { hostWindowStore } from '@/store/hostWindow'
 import { useMenuStore } from '@/store/menu'
 import ProjectManager from '@/views/ProjectManager.vue'
@@ -84,6 +89,7 @@ import { useSideBarStore } from './store/sidebar'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
+const appStore = useAppStore()
 const windowStore = hostWindowStore()
 const menusStore = useMenuStore()
 
@@ -93,7 +99,31 @@ const onThemeChange = (v: boolean | null) => {
   theme.global.name.value = v ? 'light' : 'dark'
 }
 
+if (window.hostWindow) {
+  window.hostWindow.platform().then((platform: string) => appStore.platform = platform)
+}
+
 onMounted(async () => {
+  menusStore.registerMenu({
+    id: 'help',
+    nameKey: "help.menu.help",
+    name: t("help.menu.help"),
+    items: [
+      {
+        id: 'help-github',
+        nameKey: "help.menu.github",
+        name: t("help.menu.github"),
+        icon: 'mdi-github',
+        items: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handler: (_e: any) => {
+          if (window.hostWindow) {
+            window.hostWindow.openExternal('https://github.com/novrain/wavy')
+          }
+        },
+      }
+    ]
+  })
   if (window.hostWindow) {
     window.hostWindow.isMaximized().then((isMaximized) => {
       windowStore.isMaximized = isMaximized
@@ -115,26 +145,6 @@ onMounted(async () => {
       locale.value = l
     }
   }
-  menusStore.registerMenu({
-    id: 'help',
-    nameKey: "help.menu.help",
-    name: t("help.menu.help"),
-    items: [
-      {
-        id: 'help-github',
-        nameKey: "help.menu.github",
-        name: t("help.menu.github"),
-        icon: 'mdi-github',
-        items: undefined,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: (_e: any) => {
-          if (window.hostWindow) {
-            window.hostWindow.openExternal('https://github.com/novrain/wavy')
-          }
-        },
-      }
-    ]
-  })
 })
 
 const toggleMaximizeStoreOnly = () => {
@@ -176,7 +186,6 @@ watch(() => sideBarStore.selected, () => {
   } else {
     sizeOfLeft.value = 100
   }
-  console.log(sizeOfLeft.value)
 }, { immediate: true })
 
 </script>
@@ -198,8 +207,7 @@ watch(() => sideBarStore.selected, () => {
 
     :deep(.splitpanes),
     :deep(.splitpanes__pane),
-    :deep(.splitpanes__pane),
-    :deep(.lm-TabBar-tab) {
+    :deep(.splitpanes__pane) {
       background-color: rgb(var(--v-theme-background));
       border-color: rgba(var(--v-border-color), var(--v-border-opacity));
     }
@@ -233,6 +241,11 @@ watch(() => sideBarStore.selected, () => {
 </style>
 
 <style type="scss">
+div {
+  cursor: default;
+  user-select: none;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -260,5 +273,23 @@ watch(() => sideBarStore.selected, () => {
     background-color: rgba(var(--v-border-color), var(--v-border-opacity));
     cursor: pointer !important;
   }
+}
+
+.v-popper__wrapper .v-popper__inner {
+  background-color: rgb(var(--v-theme-surface)) !important;
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+  color: rgb(var(--v-theme-on-surface)) !important;
+}
+
+.v-popper__wrapper .v-popper__arrow-container .v-popper__arrow-inner {
+  border-color: rgb(var(--v-theme-surface)) !important;
+}
+
+.v-popper__wrapper .v-popper__arrow-container .v-popper__arrow-outer {
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+}
+
+.v-list-group {
+  --prepend-width: 10px !important;
 }
 </style>

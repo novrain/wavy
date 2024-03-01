@@ -55,6 +55,7 @@ const DefaultSerialPortService = {
     }
     const callback = (_event: Electron.IpcRendererEvent, ...args: any[]) => { listener(...args) }
     listenerMap.set(key, callback)
+    ipcRenderer.removeListener(key, callback)
     ipcRenderer.on(key, callback)
   },
   removeEventListener(id: string, event: string, listener: any): void {
@@ -87,15 +88,19 @@ const DefaultProjectService = {
   },
   // for ipcMain --> renderer  
   onNewProject(listener: any) {
+    ipcRenderer.removeListener('renderer:project-new', listener)
     ipcRenderer.on('renderer:project-new', listener)
   },
   onSaveProject(listener: any) {
+    ipcRenderer.removeListener('renderer:project-save', listener)
     ipcRenderer.on('renderer:project-save', listener)
   },
   onSaveAsProject(listener: any) {
+    ipcRenderer.removeListener('renderer:project-new', listener)
     ipcRenderer.on('renderer:project-saveAs', listener)
   },
   onOpenProject(listener: any) {
+    ipcRenderer.removeListener('renderer:project-open', listener)
     ipcRenderer.on('renderer:project-open', listener)
   },
 }
@@ -106,6 +111,7 @@ contextBridge.exposeInMainWorld('projectService', DefaultProjectService)
 const DefaultSessionService = {
   // for ipcMain --> renderer  
   onNewSession(listener: any) {
+    ipcRenderer.removeListener('renderer:session-new', listener)
     ipcRenderer.on('renderer:session-new', listener)
   },
 }

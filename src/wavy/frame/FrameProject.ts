@@ -72,6 +72,18 @@ export class FrameProject {
     return this._wavyItems
   }
 
+  public get nestFrames(): WavyItem[] {
+    const items: WavyItem[] = []
+    this._wavyItems.forEach((item) => {
+      if (item.__type === 'Suite') {
+        items.push(...(item as Suite).nestFrames)
+      } else {
+        items.push(item)
+      }
+    })
+    return items
+  }
+
   addFrame(frame: WavyItem): void {
     this._wavyItems.push(frame)
   }

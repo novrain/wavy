@@ -525,6 +525,18 @@ export class Suite implements WavyItem {
     return this._wavyItems
   }
 
+  public get nestFrames(): WavyItem[] {
+    const items: WavyItem[] = []
+    this._wavyItems.forEach((item) => {
+      if (item.__type === 'Suite') {
+        items.push(...(item as Suite).nestFrames)
+      } else {
+        items.push(item)
+      }
+    })
+    return items
+  }
+
   injectProjectToRef(): void {
     if (this._project) {
       this._wavyItems.forEach((f => {

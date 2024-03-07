@@ -2,7 +2,7 @@
   <blocks-container :title="t('project.block.blocks')"
                     :include-delay="true"
                     :blocksContainer="(project.project as FrameProject)"
-                    @selected-blocks-change="onSelectedBlocksChange">
+                    @update:selected-blocks="onSelectedBlocksChange">
     <template v-slot:top-append>
       <v-btn icon="mdi-content-save"
              class="ml-1 mr-1"

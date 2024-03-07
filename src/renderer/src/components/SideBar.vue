@@ -6,7 +6,8 @@
             density="compact"
             :selected="selected || sideBarStore.selected"
             @update:selected="onSelected">
-      <template v-for="i, index in sideBarStore.items">
+      <template v-for="i, index in sideBarStore.items"
+                :key="i.id">
         <v-list-item :prepend-icon="i.icon"
                      :value="i.id"></v-list-item>
       </template>

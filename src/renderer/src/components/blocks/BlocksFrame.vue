@@ -5,12 +5,14 @@
       <v-divider class="mx-4"
                  inset
                  vertical></v-divider>
-      <v-btn icon="mdi-plus"
+      <v-btn v-if="mode === 'edit'"
+             icon="mdi-plus"
              class="ml-1 mr-1"
              color="primary"
              primary
-             @click="() => onNewBlock(null, -1)"></v-btn>
+             @click="() => onNewBlock(null, blocks.length)"></v-btn>
       <v-dialog persistent
+                v-if="mode === 'edit'"
                 width="auto">
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-broom"
@@ -46,11 +48,12 @@
         </template>
       </v-dialog>
       <v-dialog persistent
+                v-if="mode === 'edit'"
                 width="auto">
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-delete-sweep"
                  class="ml-1 mr-1"
-                 :disabled="selectedBlocks.length <= 0"
+                 :disabled="innerSelectedBlocks.length <= 0"
                  v-bind="props"
                  color="red">
           </v-btn>
@@ -82,28 +85,32 @@
       </v-dialog>
       <slot name='top-append' />
     </v-toolbar>
-    <block-dialog ref="blockDialogRef"
+    <block-dialog v-if="mode === 'edit'"
+                  ref="blockDialogRef"
                   mode="new"
                   :blocks-container="blocksContainer"
                   :ref-blocks="refBlocks"
                   :block="block"
                   :types="types"
-                  :index="-1"
+                  :index="currentIndex"
                   @cancel="onBlockDialogCancel"
                   @confirm="onBlockDialogConfirm"></block-dialog>
-    <v-btn-toggle v-model="selectedBlocks"
+    <v-btn-toggle :model-value="innerSelectedBlocks"
+                  @update:model-value="onSelectedBlocksChange"
                   multiple
                   variant="outlined"
                   divided
                   class="block-frame overflow-auto pa-0 mt-2 mb-2">
       <template v-for="block, index in blocks"
-                :key="block.id">
+                v-if="mode === 'edit'"
+                :key="'blocks-edit' + block.id">
         <div class="d-flex"
              @mouseenter="currentBlock = block"
              @mouseleave="currentBlock = undefined">
           <blocks-frame-item :block="block"
                              :blocks-container="blocksContainer"
                              :ref-blocks="refBlocks"
+                             :mode="mode"
                              :index="index"
                              :is-current="currentBlock === block">
             <template #prepend="props">
@@ -139,17 +146,29 @@
           </blocks-frame-item>
         </div>
       </template>
+      <template v-for="block, index in blocks"
+                v-else
+                :key="'blocks-view-' + block.id">
+        <div class="d-flex">
+          <blocks-frame-item :block="block"
+                             :blocks-container="blocksContainer"
+                             :ref-blocks="refBlocks"
+                             :mode="mode"
+                             :index="index"
+                             :is-current="false">
+          </blocks-frame-item>
+        </div>
+      </template>
     </v-btn-toggle>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { Block, BlockType, DelayBlock } from '@W/frame/Block'
-import { DataFrame, createBlock } from '@W/frame/Frame'
-import { FrameProject } from '@W/frame/FrameProject'
+import { BlocksContainer, createBlock } from '@W/frame/Frame'
 import BitSet from '@W/util/BitSet'
 import { defaultId } from '@W/util/SnowflakeId'
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlockDialog from '../wavy_items/BlockDialog.vue'
 import BlocksFrameItem from './BlocksFrameItem.vue'
@@ -158,18 +177,25 @@ const tempIndexSet = new BitSet(100)
 
 const props = withDefaults(defineProps<{
   title: string,
-  blocksContainer: FrameProject | DataFrame,
+  blocksContainer?: BlocksContainer,
   includeDelay?: boolean,
   includeRef?: boolean,
-  refBlocks?: Block[]
+  includeComputed?: boolean,
+  refBlocks?: Block[],
+  selectedBlocks?: string[],
+  mode?: string,
+  blocks?: Block[]
 }>(),
   {
     includeRef: false,
     includeDelay: false,
-    refBlocks: () => []
+    refBlocks: () => [],
+    selectedBlocks: () => [],
+    mode: 'edit',
+    id: ''
   })
 
-const emits = defineEmits(['selectedBlocksChange'])
+const emits = defineEmits(['update:selectedBlocks'])
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -183,33 +209,46 @@ if (props.includeDelay) {
 if (props.includeRef) {
   types.push('Ref')
 }
+if (props.includeComputed) {
+  types.push('Computed')
+}
 
 let container = props.blocksContainer
-let blocks = ref(container?._blocks)
+let blocks = ref(props.blocks || container?.blocks || [])
 
-watch(() => props.blocksContainer, (newProject) => {
-  blocks.value = container?._blocks
+watch(() => props.blocksContainer, (newContainer) => {
+  container = newContainer
+  blocks.value = newContainer?.blocks || []
 })
 
-const selectedBlocks = ref([])
+const innerSelectedBlocks = ref(props.selectedBlocks || [])
 const currentBlock = ref<Block>()
 
-watch(selectedBlocks, () => {
-  emits('selectedBlocksChange', selectedBlocks.value)
+watch(() => props.selectedBlocks, () => {
+  innerSelectedBlocks.value = props.selectedBlocks || []
 })
+
+const emitChange = () => {
+  emits('update:selectedBlocks', innerSelectedBlocks.value)
+}
 
 const clearAll = () => {
   container?.removeAllBlock()
   tempIndexSet.clearAll()
-  selectedBlocks.value = []
+  innerSelectedBlocks.value = []
+  emitChange()
 }
 
 const removeSelected = () => {
-  selectedBlocks.value.forEach((block: Block) => {
-    container?.deleteBlock(block)
-    tempIndexSet.clear(block.tempIndex!)
+  innerSelectedBlocks.value.forEach((id: string) => {
+    const block = container?.findBlock(id)
+    if (block) {
+      container?.deleteBlock(block)
+      tempIndexSet.clear(block.tempIndex!)
+    }
   })
-  selectedBlocks.value = []
+  innerSelectedBlocks.value = []
+  emitChange()
 }
 
 const blockDialogRef = ref()
@@ -246,7 +285,7 @@ const onBlockDialogConfirm = () => {
         tempBlockIndexSet.set(tempIndex)
       }
       tempBlockIndexSet.set(block.tempIndex)
-      props.blocksContainer.addBlock(block, currentIndex.value)
+      container?.addBlock(block, currentIndex.value)
       blockDialogRef.value.hide()
     }
   })
@@ -255,7 +294,8 @@ const onBlockDialogConfirm = () => {
 const deleteBlock = (item: Block, index: number) => {
   container?.deleteBlock(index)
   tempIndexSet.clear(item.tempIndex!)
-  selectedBlocks.value = selectedBlocks.value.filter(id => id !== item.id)
+  innerSelectedBlocks.value = innerSelectedBlocks.value.filter(id => id !== item.id)
+  emitChange()
 }
 
 const newDelayBlock = (item: Block, index: number) => {
@@ -269,6 +309,11 @@ const newDelayBlock = (item: Block, index: number) => {
 // const onTypeChange = (oldItem: Block, newItem: Block) => {
 //   selectedBlocks.value = selectedBlocks.value.filter(id => id !== oldItem.id)
 // }
+
+const onSelectedBlocksChange = ((values: string[]) => {
+  innerSelectedBlocks.value = values
+  emitChange()
+})
 </script>
 
 <style lang="scss" scoped>

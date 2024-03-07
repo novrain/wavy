@@ -37,7 +37,8 @@
         </div>
       </v-list-item>
     </template>
-    <template v-for="wavyItem, index in wavyItems">
+    <template v-for="wavyItem, index in wavyItems"
+              :key="'suite-' + wavyItem.id">
       <suite-item v-if="wavyItem.type === 'Suite'"
                   :suite="(wavyItem as Suite)"
                   :parentSuite="suite"

@@ -142,7 +142,7 @@ export class DefaultExecutor implements Executor {
   }
 
   executeProjectToSession = async (session: Session, project: FrameProject): Promise<any> => {
-    project.injectProjectToRef()
+    project.injectContainerToRef()
     const wavyItems = project.wavyItems
     for (const wavyItem of wavyItems) {
       await this.executeWavyItemToSession(session, wavyItem)

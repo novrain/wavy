@@ -45,7 +45,8 @@
             </div>
           </v-list-item>
         </template>
-        <template v-for="block, index in blocks">
+        <template v-for="block, index in blocks"
+                  :key="'project-' + block.id">
           <block-list-item :blocks-container="(project.project as FrameProject)"
                            :block="block"
                            :index="index">
@@ -79,7 +80,8 @@
             </div>
           </v-list-item>
         </template>
-        <template v-for="item, index in wavyItems">
+        <template v-for="item, index in wavyItems"
+                  :key="'project-' + item.id">
           <suite-vue v-if="item.type === 'Suite'"
                      :suite="(item as Suite)"
                      :project="project"
@@ -178,7 +180,7 @@ const search = ref('')
 const opened = ref(['blocks', 'frames'])
 
 let frameProject = props.project.project
-frameProject?.injectProjectToRef()
+frameProject?.injectContainerToRef()
 let blocks = ref(frameProject?.blocks || [])
 let wavyItems = ref(frameProject?.wavyItems || [])
 

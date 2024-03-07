@@ -11,7 +11,7 @@ export type UndefinableBuffer = Buffer | undefined
 /**
  *  数据块类型
  */
-export type BlockType = 'Ref' | 'Decimal' | 'Hex' | 'String' | 'ComputedFromPreBlock' | 'Delay'
+export type BlockType = 'Ref' | 'Decimal' | 'Hex' | 'String' | 'Computed' | 'Delay'
 
 /**
  * 数据二次加工
@@ -22,7 +22,7 @@ type DataProcessing = 'None' | 'Repeat'
 /**
  * 字节序
  */
-type Endian = 'BigEndian' | 'LittleEndian'
+export type Endian = 'BigEndian' | 'LittleEndian'
 
 export interface Block {
   tempIndex?: number,

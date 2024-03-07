@@ -28,16 +28,20 @@
                      value="frame">
         <blocks-frame :title="t('frame.dataFrame.blocks')"
                       :include-ref="true"
+                      :include-computed="true"
                       :ref-blocks="refBlocks"
-                      :blocksContainer="(wavyItem as DataFrame)">
+                      :blocksContainer="(wavyItem as DataFrame)"
+                      v-model:selected-blocks="selectedBlocks">
         </blocks-frame>
       </v-window-item>
       <v-window-item key="table"
                      value="table">
         <blocks-container :title="t('frame.dataFrame.blocks')"
                           :include-ref="true"
+                          :include-computed="true"
                           :ref-blocks="refBlocks"
-                          :blocksContainer="(wavyItem as DataFrame)">
+                          :blocksContainer="(wavyItem as DataFrame)"
+                          v-model:selected-blocks="selectedBlocks">
         </blocks-container>
       </v-window-item>
     </v-window>
@@ -45,12 +49,12 @@
 </template>
 
 <script setup lang="ts">
+import { Block } from '@W/frame/Block'
 import { DataFrame, Frame, WavyItem } from '@W/frame/Frame'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlocksContainer from '../blocks/BlocksContainer.vue'
 import BlocksFrame from '../blocks/BlocksFrame.vue'
-import { Block } from '@W/frame/Block'
-import { ref } from 'vue'
 
 const props = withDefaults(defineProps<{ wavyItem: WavyItem, refBlocks?: Block[], refFrames?: Frame[], mode?: 'table' | 'frame', index: number }>(),
   {
@@ -61,6 +65,8 @@ const props = withDefaults(defineProps<{ wavyItem: WavyItem, refBlocks?: Block[]
 const innerMode = ref(props.mode)
 
 const { t } = useI18n({ useScope: 'global' })
+
+const selectedBlocks = ref([])
 
 </script>
 

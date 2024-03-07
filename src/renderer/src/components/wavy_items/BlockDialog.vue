@@ -1,7 +1,7 @@
 <template>
   <dialog-wrapper ref="dialogRef"
+                  :min-width="600"
                   :title="t(`project.frame.block_${mode}`)"
-                  :width="300"
                   @cancel="onCancel"
                   @confirm="onConfirm">
     <block-form ref="formRef"
@@ -16,8 +16,7 @@
 
 <script setup lang="ts">
 import { Block, BlockType } from '@W/frame/Block'
-import { DataFrame } from '@W/frame/Frame'
-import { FrameProject } from '@W/frame/FrameProject'
+import { BlocksContainer } from '@W/frame/Frame'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DialogWrapper from '../utils/DialogWrapper.vue'
@@ -25,7 +24,7 @@ import BlockForm from './BlockForm.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const props = withDefaults(defineProps<{ block?: Block, blocksContainer: FrameProject | DataFrame, refBlocks?: Block[], index: number, mode?: 'new' | 'edit', types?: BlockType[] }>(), {
+const props = withDefaults(defineProps<{ block?: Block, blocksContainer?: BlocksContainer, refBlocks?: Block[], index: number, mode?: 'new' | 'edit', types?: BlockType[] }>(), {
   mode: 'new',
   types: () => ['String', 'Decimal']
 })

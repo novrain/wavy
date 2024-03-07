@@ -1,5 +1,6 @@
 <template>
   <v-dialog v-model="dialog"
+            :min-width="minWidth"
             persistent
             :width="width || 'auto'">
     <v-card density="compact">
@@ -28,7 +29,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
-defineProps(['title', 'width'])
+defineProps(['title', 'width', 'minWidth'])
 const emits = defineEmits(['confirm', 'cancel'])
 
 const dialog = ref(false)

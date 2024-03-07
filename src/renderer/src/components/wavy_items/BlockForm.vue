@@ -15,6 +15,7 @@
                :is="blockComps[innerBlock.type as string]"
                :block="innerBlock"
                :ref-blocks="refBlocks"
+               :blocks-container="blocksContainer"
                :hide-details="false"
                :index="index"></component>
   </v-form>
@@ -22,26 +23,27 @@
 
 <script setup lang="ts">
 import { Block, BlockType } from '@W/frame/Block'
-import { DataFrame, createBlock } from '@W/frame/Frame'
-import { FrameProject } from '@W/frame/FrameProject'
+import { BlocksContainer, ComputedBlock as BlockComputed, createBlock } from '@W/frame/Frame'
 import { defaultId } from '@W/util/SnowflakeId'
 import { ref, toRaw, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DecimalBlockDefinition from '../blocks/DecimalBlockDefinition.vue'
 import DelayBlockItem from '../blocks/DelayBlockItem.vue'
-import StringBlockDefinition from '../blocks/StringBlockDefinition.vue'
 import RefBlockItem from '../blocks/RefBlockItem.vue'
+import StringBlockDefinition from '../blocks/StringBlockDefinition.vue'
+import ComputedBlock from './ComputedBlock.vue'
 const { t } = useI18n({ useScope: 'global' })
 
 const blockComps = {
   "String": StringBlockDefinition,
   "Decimal": DecimalBlockDefinition,
   "Delay": DelayBlockItem,
-  "Ref": RefBlockItem
+  "Ref": RefBlockItem,
+  "Computed": ComputedBlock
 } as any
 
-const props = withDefaults(defineProps<{ block?: Block, blocksContainer: FrameProject | DataFrame, refBlocks?: Block[], index: number, types?: BlockType[], mode?: 'new' | 'edit' }>(), {
-  types: () => ['String', 'Decimal', 'Ref'],
+const props = withDefaults(defineProps<{ block?: Block, blocksContainer?: BlocksContainer, refBlocks?: Block[], index: number, types?: BlockType[], mode?: 'new' | 'edit' }>(), {
+  types: () => ['String', 'Decimal', 'Ref', 'Computed'],
   mode: 'new',
 })
 
@@ -57,6 +59,9 @@ const formRef = ref()
 
 const onTypeChange = (type: BlockType | string | null) => {
   innerBlock.value = createBlock(type as BlockType, defaultId.nextId() + '', innerBlock.value.name)
+  if (type === 'Computed') {
+    (innerBlock.value as BlockComputed).blocksContainer = props.blocksContainer!
+  }
 }
 
 const validate = async () => {

@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex">
-    <block-dialog ref="blockDialogRef"
+    <block-dialog v-if="mode === 'edit'"
+                  ref="blockDialogRef"
                   mode="edit"
                   :blocks-container="blocksContainer"
                   :ref-blocks="refBlocks"
@@ -20,7 +21,7 @@
             :item="block"
             :index="index" />
     </div>
-    <v-btn>
+    <v-btn :value="block.id">
       <v-icon icon="mdi-code-string"
               v-if="block.type === 'String'"></v-icon>
       <v-icon icon="mdi-code-brackets"
@@ -29,6 +30,8 @@
               v-if="block.type === 'Delay'"></v-icon>
       <v-icon icon="mdi-relation-one-to-one"
               v-if="block.type === 'Ref'"></v-icon>
+      <v-icon icon="mdi-calculator-variant-outline"
+              v-if="block.type === 'Computed'"></v-icon>
       <span v-tooltip="block.toString()">{{ block.type === 'Delay' ? block.toString() : block.name }}</span>
     </v-btn>
     <div class='d-flex align-center'
@@ -42,15 +45,15 @@
 
 <script setup lang="ts">
 import { Block, BlockType } from '@W/frame/Block'
-import { DataFrame } from '@W/frame/Frame'
-import { FrameProject } from '@W/frame/FrameProject'
+import { BlocksContainer } from '@W/frame/Frame'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlockDialog from '../wavy_items/BlockDialog.vue'
 const { t } = useI18n({ useScope: 'global' })
 
-const props = withDefaults(defineProps<{ block: Block, blocksContainer: FrameProject | DataFrame, index: number, refBlocks?: Block[], isCurrent: boolean, types?: BlockType[] }>(), {
-  types: () => ["String", 'Decimal']
+const props = withDefaults(defineProps<{ block: Block, blocksContainer?: BlocksContainer, index: number, refBlocks?: Block[], isCurrent: boolean, types?: BlockType[], mode?: string }>(), {
+  types: () => ["String", 'Decimal'],
+  mode: 'edit'
 })
 
 const blockDialogRef = ref()
@@ -64,7 +67,7 @@ const onBlockDialogConfirm = () => {
     if (res.valid) {
       blockDialogRef.value.hide()
       const newBlock = blockDialogRef.value.value()
-      props.blocksContainer.replaceBlock(props.index, newBlock)
+      props.blocksContainer?.replaceBlock(props.index, newBlock)
     }
   })
 }

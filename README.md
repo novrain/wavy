@@ -27,7 +27,17 @@ Target: Build a protocol testing tool that supports various connection methods.
 - English/Chinese Languages.
 
 <img src="docs/imgs/dark.png" alt="dark.png" width="800"/>
+
 <img src="docs/imgs/light.png" alt="light.png" width="800"/>
+
+- Frame Project: Frame project include basic data blocks, frames build with blocks, and suites which include frames. Using frame project, we can build many re-use commands of various protocols, such as Modbus.
+  - Frame/Reference
+  - Suite
+  
+<img src="docs/imgs/frame-frame.png" alt="frame-frame" width="300"/>
+<img src="docs/imgs/frame-table.png" alt="frame-table" width="300"/>
+
+<img src="docs/imgs/frame-project.png" alt="frame-project" width="800"/>
 
 ## Install
 

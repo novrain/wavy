@@ -31,14 +31,13 @@
 
 <script setup lang="ts">
 import { Block } from '@W/frame/Block'
-import { DataFrame } from '@W/frame/Frame'
-import { FrameProject } from '@W/frame/FrameProject'
+import { BlocksContainer } from '@W/frame/Frame'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlockDialog from './BlockDialog.vue'
 const { t } = useI18n({ useScope: 'global' })
 
-const props = withDefaults(defineProps<{ block: Block, blocksContainer: FrameProject | DataFrame, index: number }>(), {
+const props = withDefaults(defineProps<{ block: Block, blocksContainer: BlocksContainer, index: number }>(), {
 })
 
 const blockDialogRef = ref()

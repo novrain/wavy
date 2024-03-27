@@ -56,9 +56,7 @@ watch(() => props.wavyItem, (newWavyItem) => {
 })
 
 const refFrames = computed(() => {
-  return props.project.project?.wavyItems.filter(w => {
-    return w.__type !== 'Suite'
-  })
+  return props.project.project?.nestFrames.filter(f => f.id !== innerWavyItem.value.id)
 })
 
 const formRef = ref()

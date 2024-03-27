@@ -38,6 +38,10 @@
     "refBlock": {
       "ref": "引用"
     },
+    "computedBlock": {
+      "computerType": "计算方法",
+      "endian": "字节序"
+    },
     "dialog": {
       "hint": "警告",
       "clearAll": "确定删除所有命令块?",

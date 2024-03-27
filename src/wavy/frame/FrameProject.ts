@@ -10,6 +10,7 @@ import {
 } from './Block'
 import {
   BlockTransformer,
+  Container,
   DataFrame,
   Frame,
   RefBlock,
@@ -20,7 +21,7 @@ import {
   WavyItem
 } from './Frame'
 
-export class FrameProject {
+export class FrameProject implements Container {
   @Expose({ name: 'wavyItems' })
   @Type(() => Object, {
     discriminator: {
@@ -49,17 +50,17 @@ export class FrameProject {
     if (blocks) {
       this._blocks = blocks
     }
-    this.injectProjectToRef()
+    this.injectContainerToRef()
   }
 
-  injectProjectToRef(): void {
+  injectContainerToRef(): void {
     this._wavyItems.forEach((f => {
-      f.project = this
-      f.injectProjectToRef()
+      f.container = this
+      f.injectContainerToRef()
     }))
     this._blocks.forEach((b => {
       if (b instanceof RefBlock) {
-        b.project = this
+        b.blocksContainer = this
       }
     }))
   }
@@ -70,6 +71,18 @@ export class FrameProject {
 
   public get wavyItems(): WavyItem[] {
     return this._wavyItems
+  }
+
+  public get nestFrames(): WavyItem[] {
+    const items: WavyItem[] = []
+    this._wavyItems.forEach((item) => {
+      if (item.__type === 'Suite') {
+        items.push(...(item as Suite).nestFrames)
+      } else {
+        items.push(item)
+      }
+    })
+    return items
   }
 
   addFrame(frame: WavyItem): void {
@@ -120,6 +133,13 @@ export class FrameProject {
     return f
   }
 
+  removeAllWavyItem(): void {
+    this._wavyItems.forEach(i => {
+
+    })
+    this._wavyItems.splice(0, this._wavyItems.length)
+  }
+
   addBlock(block: Block, after: number | undefined = undefined): void {
     if (after !== undefined && after >= 0 && after < this._blocks.length) {
       this._blocks.splice(after, 0, block)
@@ -127,7 +147,7 @@ export class FrameProject {
       this._blocks.push(block)
     }
     if (block.__type === 'Ref') {
-      (block as RefBlock).project = this
+      (block as RefBlock).blocksContainer = this
     }
   }
 
@@ -176,7 +196,7 @@ export class FrameProject {
     cloned._blocks = this._blocks.map(b => {
       return b.clone(withIdentify)
     })
-    cloned.injectProjectToRef()
+    cloned.injectContainerToRef()
     return cloned
   }
 }

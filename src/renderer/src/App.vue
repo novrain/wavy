@@ -18,7 +18,7 @@
           </template>
           <v-list>
             <v-list-item v-for="(item, index) in $i18n.availableLocales"
-                         :key="index"
+                         :key="item"
                          :value="index"
                          @click="() => { $i18n.locale = item }">
               <v-list-item-title>{{ t('locale.' + item) }}</v-list-item-title>

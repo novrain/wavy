@@ -13,7 +13,7 @@ import demoPj from './wavy_demo_definition.json'
 
 test('demo project', () => {
   let wavy: FrameProject = plainToClass(FrameProject, demoPj)
-  wavy.injectProjectToRef()
+  wavy.injectContainerToRef()
   expect(wavy).not.toBeUndefined()
   expect(wavy.name).toEqual(demoPj.name)
   // wavyItems
@@ -24,7 +24,7 @@ test('demo project', () => {
   expect(f1BlocksJson).not.toBeUndefined
   const f1 = wavy.findFrame(f1Json.id)
   expect(f1).not.toBeUndefined()
-  expect(f1!.project).toEqual(wavy)
+  expect(f1!.container).toEqual(wavy)
   expect(f1!.name).toEqual(f1Json.name)
   expect(f1 instanceof DataFrame).toBeTruthy()
   const dF1 = f1 as DataFrame

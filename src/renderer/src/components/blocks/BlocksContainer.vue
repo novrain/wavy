@@ -2,14 +2,15 @@
   <v-container class="d-flex flex-1-1 pa-0 pt-2 pb-2 flex-column">
     <v-data-table :headers="headers"
                   :items="blocks"
-                  v-model="selectedBlocks"
+                  :model-value="innerSelectedBlocks"
+                  @update:model-value="onSelectedBlocksChange"
                   show-select
                   density="default"
                   item-value="id"
                   :items-per-page="-1"
                   hover
                   :search="search"
-                  class="block-table">
+                  :class="mode === 'view' ? 'block-table block-table-view' : 'block-table'">
       <!-- <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
         <tr>
           <template v-for="column in columns"
@@ -36,12 +37,14 @@
                         single-line
                         variant="outlined"
                         hide-details></v-text-field>
-          <v-btn icon="mdi-plus"
+          <v-btn v-if="mode === 'edit'"
+                 icon="mdi-plus"
                  class="ml-1 mr-1"
                  color="primary"
                  primary
                  @click="() => onNewBlock(null, -1)"></v-btn>
           <v-dialog persistent
+                    v-if="mode === 'edit'"
                     width="auto">
             <template v-slot:activator="{ props }">
               <v-btn icon="mdi-broom"
@@ -59,7 +62,7 @@
                 <v-card-text>
                   {{ t('block.dialog.clearAll') }}
                 </v-card-text>
-                <v-card-actions>
+                <v-card-actions v-if="mode === 'edit'">
                   <v-spacer></v-spacer>
                   <v-btn variant="elevated"
                          @click="() => {
@@ -77,11 +80,12 @@
             </template>
           </v-dialog>
           <v-dialog persistent
+                    v-if="mode === 'edit'"
                     width="auto">
             <template v-slot:activator="{ props }">
               <v-btn icon="mdi-delete-sweep"
                      class="ml-1 mr-1"
-                     :disabled="selectedBlocks.length <= 0"
+                     :disabled="innerSelectedBlocks.length <= 0"
                      v-bind="props"
                      color="red">
               </v-btn>
@@ -118,19 +122,21 @@
         <tr v-if="item.type !== 'Delay'">
           <td class="pl-2 pr-2">
             <v-checkbox density="compact"
-                        v-model="selectedBlocks"
+                        :model-value="innerSelectedBlocks"
+                        @update:model-value="onSelectedBlocksChange"
                         multiple
                         :value="item.id"
                         hide-details></v-checkbox>
           </td>
           <table-block-item :blocksContainer="blocksContainer"
                             :block="item"
-                            :types="includeRef ? ['String', 'Decimal', 'Ref'] : ['String', 'Decimal']"
+                            :types="types"
                             :index="index"
                             :ref-blocks="includeRef ? refBlocks : []"
                             @type-change="onTypeChange"></table-block-item>
           <td class="operation">
-            <div class='d-flex'>
+            <div class='d-flex'
+                 v-if="mode === 'edit'">
               <v-btn icon="mdi-plus"
                      class="mr-1"
                      color="none"
@@ -152,7 +158,8 @@
         <tr v-else>
           <td class="pl-2 pr-2">
             <v-checkbox density="compact"
-                        v-model="selectedBlocks"
+                        :model-value="innerSelectedBlocks"
+                        @update:model-value="onSelectedBlocksChange"
                         multiple
                         :value="item.id"
                         hide-details></v-checkbox>
@@ -168,11 +175,13 @@
               <delay-block-item class="flex-1-1"
                                 :block="item"
                                 :index="index"></delay-block-item>
-              <v-btn icon="mdi-plus"
+              <v-btn v-if="mode === 'edit'"
+                     icon="mdi-plus"
                      class="mr-1"
                      color="none"
                      @click="() => onNewBlock(item, index + 1)"></v-btn>
-              <v-btn icon="mdi-minus"
+              <v-btn v-if="mode === 'edit'"
+                     icon="mdi-minus"
                      class="mr-1"
                      color="none"
                      @click="() => deleteBlock(item, index)"></v-btn>
@@ -189,9 +198,8 @@
 <script setup lang="ts">
 import DelayBlockItem from '@/components/blocks/DelayBlockItem.vue'
 import TableBlockItem from '@/components/blocks/TableBlockItem.vue'
-import { Block, DelayBlock, StringBlock } from '@W/frame/Block'
-import { DataFrame } from '@W/frame/Frame'
-import { FrameProject } from '@W/frame/FrameProject'
+import { Block, BlockType, DelayBlock, StringBlock } from '@W/frame/Block'
+import { BlocksContainer } from '@W/frame/Frame'
 import BitSet from '@W/util/BitSet'
 import { defaultId } from '@W/util/SnowflakeId'
 import { computed, ref, watch } from 'vue'
@@ -201,22 +209,41 @@ const tempIndexSet = new BitSet(100)
 
 const props = withDefaults(defineProps<{
   title: string,
-  blocksContainer: FrameProject | DataFrame,
+  blocksContainer: BlocksContainer,
   includeDelay?: boolean,
   includeRef?: boolean,
-  refBlocks?: Block[]
+  includeComputed?: boolean,
+  refBlocks?: Block[],
+  selectedBlocks?: string[],
+  mode?: string,
+  blocks?: Block[]
 }>(),
   {
     includeRef: false,
     includeDelay: false,
-    refBlocks: () => []
+    includeComputed: false,
+    refBlocks: () => [],
+    selectedBlocks: () => [],
+    mode: 'edit'
   })
 
-const emits = defineEmits(['selectedBlocksChange'])
+const emits = defineEmits(['update:selectedBlocks'])
 
 const { t } = useI18n({ useScope: 'global' })
 
 const search = ref('')
+
+const types: BlockType[] = ['String', 'Decimal']
+
+if (props.includeDelay) {
+  types.push('Delay')
+}
+if (props.includeRef) {
+  types.push('Ref')
+}
+if (props.includeComputed) {
+  types.push('Computed')
+}
 
 const headers = computed(() => {
   return [
@@ -248,30 +275,40 @@ const headers = computed(() => {
 })
 
 let container = props.blocksContainer
-let blocks = ref(container?._blocks)
+let blocks = ref(props.blocks || container?.blocks || [])
 
-watch(() => props.blocksContainer, (newProject) => {
-  blocks.value = container?._blocks
+watch(() => props.blocksContainer, (newContainer) => {
+  container = newContainer
+  blocks.value = newContainer?.blocks || []
 })
 
-const selectedBlocks = ref([])
+const innerSelectedBlocks = ref(props.selectedBlocks || [])
 
-watch(selectedBlocks, () => {
-  emits('selectedBlocksChange', selectedBlocks.value)
+watch(() => props.selectedBlocks, () => {
+  innerSelectedBlocks.value = props.selectedBlocks || []
 })
+
+const emitChange = () => {
+  emits('update:selectedBlocks', innerSelectedBlocks.value)
+}
 
 const clearAll = () => {
   container?.removeAllBlock()
   tempIndexSet.clearAll()
-  selectedBlocks.value = []
+  innerSelectedBlocks.value = []
+  emitChange()
 }
 
 const removeSelected = () => {
-  selectedBlocks.value.forEach((block: Block) => {
-    container?.deleteBlock(block)
-    tempIndexSet.clear(block.tempIndex!)
+  innerSelectedBlocks.value.forEach((id: string) => {
+    const block = container?.findBlock(id)
+    if (block) {
+      container?.deleteBlock(block)
+      tempIndexSet.clear(block.tempIndex!)
+    }
   })
-  selectedBlocks.value = []
+  innerSelectedBlocks.value = []
+  emitChange()
 }
 
 // add block directly?
@@ -286,7 +323,8 @@ const onNewBlock = (preItem: Block | null, index: number) => {
 const deleteBlock = (item: Block, index: number) => {
   container?.deleteBlock(index)
   tempIndexSet.clear(item.tempIndex!)
-  selectedBlocks.value = selectedBlocks.value.filter(id => id !== item.id)
+  innerSelectedBlocks.value = innerSelectedBlocks.value.filter(id => id !== item.id)
+  emitChange()
 }
 
 const newDelayBlock = (item: Block, index: number) => {
@@ -298,8 +336,14 @@ const newDelayBlock = (item: Block, index: number) => {
 }
 
 const onTypeChange = (oldItem: Block, newItem: Block) => {
-  selectedBlocks.value = selectedBlocks.value.filter(id => id !== oldItem.id)
+  innerSelectedBlocks.value = innerSelectedBlocks.value.filter(id => id !== oldItem.id)
+  emitChange()
 }
+
+const onSelectedBlocksChange = ((values: string[]) => {
+  innerSelectedBlocks.value = values
+  emitChange()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -334,6 +378,12 @@ const onTypeChange = (oldItem: Block, newItem: Block) => {
     td {
       padding: 1px 5px;
     }
+  }
+}
+
+.block-table-view {
+  :deep(table>tbody>tr>td:not(:first-child)) {
+    pointer-events: none;
   }
 }
 </style>

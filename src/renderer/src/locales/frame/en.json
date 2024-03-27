@@ -38,6 +38,10 @@
     "refBlock": {
       "ref": "Reference"
     },
+    "computedBlock": {
+      "computerType": "CALC-Method",
+      "endian": "Endian"
+    },
     "dialog": {
       "hint": "Warning",
       "clearAll": "Are you sure to remove all blocks?",

@@ -66,7 +66,7 @@ const { t } = useI18n({ useScope: 'global' })
 const props = withDefaults(defineProps<{ block: Block, blocksContainer: BlocksContainer, index: number, direction?: 'row' | 'column', hideDetails?: boolean, mode?: 'computed-table' | 'computed-frame', computerTypes?: ComputerType[], refBlocks?: Block[] }>(),
   {
     mode: 'computed-frame',
-    computerTypes: () => ['Empty', 'CRC16'],
+    computerTypes: () => ['Empty', 'CRC16', 'Sum8Modulo256'],
     hideDetails: true
   })
 const innerMode = ref(props.mode)

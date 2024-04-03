@@ -86,7 +86,7 @@ const onComputerTypeChange = (type: ComputerType) => {
 }
 
 const onSelectedBlocksChange = (values: string[]) => {
-  computedBlock.blocks = values.map(id => blocks.value.find(b => b.id === id))
+  computedBlock.blocks = values.map(id => blocks.value.find(b => b.id === id)) as Block[]
 }
 </script>
 

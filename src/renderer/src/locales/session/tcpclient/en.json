@@ -1,5 +1,5 @@
 {
-  "serial": {
+  "tcpClient": {
     "options": {
       "ip": "IP",
       "port": "Port"

@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log'
-import { SerialPort } from 'serialport'
+import { InterByteTimeoutParser, SerialPort } from 'serialport'
 
 export default class DefaultSerialPortService {
   serials: Map<string, SerialPort> = new Map()
@@ -35,7 +35,8 @@ export default class DefaultSerialPortService {
             serial.update(options)
           }
           if (!err) {
-            serial.on('data', (data) => this._window?.webContents.send(`serial:${id}:data`, data))
+            const parser = serial.pipe(new InterByteTimeoutParser({ interval: options.interval || 30 }))
+            parser.on('data', (data) => this._window?.webContents.send(`serial:${id}:data`, data))
             serial.on('error', (error) => this._window?.webContents.send(`serial:${id}:error`, error))
             serial.on('close', () => this._window?.webContents.send(`serial:${id}:close`))
           } else {

@@ -18,8 +18,7 @@
 
 <script setup lang="ts">
 import { Block } from '@W/frame/Block'
-import { Frame, WavyItem } from '@W/frame/Frame'
-import { RefFrame } from '@W/frame/Frame'
+import { Frame, RefFrame, WavyItem } from '@W/frame/Frame'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })

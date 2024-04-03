@@ -164,11 +164,10 @@
 </template>
 
 <script setup lang="ts">
-import { Block, BlockType, DelayBlock } from '@W/frame/Block'
-import { BlocksContainer, createBlock } from '@W/frame/Frame'
+import { Block, BlockType, BlocksContainer, DelayBlock, createBlock } from '@W/frame/Block'
 import BitSet from '@W/util/BitSet'
 import { defaultId } from '@W/util/SnowflakeId'
-import { nextTick, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlockDialog from '../wavy_items/BlockDialog.vue'
 import BlocksFrameItem from './BlocksFrameItem.vue'
@@ -322,6 +321,10 @@ const onSelectedBlocksChange = ((values: string[]) => {
 
   .block-frame {
     padding-right: 100px;
+  }
+
+  :deep(.v-btn-group>div:last-child) {
+    margin-right: 100px;
   }
 }
 </style>

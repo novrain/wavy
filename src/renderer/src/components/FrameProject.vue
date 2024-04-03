@@ -34,6 +34,7 @@
             <block-dialog ref="blockDialogRef"
                           :blocks-container="(project.project as FrameProject)"
                           :block="block"
+                          :ref-blocks="blocks"
                           @cancel="onBlockDialogCancel"
                           @confirm="onBlockDialogConfirm"
                           :index="blocks.length"></block-dialog>
@@ -152,8 +153,8 @@
 import { useAppStore } from '@/store/app'
 import { useSessionStore } from '@/store/session'
 import { Session } from '@/types/session'
-import { Block } from '@W/frame/Block'
-import { Suite, WavyItem, createBlock, createWavyItem } from '@W/frame/Frame'
+import { Block, createBlock } from '@W/frame/Block'
+import { Suite, WavyItem, createWavyItem } from '@W/frame/Frame'
 import { FrameProject } from '@W/frame/FrameProject'
 import { DefaultExecutor } from '@W/service/executor'
 import { Project } from '@W/types/project'

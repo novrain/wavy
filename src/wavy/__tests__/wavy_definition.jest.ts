@@ -2,11 +2,11 @@ import { instanceToPlain, plainToClass } from 'class-transformer'
 import {
   DataBlock,
   DecimalBlock,
+  RefBlock,
   StringBlock
 } from '../frame/Block'
 import {
   DataFrame,
-  RefBlock
 } from '../frame/Frame'
 import { FrameProject } from '../frame/FrameProject'
 import demoPj from './wavy_demo_definition.json'

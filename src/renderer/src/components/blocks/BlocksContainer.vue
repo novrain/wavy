@@ -198,8 +198,7 @@
 <script setup lang="ts">
 import DelayBlockItem from '@/components/blocks/DelayBlockItem.vue'
 import TableBlockItem from '@/components/blocks/TableBlockItem.vue'
-import { Block, BlockType, DelayBlock, StringBlock } from '@W/frame/Block'
-import { BlocksContainer } from '@W/frame/Frame'
+import { Block, BlockType, BlocksContainer, DelayBlock, StringBlock } from '@W/frame/Block'
 import BitSet from '@W/util/BitSet'
 import { defaultId } from '@W/util/SnowflakeId'
 import { computed, ref, watch } from 'vue'

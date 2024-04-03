@@ -48,6 +48,9 @@ const props = withDefaults(defineProps<{ wavyItem?: WavyItem, project: Project, 
 })
 
 const innerWavyItem = ref(props.wavyItem ? props.wavyItem.clone(true) : createWavyItem('Data', defaultId.nextId() + '', ''))
+if (!innerWavyItem.value.container) {
+  innerWavyItem.value.container = props.project.project
+}
 
 watch(() => props.wavyItem, (newWavyItem) => {
   if (newWavyItem) {
@@ -65,6 +68,7 @@ const onTypeChange = (type: WavyItemType | string | null) => {
   const tempIndex = innerWavyItem.value.tempIndex
   innerWavyItem.value = createWavyItem(type as WavyItemType, defaultId.nextId() + '', innerWavyItem.value.name)
   innerWavyItem.value.tempIndex = tempIndex
+  innerWavyItem.value.container = props.project.project
 }
 
 const validate = async () => {

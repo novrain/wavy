@@ -54,9 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import { Block } from '@W/frame/Block'
+import { Block, BlocksContainer, ComputedBlock } from '@W/frame/Block'
 import { ComputerType, createComputer } from '@W/frame/Computer'
-import { BlocksContainer, ComputedBlock } from '@W/frame/Frame'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlocksTable from '../blocks/BlocksContainer.vue'

@@ -1,17 +1,19 @@
 import { Buffer } from 'buffer/'
 import {
   Exclude,
-  Expose
+  Expose,
+  Type
 } from 'class-transformer'
 import 'reflect-metadata'
 import { defaultId } from '../util/SnowflakeId'
+import { BlocksComputer, ComputerTransformer, EmptyComputer } from './Computer'
 
 export type UndefinableBuffer = Buffer | undefined
 
 /**
  *  数据块类型
  */
-export type BlockType = 'Ref' | 'Decimal' | 'Hex' | 'String' | 'Computed' | 'Delay'
+export type BlockType = 'Ref' | 'Decimal' | 'Hex' | 'String' | 'Computed' | 'Delay' | 'Composite'
 
 /**
  * 数据二次加工
@@ -62,6 +64,24 @@ type DecimalNumberType = 'UInt8' | 'Int8' | 'UInt16' | 'Int16' | 'UInt32' | 'Int
  */
 //  十六进制 | BCD | ascii
 type DecimalEncoding = 'hex' | 'BCD(8421)' | 'ascii'
+
+export interface BlocksContainer {
+  replaceBlock(oldBlock: number, newBlock: Block): void
+  replaceBlock(oldBlock: Block, newBlock: Block): void
+  replaceBlock(oldBlock: Block | number, newBlock: Block): void
+
+  addBlock(block: Block, after: number | undefined): void
+
+  deleteBlock(block: number): void
+  deleteBlock(block: Block): void
+  deleteBlock(block: Block | number): void
+
+  findBlock(id: string): UndefinableBlock
+
+  removeAllBlock(): void
+
+  get blocks(): Block[]
+}
 
 /**
  * Decimal Data Block
@@ -358,5 +378,415 @@ export class DelayBlock implements Block {
 
   get type(): BlockType {
     return this.__type
+  }
+}
+
+export class RefBlock implements Block {
+  // @Expose({ name: 'type' })
+  __type: BlockType = 'Ref'
+  @Exclude()
+  _block?: Block
+  @Expose({ name: 'refId' })
+  _refId?: string
+  @Exclude()
+  _blocksContainer?: BlocksContainer
+  tempIndex?: number
+
+  constructor(
+    readonly id: string,
+    public name: string,
+    refId?: string,
+    blocksContainer?: BlocksContainer
+  ) {
+    this._refId = refId
+    this._blocksContainer = blocksContainer
+  }
+
+  get type(): BlockType {
+    return this.__type
+  }
+
+  get encoding(): string {
+    this.block
+    if (this.block) {
+      return this.block.encoding
+    } else {
+      return 'unknown'
+    }
+  }
+
+  set blocksContainer(v: BlocksContainer | undefined) {
+    this._blocksContainer = v
+  }
+
+  get blocksContainer(): BlocksContainer | undefined {
+    return this._blocksContainer
+  }
+
+  set refId(v: string) {
+    this._refId = v
+  }
+
+  get refId(): string | undefined {
+    return this._refId
+  }
+
+  get block(): UndefinableBlock {
+    if (this._blocksContainer && this._refId) {
+      this._block = this._blocksContainer.findBlock(this._refId)
+    }
+    return this._block
+  }
+
+  encode(): UndefinableBuffer {
+    this.block
+    if (this._block) {
+      return this._block.encode()
+    } else {
+      return undefined
+    }
+  }
+
+  decode(raw: Buffer, offset: number): number {
+    this.block
+    if (this._block) {
+      return this._block.decode(raw, offset)
+    } else {
+      return 0
+    }
+  }
+
+  toString(): string {
+    this.block
+    if (this._block) {
+      return this._block.toString()
+    } else {
+      return 'Oops, Ref Error!'
+    }
+  }
+
+  clone(withIdentify: boolean = false): Block {
+    let clone = new RefBlock(
+      withIdentify ? this.id : defaultId.nextId() + '',
+      this.name,
+      this.refId,
+      this._blocksContainer
+    )
+    if (withIdentify) {
+      clone.tempIndex = this.tempIndex
+    }
+    return clone
+  }
+}
+
+export interface RefIdsContainer {
+  replaceRefId(oldRefId: number, newRefId: string): void
+  replaceRefId(oldRefId: string, newRefId: string): void
+  replaceRefId(oldRefId: string | number, newRefId: string): void
+
+  addRefId(refId: string, after: number | undefined): void
+
+  deleteRefId(refId: number): void
+  deleteRefId(refId: string): void
+  deleteRefId(refId: string | number): void
+
+  removeAllRefId(): void
+
+  set refIds(value: string[])
+  get refIds(): string[]
+}
+
+export class ComputedBlock implements Block, RefIdsContainer {
+  // @Expose({ name: 'type' })
+  __type: BlockType = 'Computed'
+  @Exclude()
+  _blocks: Block[] = []
+  @Expose({ name: 'refIds' })
+  _refIds: string[] = []
+  @Exclude()
+  _blocksContainer?: BlocksContainer
+  @Expose({ name: 'blocksComputer' })
+  @ComputerTransformer
+  _blocksComputer: BlocksComputer
+  tempIndex?: number
+
+  constructor(
+    readonly id: string,
+    public name: string,
+    blocksComputer: BlocksComputer,
+    public endian: Endian = 'BigEndian',
+    blocksContainer?: BlocksContainer
+  ) {
+    this._blocksContainer = blocksContainer
+    this._blocksComputer = blocksComputer
+  }
+
+  get type(): BlockType {
+    return this.__type
+  }
+
+  get encoding(): string {
+    return this._blocksComputer.type
+  }
+
+  public get blocksComputer(): BlocksComputer {
+    return this._blocksComputer
+  }
+
+  public set blocksComputer(value: BlocksComputer) {
+    this._blocksComputer = value
+  }
+
+  public get blocksContainer(): BlocksContainer | undefined {
+    return this._blocksContainer
+  }
+
+  public set blocksContainer(value: BlocksContainer) {
+    this._blocksContainer = value
+  }
+
+  get blocks(): Block[] {
+    return this._blocks
+  }
+
+  set blocks(values: Block[]) {
+    this._blocks = values
+    this.refIds = this._blocks.map(b => b.id)
+  }
+
+  replaceRefId(oldRefId: number, newRefId: string): void
+  replaceRefId(oldRefId: string, newRefId: string): void
+  replaceRefId(oldRefId: string | number, newRefId: string): void {
+
+  }
+
+  addRefId(refId: string, after: number | undefined): void { }
+
+  deleteRefId(refId: number): void
+  deleteRefId(refId: string): void
+  deleteRefId(refId: string | number): void { }
+
+  removeAllRefId(): void { }
+
+  set refIds(values: string[]) {
+    this._refIds = values
+    if (this._blocksContainer && this._refIds.length > 0) {
+      this._blocks = this._refIds.map(i => this._blocksContainer?.findBlock(i)) as Block[]
+    }
+  }
+
+  get refIds(): string[] {
+    return this._refIds
+  }
+
+  encode(): UndefinableBuffer {
+    this.blocks
+    if (this._blocks && this._blocks.length > 0) {
+      return this._blocksComputer.computer(this._blocks, this.endian)
+    }
+    else {
+      return undefined
+    }
+  }
+
+  decode(raw: Buffer, offset: number): number {
+    throw new Error('Method not implemented.')
+  }
+
+  toString(): string {
+    const code = this.encode()
+    if (code) {
+      return code.toString('hex')
+    }
+    return 'Oops, Ref Error!'
+  }
+
+  clone(withIdentify: boolean = false): Block {
+    let clone = new ComputedBlock(
+      withIdentify ? this.id : defaultId.nextId() + '',
+      this.name,
+      this._blocksComputer,
+      this.endian,
+      this._blocksContainer
+    )
+    clone.refIds = this._refIds
+    if (withIdentify) {
+      clone.tempIndex = this.tempIndex
+    }
+    return clone
+  }
+}
+
+const LocalBlockTransformer = Type(() => Object, {
+  discriminator: {
+    property: '__type',
+    subTypes: [
+      { value: RefBlock, name: 'Ref' },
+      { value: DecimalBlock, name: 'Decimal' },
+      { value: StringBlock, name: 'String' },
+      { value: DelayBlock, name: 'Delay' },
+      { value: ComputedBlock, name: 'Computed' },
+    ],
+  },
+})
+
+export class CompositeBlock implements BlocksContainer, Block {
+  tempIndex?: number
+  __type: BlockType = 'Composite'
+  @Expose({ name: 'blocks' })
+  @LocalBlockTransformer
+  _blocks: Block[] = []
+  @Exclude()
+  _blocksContainer?: BlocksContainer
+  encoding: string = 'hex'
+
+  constructor(
+    readonly id: string,
+    public name: string,
+    blocks?: Block[],
+    blocksContainer?: BlocksContainer
+  ) {
+    if (blocks) {
+      this._blocks = blocks
+    }
+    this._blocksContainer = blocksContainer
+  }
+
+  get type(): BlockType {
+    return this.__type
+  }
+
+  public get blocks(): Block[] {
+    return this._blocks
+  }
+
+  addBlock(block: Block, after: number | undefined = undefined): void {
+    if (after !== undefined && after >= 0 && after < this._blocks.length) {
+      this._blocks.splice(after, 0, block)
+    } else {
+      this._blocks.push(block)
+    }
+    if (block.__type === 'Ref') {
+      (block as RefBlock).blocksContainer = this._blocksContainer
+    }
+  }
+
+  deleteBlock(block: number): void
+  deleteBlock(block: Block): void
+  deleteBlock(block: Block | number): void {
+    let index = block
+    if (typeof block !== 'number') {
+      index = this._blocks.indexOf(block)
+    }
+    const deletedBlock = this._blocks.splice(index as number, 1)
+    // @Todo ref broken
+  }
+
+  replaceBlock(oldBlock: number, newBlock: Block): void
+  replaceBlock(oldBlock: Block, newBlock: Block): void
+  replaceBlock(oldBlock: Block | number, newBlock: Block): void {
+    if (typeof oldBlock === 'number') {
+      const block = this._blocks.splice(oldBlock, 1, newBlock)
+      return
+    }
+    const index = this._blocks.findIndex(b => oldBlock.id === b.id)
+    const block = this._blocks.splice(index, 1, newBlock)
+    // @Todo ref broken
+  }
+
+  findBlock(id: string): UndefinableBlock {
+    let b = this._blocks.find((b) => {
+      return b.id === id
+    })
+    return b
+  }
+
+  removeAllBlock(): void {
+    this._blocks.forEach(b => {
+      // @Todo ref broken
+    })
+    this._blocks.splice(0, this._blocks.length)
+  }
+
+  set blocksContainer(v: BlocksContainer | undefined) {
+    this._blocksContainer = v
+  }
+
+  get blocksContainer(): BlocksContainer | undefined {
+    return this._blocksContainer
+  }
+
+  injectContainerToRef(): void {
+    if (this._blocksContainer) {
+      let p = this._blocksContainer
+      this._blocks.forEach((b => {
+        if (b instanceof RefBlock) {
+          b.blocksContainer = p
+        }
+        if (b instanceof ComputedBlock) {
+          b.blocksContainer = this
+          b.refIds = b.refIds // force update
+        }
+      }))
+    }
+  }
+
+  encode(): UndefinableBuffer {
+    let buffs = this._blocks.map(b => b.encode() || Buffer.alloc(0)) // @Todo 处理异常？
+    return Buffer.concat(buffs)
+  }
+
+  decode(raw: Buffer, offset: number): number {
+    throw new Error('Method not implemented.')
+  }
+
+  toString(): string {
+    return this._blocks.map(b => b.toString()).join('')
+  }
+
+  clone(withIdentify: boolean = false): Block {
+    let cloned = new CompositeBlock(
+      withIdentify ? this.id : defaultId.nextId() + '',
+      this.name
+    )
+    if (withIdentify) {
+      cloned.tempIndex = this.tempIndex
+    }
+    cloned._blocks = this._blocks.map(b => b.clone(withIdentify))
+    cloned._blocksContainer = this._blocksContainer
+    cloned.injectContainerToRef()
+    return cloned
+  }
+}
+
+export const BlockTransformer = Type(() => Object, {
+  discriminator: {
+    property: '__type',
+    subTypes: [
+      { value: RefBlock, name: 'Ref' },
+      { value: DecimalBlock, name: 'Decimal' },
+      { value: StringBlock, name: 'String' },
+      { value: DelayBlock, name: 'Delay' },
+      { value: ComputedBlock, name: 'Computed' },
+      { value: CompositeBlock, name: 'Composite' },
+    ],
+  },
+})
+
+export const createBlock = (type: BlockType, id: string, name: string | undefined = undefined) => {
+  switch (type) {
+    case 'Computed':
+      return new ComputedBlock(id, name || 'c-block', new EmptyComputer())
+    case 'Ref':
+      return new RefBlock(id, name || 'r-block')
+    case 'Decimal':
+      return new DecimalBlock(id, name || 'd-block')
+    case 'Delay':
+      return new DelayBlock(id, name || 'd-block')
+    case 'Composite':
+      return new CompositeBlock(id, name || 'c-block')
+    case 'String':
+    default:
+      return new StringBlock(id, name || 's-block')
   }
 }

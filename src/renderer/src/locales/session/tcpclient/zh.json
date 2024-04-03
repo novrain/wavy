@@ -1,0 +1,13 @@
+{
+  "tcpClient": {
+    "options": {
+      "ip": "地址",
+      "port": "端口"
+    },
+    "rules": {
+      "ipIsRequired": "请输入地址",
+      "portIsRequired": "请输入端口",
+      "portMinMax": "端口范围：[1, 65535]"
+    }
+  }
+}

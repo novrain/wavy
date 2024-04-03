@@ -1,5 +1,3 @@
-import EventEmitter from 'eventemitter3'
-
 export const SERIAL_BAUD_RATES = [
   110, 150, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 1500000,
 ]
@@ -35,6 +33,10 @@ export interface SerialProfileOptions {
   hupcl?: boolean
 }
 
+export interface TCPClientOptions {
+
+}
+
 export const createDefaultSerialOptions = (): SerialProfileOptions => {
   return {
     baudRate: 9600,
@@ -44,8 +46,13 @@ export const createDefaultSerialOptions = (): SerialProfileOptions => {
   }
 }
 
-export type SessionOptions = SerialProfileOptions
-export type SessionType = 'Serial' | 'TCP'
+export const createDefaultTCPClientOptions = (): TCPClientOptions => {
+  return {
+  }
+}
+
+export type SessionOptions = SerialProfileOptions | TCPClientOptions
+export type SessionType = 'Serial' | 'TCPClient'
 
 export interface AbstractSession {
   id: string,

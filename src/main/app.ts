@@ -229,9 +229,20 @@ export class Application {
         submenu: [
           {
             label: 'New',
-            click: () => {
-              this.send('renderer:session-new')
-            }
+            submenu: [
+              {
+                label: 'New Serial',
+                click: () => {
+                  this.send('renderer:session-new', "Serial")
+                }
+              },
+              {
+                label: 'New TCPClient',
+                click: () => {
+                  this.send('renderer:session-new', "TCPClient")
+                }
+              },
+            ]
           },
         ]
       },

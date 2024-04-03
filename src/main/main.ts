@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import electronDebug from 'electron-debug'
 import { Application } from './app'
 import { parseArgs } from './cli'
 import ProjectServiceInMain from './service/ProjectServiceInMain'
-import electronDebug from 'electron-debug'
 import SerialPortServiceInMain from './service/SerialPortServiceInMain'
+import TCPClientServiceInMain from './service/TcpClientServiceInMain'
 
 if (!process.env.TABBY_PLUGINS) {
   process.env.TABBY_PLUGINS = ''
@@ -66,11 +67,13 @@ app.on('ready', async () => {
 
   const projectService = new ProjectServiceInMain()
   const serialPortService = new SerialPortServiceInMain()
+  const tcpClientService = new TCPClientServiceInMain()
 
   const newWindow = async () => {
     const window = await application.newWindow({ hidden: argv.hidden })
     projectService.window = window.browserWindow as BrowserWindow
     serialPortService.window = window.browserWindow as BrowserWindow
+    tcpClientService.window = window.browserWindow as BrowserWindow
     // await window.ready
     window.passCliArguments(process.argv, process.cwd(), false)
     window.focus()
@@ -86,6 +89,6 @@ app.on('ready', async () => {
   //     },
   //   ]))
   // }
-  
+
   newWindow()
 })

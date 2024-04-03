@@ -5,11 +5,14 @@
       "session_category": "Session"
     },
     "types": {
-      "serial": "serial"
+      "serial": "serial",
+      "tcpclient": "TCP Client"
     },
     "menu": {
       "session": "Session",
-      "new": "New"
+      "new": "New",
+      "newSerial": "New Serial",
+      "newTCPClient": "New TCP Client"
     },
     "options": {
       "enableTimestamp": "Timestamp",

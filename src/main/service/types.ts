@@ -40,3 +40,11 @@ export interface ProjectService {
 export interface SessionService {
   onNewSession(listener: any): void
 }
+
+export interface TCPClientService {
+  connect(id: string, options: any): Promise<Result>
+  disconnect(id: string): Promise<boolean>
+  addEventListener(id: string, event: string, listener: any): void
+  removeEventListener(id: string, event: string, listener: any): void
+  write(id: string, data: any): Promise<void>
+}

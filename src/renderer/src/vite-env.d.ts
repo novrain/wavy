@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { HostWindowService, SerialPortService, ProjectService, SessionService } from '@M/service/types'
+import { HostWindowService, ProjectService, SerialPortService, SessionService, TCPClientService } from '@M/service/types'
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
@@ -10,8 +10,9 @@ declare module '*.vue' {
 declare global {
   interface Window {
     hostWindow: HostWindowService
-    serialPort: SerialPortService,
+    serialPort: SerialPortService
     projectService: ProjectService
     sessionService: SessionService
+    tcpClient: TCPClientService
   }
 }

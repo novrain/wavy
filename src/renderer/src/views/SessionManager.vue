@@ -15,12 +15,21 @@
           </v-chip>
           <v-divider class="mt-2 mb-2"></v-divider>
           <v-container class="d-flex ma-0 pa-0">
-            <v-btn prepend-icon="mdi-serial-port"
+            <v-btn class="mr-2"
+                   prepend-icon="mdi-serial-port"
                    size="default"
                    variant="tonal"
                    stacked
-                   @click="onNewSession">
+                   @click="() => onNewSession('Serial')">
               {{ t('session.types.serial') }}
+            </v-btn>
+            <v-btn class="mr-2"
+                   prepend-icon="mdi-lan-connect"
+                   size="default"
+                   variant="tonal"
+                   stacked
+                   @click="() => onNewSession('TCPClient')">
+              {{ t('session.types.tcpclient') }}
             </v-btn>
           </v-container>
         </v-container>
@@ -40,6 +49,7 @@
 </template>
 <script lang="ts" setup>
 import SerialSession from '@/components/SerialSession.vue'
+import TCPClientSession from '@/components/TCPClientSession.vue'
 import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
@@ -56,6 +66,7 @@ const appStore = useAppStore()
 // @Todo move to where?
 import { useSerialStore } from '@/store/serial'
 import { Session } from '@/types/session'
+import { SessionType } from '@W/types/session'
 const serialStore = useSerialStore()
 const { paths } = storeToRefs(serialStore)
 
@@ -67,7 +78,8 @@ const listPorts = async () => {
 }
 //
 const sessionComps = {
-  'Serial': SerialSession
+  'Serial': SerialSession,
+  'TCPClient': TCPClientSession
 } as any
 
 const menusStore = useMenuStore()
@@ -92,13 +104,22 @@ onMounted(() => {
     name: t("session.menu.session"),
     items: [
       {
-        id: 'session-new',
-        nameKey: "session.menu.new",
-        name: t("session.menu.new"),
+        id: 'session-new-serial',
+        nameKey: "session.menu.newSerial",
+        name: t("session.menu.newSerial"),
         icon: 'mdi-alpha-s',
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handler: onNewSessionClick,
+        handler: onNewSerialSessionClick,
+      },
+      {
+        id: 'session-new-tcpclient',
+        nameKey: "session.menu.newTCPClient",
+        name: t("session.menu.newTCPClient"),
+        icon: 'mdi-alpha-s',
+        items: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handler: onNewTCPClientSessionClick,
       }
     ]
   })
@@ -110,12 +131,17 @@ onMounted(() => {
   listPorts()
 })
 
-const onNewSessionClick = (_e: MenuEvent) => {
-  onNewSession()
+const onNewSerialSessionClick = (_e: MenuEvent) => {
+  onNewSession('Serial')
 }
 
+const onNewTCPClientSessionClick = (_e: MenuEvent) => {
+  onNewSession('TCPClient')
+}
+
+
 onMounted(() => {
-  window.sessionService.onNewSession(onNewSessionClick)
+  window.sessionService.onNewSession(onNewSession)
 })
 
 onDeactivated(() => {
@@ -138,8 +164,8 @@ watch(currentSessionId, (id) => {
   }
 })
 
-const onNewSession = () => {
-  const session = sessionStore.newSession('Serial')
+const onNewSession = (type?: SessionType) => {
+  const session = sessionStore.newSession(type || 'Serial')
   currentSessionId.value = session.id
 }
 

@@ -7596,10 +7596,10 @@ vue@^3.4.21:
     "@vue/server-renderer" "3.4.21"
     "@vue/shared" "3.4.21"
 
-vuetify@^3.5.7:
-  version "3.5.7"
-  resolved "http://47.122.4.61:4873/vuetify/-/vuetify-3.5.7.tgz#9dfa027a582aa7d2211c8019c33ef7cadd66c5c0"
-  integrity sha512-BFj/puY8odRwY50pRfE1gpawnxreY8PtPb/tDw3oumxSLXhoXw8q6YLA6QUvqZrYEzcYpojxZIYhNWUky2KN1w==
+vuetify@^3.5.10:
+  version "3.5.13"
+  resolved "http://47.122.4.61:4873/vuetify/-/vuetify-3.5.13.tgz#24a45d19ce5dcf71b2653f0bcf3ea91edf1f406c"
+  integrity sha512-3ZyIoHgB2GR87ojIpqNwkkRXlUNTEKh83fjUuQ1hOKdTXzEuZXBgtfUt9kp4WOVnYILGdZKWTJ6gv8nXOa/tZA==
 
 wait-on@^7.2.0:
   version "7.2.0"

@@ -33,10 +33,6 @@ export interface SerialProfileOptions {
   hupcl?: boolean
 }
 
-export interface TCPClientOptions {
-
-}
-
 export const createDefaultSerialOptions = (): SerialProfileOptions => {
   return {
     baudRate: 9600,
@@ -46,8 +42,15 @@ export const createDefaultSerialOptions = (): SerialProfileOptions => {
   }
 }
 
+export interface TCPClientOptions {
+  ip?: string,
+  port?: number
+}
+
 export const createDefaultTCPClientOptions = (): TCPClientOptions => {
   return {
+    ip: 'localhost',
+    port: 8080
   }
 }
 

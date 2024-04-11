@@ -23,11 +23,22 @@ export default class DefaultTCPClientService {
     const socket = this.sockets.get(id) || new Socket(options)
     this.sockets.set(id, socket)
     return new Promise((resolve) => {
-      if (socket.closed) {
-        socket.connect(options, () => {
-          socket.on('data', (data) => this._window?.webContents.send(`tcpclient:${id}:data`, data))
-          socket.on('error', (error) => this._window?.webContents.send(`tcpclient:${id}:error`, error))
-          socket.on('close', () => this._window?.webContents.send(`tcpclient:${id}:close`))
+        socket.once('error', (error: any) => {
+          resolve({
+            result: false,
+            err: Array.isArray(error.errors) ? error.errors[0].message || error.errors[0].code : error.message || error.code
+          })
+        })
+        socket.setTimeout((options.timeout || 5) * 1000)
+        socket.connect(options.port, options.ip, () => {
+          socket.on('error', () => this._window?.webContents.send(`tcpclient:${id}:error`))
+          socket.on('close', () => {
+            this.sockets.delete(id)
+            this._window?.webContents.send(`tcpclient:${id}:close`)
+          })
+          socket.on('data', (data) => {
+            this._window?.webContents.send(`tcpclient:${id}:data`, data)
+          })
           resolve({
             result: true,
             err: null

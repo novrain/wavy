@@ -34,6 +34,7 @@
                  icon="mdi-connection"></v-btn>
           <v-btn @click="connect"
                  v-else
+                 :disabled="connecting"
                  icon="mdi-check-bold"></v-btn>
         </div>
       </div>
@@ -119,6 +120,7 @@ const props = defineProps(['session'])
 const options = reactive(Object.assign(createDefaultTCPClientOptions(), props.session.options))
 
 const connected = ref(false)
+const connecting = ref(false)
 const enableTimestamp = ref(true)
 const enableNewline = ref(true)
 const enableSendSelect = ref(false)
@@ -194,6 +196,11 @@ const onError = (err: any) => {
 
 const onClose = () => {
   connected.value = false
+  const session = props.session
+  session.removeEventListener('data', onData)
+  session.removeEventListener('echo', onEcho)
+  session.removeEventListener('close', onClose)
+  session.removeEventListener('error', onError)
 }
 
 const connect = async () => {
@@ -204,18 +211,24 @@ const connect = async () => {
   if (res.valid) {
     const session = props.session
     session.options = options
+    connecting.value = true
     session.open().then((r: any) => {
       connected.value = r.result
+      connecting.value = false
       info.value = r.err || ''
       if (r.result) {
         // props.session.name = options.path
-        emits('nameChanged', { session: props.session, name: options.path })
+        emits('nameChanged', { session: props.session, name: `${options.ip}:${options.port}` })
         session.addEventListener('data', onData)
         session.addEventListener('echo', onEcho)
         session.addEventListener('close', onClose)
         session.addEventListener('error', onError)
       }
-    }).catch((e: any) => { console.log(e) })
+    }).catch((e: any) => {
+      connecting.value = false
+      connected.value = false
+      console.log(e)
+    })
   }
 }
 
@@ -239,6 +252,10 @@ onUnmounted(disconnect)
 <style lang="scss" scoped>
 .session-control {
   padding-right: 10px;
+}
+
+:deep(.v-number-input__control .v-btn) {
+  background-color: transparent !important;
 }
 
 .session-ip {

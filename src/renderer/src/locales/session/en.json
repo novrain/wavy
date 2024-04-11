@@ -6,13 +6,15 @@
     },
     "types": {
       "serial": "serial",
-      "tcpclient": "TCP Client"
+      "tcpclient": "TCP Client",
+      "tcpserver": "TCP Server"
     },
     "menu": {
       "session": "Session",
       "new": "New",
       "newSerial": "New Serial",
-      "newTCPClient": "New TCP Client"
+      "newTCPClient": "New TCP Client",
+      "newTCPServer": "New TCP Server"
     },
     "options": {
       "enableTimestamp": "Timestamp",

@@ -278,6 +278,11 @@ const onError = (err: any) => {
 
 const onClose = () => {
   connected.value = false
+  const session = props.session
+  session.removeEventListener('data', onData)
+  session.removeEventListener('echo', onEcho)
+  session.removeEventListener('close', onClose)
+  session.removeEventListener('error', onError)
 }
 
 const connect = async () => {

@@ -5,6 +5,7 @@ import { parseArgs } from './cli'
 import ProjectServiceInMain from './service/ProjectServiceInMain'
 import SerialPortServiceInMain from './service/SerialPortServiceInMain'
 import TCPClientServiceInMain from './service/TcpClientServiceInMain'
+import TCPServerServiceInMain from './service/TcpServerServiceInMain'
 
 if (!process.env.TABBY_PLUGINS) {
   process.env.TABBY_PLUGINS = ''
@@ -68,12 +69,14 @@ app.on('ready', async () => {
   const projectService = new ProjectServiceInMain()
   const serialPortService = new SerialPortServiceInMain()
   const tcpClientService = new TCPClientServiceInMain()
+  const tcpServerService = new TCPServerServiceInMain()
 
   const newWindow = async () => {
     const window = await application.newWindow({ hidden: argv.hidden })
     projectService.window = window.browserWindow as BrowserWindow
     serialPortService.window = window.browserWindow as BrowserWindow
     tcpClientService.window = window.browserWindow as BrowserWindow
+    tcpServerService.window = window.browserWindow as BrowserWindow
     // await window.ready
     window.passCliArguments(process.argv, process.cwd(), false)
     window.focus()

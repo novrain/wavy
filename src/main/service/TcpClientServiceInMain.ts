@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log'
 import { Socket } from 'node:net'
 
-export default class DefaultTCPClientService {
+export default class TCPClientServiceInMain {
   sockets: Map<string, Socket> = new Map()
   private _window?: BrowserWindow | undefined
   public get window(): BrowserWindow | undefined {
@@ -23,6 +23,7 @@ export default class DefaultTCPClientService {
     const socket = this.sockets.get(id) || new Socket(options)
     this.sockets.set(id, socket)
     return new Promise((resolve) => {
+      if (socket.closed || !socket.localPort) {
         socket.once('error', (error: any) => {
           resolve({
             result: false,

@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log'
 import { InterByteTimeoutParser, SerialPort } from 'serialport'
 
-export default class DefaultSerialPortService {
+export default class SerialPortServiceInMain {
   serials: Map<string, SerialPort> = new Map()
   private _window?: BrowserWindow | undefined
   public get window(): BrowserWindow | undefined {

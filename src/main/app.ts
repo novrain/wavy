@@ -242,6 +242,12 @@ export class Application {
                   this.send('renderer:session-new', "TCPClient")
                 }
               },
+              {
+                label: 'New TCPServer',
+                click: () => {
+                  this.send('renderer:session-new', "TCPServer")
+                }
+              },
             ]
           },
         ]

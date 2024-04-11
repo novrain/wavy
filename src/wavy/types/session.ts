@@ -54,8 +54,18 @@ export const createDefaultTCPClientOptions = (): TCPClientOptions => {
   }
 }
 
-export type SessionOptions = SerialProfileOptions | TCPClientOptions
-export type SessionType = 'Serial' | 'TCPClient'
+export interface TCPServerOptions {
+  port?: number
+}
+
+export const createDefaultTCPServerOptions = (): TCPServerOptions => {
+  return {
+    port: 8080
+  }
+}
+
+export type SessionOptions = SerialProfileOptions | TCPClientOptions | TCPServerOptions
+export type SessionType = 'Serial' | 'TCPClient' | 'TCPServer'
 
 export interface AbstractSession {
   id: string,

@@ -30,6 +30,13 @@
                    stacked
                    @click="() => onNewSession('TCPClient')">
               {{ t('session.types.tcpclient') }}
+            </v-btn> <v-btn class="mr-2"
+                   prepend-icon="mdi-consolidate"
+                   size="default"
+                   variant="tonal"
+                   stacked
+                   @click="() => onNewSession('TCPServer')">
+              {{ t('session.types.tcpserver') }}
             </v-btn>
           </v-container>
         </v-container>
@@ -50,6 +57,7 @@
 <script lang="ts" setup>
 import SerialSession from '@/components/SerialSession.vue'
 import TCPClientSession from '@/components/TCPClientSession.vue'
+import TCPServerSession from '@/components/TCPServerSession.vue'
 import { WidgetEvent } from '@/components/lumino/ItemWidget'
 import LuminoBoxPanel from '@/components/lumino/LuminoBoxPanel.vue'
 import LuminoWidget from '@/components/lumino/LuminoWidget.vue'
@@ -79,7 +87,8 @@ const listPorts = async () => {
 //
 const sessionComps = {
   'Serial': SerialSession,
-  'TCPClient': TCPClientSession
+  'TCPClient': TCPClientSession,
+  'TCPServer': TCPServerSession
 } as any
 
 const menusStore = useMenuStore()
@@ -120,6 +129,15 @@ onMounted(() => {
         items: undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         handler: onNewTCPClientSessionClick,
+      },
+      {
+        id: 'session-new-tcpserver',
+        nameKey: "session.menu.newTCPServer",
+        name: t("session.menu.newTCPServer"),
+        icon: 'mdi-alpha-s',
+        items: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handler: onNewTCPServerSessionClick,
       }
     ]
   })
@@ -139,6 +157,9 @@ const onNewTCPClientSessionClick = (_e: MenuEvent) => {
   onNewSession('TCPClient')
 }
 
+const onNewTCPServerSessionClick = (_e: MenuEvent) => {
+  onNewSession('TCPServer')
+}
 
 onMounted(() => {
   window.sessionService.onNewSession(onNewSession)

@@ -2,77 +2,91 @@
   <v-container class="d-flex flex-1-1 pa-2 flex-column">
     <v-form :disabled="connected"
             ref='form'>
-      <div class="d-flex">
-        <div class="d-flex">
-          <slot name="options"
-                :advance="advance"></slot>
+      <div class="d-flex w-100 align-center">
+        <div class="d-flex flex-1-1">
+          <div class="d-flex">
+            <slot name="options"
+                  :advance="advance"></slot>
+          </div>
+          <div class="d-flex ma-1"
+               v-if="advanceMode">
+            <v-btn @click="changeParamsMode"
+                   v-if="advance"
+                   icon="mdi-chevron-double-left">
+            </v-btn>
+            <v-btn @click="changeParamsMode"
+                   v-else
+                   icon="mdi-chevron-double-right">
+            </v-btn>
+          </div>
+          <div class="d-flex ma-1">
+            <v-btn @click="disconnect"
+                   v-if="connected"
+                   icon="mdi-connection"></v-btn>
+            <v-btn @click="connect"
+                   v-if="!passive && !connected"
+                   :disabled="connecting"
+                   icon="mdi-check-bold"></v-btn>
+          </div>
         </div>
-        <div class="d-flex ma-1"
-             v-if="advanceMode">
-          <v-btn @click="changeParamsMode"
-                 v-if="advance"
-                 icon="mdi-chevron-double-left">
-          </v-btn>
-          <v-btn @click="changeParamsMode"
-                 v-else
-                 icon="mdi-chevron-double-right">
-          </v-btn>
-        </div>
-        <div class="d-flex ma-1">
-          <v-btn @click="disconnect"
-                 v-if="connected"
-                 icon="mdi-connection"></v-btn>
-          <v-btn @click="connect"
-                 v-if="!passive && !connected"
-                 :disabled="connecting"
-                 icon="mdi-check-bold"></v-btn>
-        </div>
+        <v-btn @click="fullDataSwitch"
+               v-if="fullData"
+               icon="mdi-chevron-double-left">
+        </v-btn>
+        <v-btn @click="fullDataSwitch"
+               v-else
+               icon="mdi-chevron-double-right">
+        </v-btn>
       </div>
     </v-form>
-    <v-container class="pa-0 d-flex flex-1-1 mt-2 mb-4 session-data">
-      <session-textarea class=""
-                        :label="t('session.data.label')"
-                        v-model="dataAsText"
-                        :editable="false"></session-textarea> <v-container
-                   class="pa-0 d-flex flex-column h-100 session-command-control">
-        <v-checkbox class="flex-0-0"
-                    :label="t('session.options.enableTimestamp')"
-                    v-model="enableTimestamp"
-                    color="primary"
-                    hide-details></v-checkbox>
-        <v-checkbox class="flex-0-0"
-                    :label="t('session.options.enableNewline')"
-                    v-model="enableNewline"
-                    color="primary"
-                    hide-details></v-checkbox>
+    <v-container class="pa-0 d-flex flex-1-1 mt-2 mb-4">
+      <v-container class="pa-0 d-flex flex-1-1 flex-column ma-0">
+        <session-textarea class="flex-1-1 session-data mb-2"
+                          :label="t('session.data.label')"
+                          v-model="dataAsText"
+                          :editable="false"></session-textarea>
+        <session-textarea class="session-command-input"
+                          v-model="command"
+                          v-if="!fullData"
+                          @update:model-select="onSelect"
+                          :label="t('session.command.label')"></session-textarea>
       </v-container>
-    </v-container>
-    <v-container class="pa-0 d-flex align-center mb-4 session-command">
-      <session-textarea class="session-command-input"
-                        v-model="command"
-                        @update:model-select="onSelect"
-                        :label="t('session.command.label')"></session-textarea>
-      <v-container class="pa-0 d-flex flex-column h-100 session-command-control">
-        <v-checkbox class="flex-0-0"
-                    :label="t('session.options.enableSendSelect')"
-                    v-model="enableSendSelect"
-                    color="primary"
-                    hide-details></v-checkbox>
-        <v-radio-group class="flex-0-0"
-                       v-model="format"
-                       hide-details
-                       inline>
-          <v-radio label="Hex"
-                   value="hex"></v-radio>
-          <v-radio label="ASCII"
-                   value="ascii"></v-radio>
-        </v-radio-group>
-        <v-btn class="mt-auto"
-               prepend-icon="mdi-check-bold"
-               density="compact"
-               @click="send"
-               :disabled="!connected"
-               size="default">{{ t('session.command.send') }}</v-btn>
+      <v-container class="pl-2 pa-0 d-flex flex-column ma-0 session-command-control"
+                   v-if="!fullData">
+        <v-container class="pa-0 d-flex flex-column flex-1-1">
+          <v-checkbox class="flex-0-0"
+                      :label="t('session.options.enableTimestamp')"
+                      v-model="enableTimestamp"
+                      color="primary"
+                      hide-details></v-checkbox>
+          <v-checkbox class="flex-0-0"
+                      :label="t('session.options.enableNewline')"
+                      v-model="enableNewline"
+                      color="primary"
+                      hide-details></v-checkbox>
+        </v-container>
+        <v-container class="pa-0 d-flex flex-column session-command-input">
+          <v-checkbox class="flex-0-0"
+                      :label="t('session.options.enableSendSelect')"
+                      v-model="enableSendSelect"
+                      color="primary"
+                      hide-details></v-checkbox>
+          <v-radio-group class="flex-0-0"
+                         v-model="format"
+                         hide-details
+                         inline>
+            <v-radio label="Hex"
+                     value="hex"></v-radio>
+            <v-radio label="ASCII"
+                     value="ascii"></v-radio>
+          </v-radio-group>
+          <v-btn class="mt-auto"
+                 prepend-icon="mdi-check-bold"
+                 density="compact"
+                 @click="send"
+                 :disabled="!connected"
+                 size="default">{{ t('session.command.send') }}</v-btn>
+        </v-container>
       </v-container>
     </v-container>
     <v-container class="pa-0 d-flex justify-between"
@@ -120,6 +134,7 @@ const data = ref<{ t: Date, d: Uint8Array | string }[]>([])
 const dataAsText = ref('')
 const command = ref('')
 const info = ref('')
+const fullData = ref(false)
 
 const form = ref()
 
@@ -135,6 +150,10 @@ onMounted(() => {
 
 const changeParamsMode = () => {
   advance.value = !advance.value
+}
+
+const fullDataSwitch = () => {
+  fullData.value = !fullData.value
 }
 
 const selectCommand = ref<string | undefined>(undefined)
@@ -251,7 +270,7 @@ onUnmounted(disconnect)
   padding-right: 10px;
 }
 
-.session-command,
+.session-command-input,
 .session-data {
   :deep(.v-input__control) {
     flex: 1;
@@ -265,6 +284,8 @@ onUnmounted(disconnect)
 
 .session-command-control {
   width: 140px;
+  min-width: 140px;
+  max-width: 140px;
 }
 
 .session-command-input {

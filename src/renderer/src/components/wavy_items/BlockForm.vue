@@ -22,11 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import { Block, BlockType } from '@W/frame/Block'
-import { BlocksContainer, ComputedBlock as BlockComputed, createBlock } from '@W/frame/Frame'
+import { Block, ComputedBlock as BlockComputed, BlockType, BlocksContainer, createBlock } from '@W/frame/Block'
 import { defaultId } from '@W/util/SnowflakeId'
 import { ref, toRaw, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import CompositeBlock from '../blocks/CompositeBlock.vue'
 import DecimalBlockDefinition from '../blocks/DecimalBlockDefinition.vue'
 import DelayBlockItem from '../blocks/DelayBlockItem.vue'
 import RefBlockItem from '../blocks/RefBlockItem.vue'
@@ -39,11 +39,12 @@ const blockComps = {
   "Decimal": DecimalBlockDefinition,
   "Delay": DelayBlockItem,
   "Ref": RefBlockItem,
-  "Computed": ComputedBlock
+  "Computed": ComputedBlock,
+  "Composite": CompositeBlock
 } as any
 
 const props = withDefaults(defineProps<{ block?: Block, blocksContainer?: BlocksContainer, refBlocks?: Block[], index: number, types?: BlockType[], mode?: 'new' | 'edit' }>(), {
-  types: () => ['String', 'Decimal', 'Ref', 'Computed'],
+  types: () => ['String', 'Decimal', 'Ref', 'Computed', 'Composite'],
   mode: 'new',
 })
 

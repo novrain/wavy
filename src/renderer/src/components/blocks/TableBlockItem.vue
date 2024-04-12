@@ -23,13 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { Block, BlockType } from '@W/frame/Block'
-import { BlocksContainer, createBlock } from '@W/frame/Frame'
+import { Block, BlockType, BlocksContainer, createBlock } from '@W/frame/Block'
 import { defaultId } from '@W/util/SnowflakeId'
+import ComputedBlock from '../wavy_items/ComputedBlock.vue'
 import DecimalBlockDefinition from './DecimalBlockDefinition.vue'
 import RefBlockItem from './RefBlockItem.vue'
 import StringBlockDefinition from './StringBlockDefinition.vue'
-import ComputedBlock from '../wavy_items/ComputedBlock.vue'
 
 const blockComps = {
   "String": StringBlockDefinition,

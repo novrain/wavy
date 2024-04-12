@@ -1,7 +1,7 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import * as yaml from 'js-yaml'
 import { app } from 'electron'
+import * as fs from 'fs'
+import * as yaml from 'js-yaml'
+import * as path from 'path'
 
 export function loadConfig(): any {
 

@@ -4,6 +4,7 @@
                   mode="edit"
                   :blocks-container="blocksContainer"
                   :block="block"
+                  :ref-blocks="refBlocks"
                   :index="index"
                   @cancel="onBlockDialogCancel"
                   @confirm="onBlockDialogConfirm"></block-dialog>
@@ -12,6 +13,8 @@
               v-if="block.type === 'String'"></v-icon>
       <v-icon icon="mdi-code-brackets"
               v-if="block.type === 'Decimal'"></v-icon>
+      <v-icon icon="mdi-set-merge"
+              v-if="block.type === 'Composite'"></v-icon>
     </template>
     <v-list-item-title>
       <span v-tooltip="block.toString()"> {{ block.name }}</span>
@@ -30,9 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { Block } from '@W/frame/Block'
-import { BlocksContainer } from '@W/frame/Frame'
-import { ref } from 'vue'
+import { Block, BlocksContainer } from '@W/frame/Block'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlockDialog from './BlockDialog.vue'
 const { t } = useI18n({ useScope: 'global' })
@@ -45,6 +47,10 @@ const blockDialogRef = ref()
 const onBlockDialogCancel = () => {
   blockDialogRef.value.hide()
 }
+
+const refBlocks = computed(() => {
+  return props.blocksContainer.blocks.filter(f => f.id !== props.block.id)
+})
 
 const onBlockDialogConfirm = () => {
   blockDialogRef.value.validate().then((res: any) => {

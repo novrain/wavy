@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, shell } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 const DefaultHostWindowService = {
   isMaximized() {
@@ -105,7 +105,7 @@ const DefaultProjectService = {
   },
 }
 
-// file service
+// session service
 contextBridge.exposeInMainWorld('projectService', DefaultProjectService)
 
 const DefaultSessionService = {
@@ -116,5 +116,79 @@ const DefaultSessionService = {
   },
 }
 
-// file service
+// session service
 contextBridge.exposeInMainWorld('sessionService', DefaultSessionService)
+
+const tcpClientListenerMap = new Map<string, any>()
+
+const DefaultTCPClientService = {
+  connect(id: string, options: any): Promise<any> {
+    return ipcRenderer.invoke('tcpclient:connect', id, options)
+  },
+  disconnect(id: string): Promise<boolean> {
+    return ipcRenderer.invoke('tcpclient:disconnect', id)
+  },
+  addEventListener(id: string, event: string, listener: any): void {
+    const key = `tcpclient:${id}:${event}`
+    if (tcpClientListenerMap.has(key)) {
+      return
+    }
+    const callback = (_event: Electron.IpcRendererEvent, ...args: any[]) => { listener(...args) }
+    tcpClientListenerMap.set(key, callback)
+    ipcRenderer.removeListener(key, callback)
+    ipcRenderer.on(key, callback)
+  },
+  removeEventListener(id: string, event: string, listener: any): void {
+    const key = `tcpclient:${id}:${event}`
+    if (tcpClientListenerMap.has(key)) {
+      listener = tcpClientListenerMap.get(key)
+      ipcRenderer.removeListener(key, listener)
+      tcpClientListenerMap.delete(key)
+    }
+  },
+  write(id: string, data: any): Promise<void> {
+    return ipcRenderer.invoke('tcpclient:write', id, data)
+  }
+}
+// tcp client 
+contextBridge.exposeInMainWorld('tcpClient', DefaultTCPClientService)
+
+const tcpServerListenerMap = new Map<string, any>()
+
+const DefaultTCPServerService = {
+  connect(id: string, options: any): Promise<any> {
+    return ipcRenderer.invoke('tcpserver:connect', id, options)
+  },
+  disconnect(id: string): Promise<boolean> {
+    return ipcRenderer.invoke('tcpserver:disconnect', id)
+  },
+  disconnectClient(id: string, client: string): Promise<boolean> {
+    return ipcRenderer.invoke('tcpserver:disconnectClient', id, client)
+  },
+  addEventListener(id: string, event: string, listener: any): void {
+    const key = `tcpserver:${id}:${event}`
+    if (tcpServerListenerMap.has(key)) {
+      return
+    }
+    const callback = (_event: Electron.IpcRendererEvent, ...args: any[]) => { listener(...args) }
+    tcpServerListenerMap.set(key, callback)
+    ipcRenderer.removeListener(key, callback)
+    ipcRenderer.on(key, callback)
+  },
+  removeEventListener(id: string, event: string, listener: any): void {
+    const key = `tcpserver:${id}:${event}`
+    if (tcpServerListenerMap.has(key)) {
+      listener = tcpServerListenerMap.get(key)
+      ipcRenderer.removeListener(key, listener)
+      tcpServerListenerMap.delete(key)
+    }
+  },
+  write(id: string, data: any): Promise<void> {
+    return ipcRenderer.invoke('tcpserver:write', id, data)
+  },
+  writeClient(id: string, client: string, data: any): Promise<void> {
+    return ipcRenderer.invoke('tcpserver:writeClient', id, client, data)
+  }
+}
+// tcp server 
+contextBridge.exposeInMainWorld('tcpServer', DefaultTCPServerService)

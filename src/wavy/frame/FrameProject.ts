@@ -6,14 +6,15 @@ import 'reflect-metadata'
 import { defaultId } from '../util/SnowflakeId'
 import {
   Block,
+  BlockTransformer,
+  CompositeBlock,
+  RefBlock,
   UndefinableBlock
 } from './Block'
 import {
-  BlockTransformer,
   Container,
   DataFrame,
   Frame,
-  RefBlock,
   RefFrame,
   Suite,
   UndefinableFrame,
@@ -61,6 +62,10 @@ export class FrameProject implements Container {
     this._blocks.forEach((b => {
       if (b instanceof RefBlock) {
         b.blocksContainer = this
+      }
+      if (b instanceof CompositeBlock) {
+        b.blocksContainer = this
+        b.injectContainerToRef()
       }
     }))
   }
@@ -146,7 +151,7 @@ export class FrameProject implements Container {
     } else {
       this._blocks.push(block)
     }
-    if (block.__type === 'Ref') {
+    if (block.__type === 'Ref' || block.__type === 'Composite') {
       (block as RefBlock).blocksContainer = this
     }
   }

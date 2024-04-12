@@ -1,5 +1,3 @@
-import EventEmitter from 'eventemitter3'
-
 export const SERIAL_BAUD_RATES = [
   110, 150, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 1500000,
 ]
@@ -44,8 +42,30 @@ export const createDefaultSerialOptions = (): SerialProfileOptions => {
   }
 }
 
-export type SessionOptions = SerialProfileOptions
-export type SessionType = 'Serial' | 'TCP'
+export interface TCPClientOptions {
+  ip?: string,
+  port?: number
+}
+
+export const createDefaultTCPClientOptions = (): TCPClientOptions => {
+  return {
+    ip: 'localhost',
+    port: 8080
+  }
+}
+
+export interface TCPServerOptions {
+  port?: number
+}
+
+export const createDefaultTCPServerOptions = (): TCPServerOptions => {
+  return {
+    port: 8080
+  }
+}
+
+export type SessionOptions = SerialProfileOptions | TCPClientOptions | TCPServerOptions
+export type SessionType = 'Serial' | 'TCPClient' | 'TCPServer'
 
 export interface AbstractSession {
   id: string,

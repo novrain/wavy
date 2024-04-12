@@ -1,6 +1,6 @@
 <template>
   <dialog-wrapper ref="dialogRef"
-                  :min-width="600"
+                  :width="600"
                   :title="t(`project.frame.block_${mode}`)"
                   @cancel="onCancel"
                   @confirm="onConfirm">
@@ -15,8 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { Block, BlockType } from '@W/frame/Block'
-import { BlocksContainer } from '@W/frame/Frame'
+import { Block, BlockType, BlocksContainer } from '@W/frame/Block'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DialogWrapper from '../utils/DialogWrapper.vue'
@@ -26,7 +25,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(defineProps<{ block?: Block, blocksContainer?: BlocksContainer, refBlocks?: Block[], index: number, mode?: 'new' | 'edit', types?: BlockType[] }>(), {
   mode: 'new',
-  types: () => ['String', 'Decimal']
+  types: () => ['String', 'Decimal', 'Composite']
 })
 
 const emits = defineEmits(['confirm', 'cancel'])

@@ -54,9 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import { Block } from '@W/frame/Block'
+import { Block, BlocksContainer, ComputedBlock } from '@W/frame/Block'
 import { ComputerType, createComputer } from '@W/frame/Computer'
-import { BlocksContainer, ComputedBlock } from '@W/frame/Frame'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlocksTable from '../blocks/BlocksContainer.vue'
@@ -67,7 +66,7 @@ const { t } = useI18n({ useScope: 'global' })
 const props = withDefaults(defineProps<{ block: Block, blocksContainer: BlocksContainer, index: number, direction?: 'row' | 'column', hideDetails?: boolean, mode?: 'computed-table' | 'computed-frame', computerTypes?: ComputerType[], refBlocks?: Block[] }>(),
   {
     mode: 'computed-frame',
-    computerTypes: () => ['Empty', 'CRC16'],
+    computerTypes: () => ['Empty', 'CRC16', 'Sum8Modulo256'],
     hideDetails: true
   })
 const innerMode = ref(props.mode)
@@ -86,7 +85,7 @@ const onComputerTypeChange = (type: ComputerType) => {
 }
 
 const onSelectedBlocksChange = (values: string[]) => {
-  computedBlock.blocks = values.map(id => blocks.value.find(b => b.id === id))
+  computedBlock.blocks = values.map(id => blocks.value.find(b => b.id === id)) as Block[]
 }
 </script>
 

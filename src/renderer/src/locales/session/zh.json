@@ -5,11 +5,14 @@
       "session_category": "会话"
     },
     "types": {
-      "serial": "串口"
+      "serial": "串口",
+      "tcpclient": "TCP客户端"
     },
     "menu": {
       "session": "会话",
-      "new": "新建"
+      "new": "新建",
+      "newSerial": "新建串口",
+      "newTCPClient": "新建TCP客户端"
     },
     "options": {
       "enableTimestamp": "时间戳",

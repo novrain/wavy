@@ -1,5 +1,5 @@
 <template>
-  <v-container class="session-textarea pa-0 d-flex flex-1-1 flex-column mr-2">
+  <v-container class="session-textarea pa-0 d-flex flex-column mr-2">
     <v-textarea class="d-flex flex-1-1"
                 :label="label"
                 ref="textareaRef"

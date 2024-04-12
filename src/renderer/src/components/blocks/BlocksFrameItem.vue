@@ -21,7 +21,8 @@
             :item="block"
             :index="index" />
     </div>
-    <v-btn :value="block.id">
+    <v-btn :value="block.id"
+           v-tooltip="block.toString()">
       <v-icon icon="mdi-code-string"
               v-if="block.type === 'String'"></v-icon>
       <v-icon icon="mdi-code-brackets"
@@ -32,7 +33,7 @@
               v-if="block.type === 'Ref'"></v-icon>
       <v-icon icon="mdi-calculator-variant-outline"
               v-if="block.type === 'Computed'"></v-icon>
-      <span v-tooltip="block.toString()">{{ block.type === 'Delay' ? block.toString() : block.name }}</span>
+      <span>{{ block.type === 'Delay' ? block.toString() : block.name }}</span>
     </v-btn>
     <div class='d-flex align-center'
          v-if="isCurrent">
@@ -44,8 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { Block, BlockType } from '@W/frame/Block'
-import { BlocksContainer } from '@W/frame/Frame'
+import { Block, BlockType, BlocksContainer } from '@W/frame/Block'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BlockDialog from '../wavy_items/BlockDialog.vue'

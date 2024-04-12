@@ -1,0 +1,13 @@
+{
+  "tcpServer": {
+    "options": {
+      "ip": "IP",
+      "port": "Port"
+    },
+    "rules": {
+      "ipIsRequired": "IP is required",
+      "portIsRequired": "Port is required",
+      "portMinMax": "Port must in [1, 65535]"
+    }
+  }
+}

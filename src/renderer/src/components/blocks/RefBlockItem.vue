@@ -14,8 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { Block } from '@W/frame/Block'
-import { RefBlock } from '@W/frame/Frame'
+import { Block, RefBlock } from '@W/frame/Block'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })

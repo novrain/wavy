@@ -1,5 +1,5 @@
-import RawSerialPortSession, { Session } from '@/types/session'
-import { createDefaultSerialOptions, SessionOptions, SessionType } from '@W/types/session'
+import RawSerialPortSession, { Session, TCPClientSession, TCPServerSession } from '@/types/session'
+import { SessionOptions, SessionType, createDefaultSerialOptions, createDefaultTCPClientOptions, createDefaultTCPServerOptions } from '@W/types/session'
 import BitSet from '@W/util/BitSet'
 import SnowflakeId from '@W/util/SnowflakeId'
 import { defineStore } from 'pinia'
@@ -9,6 +9,10 @@ const idGenerator = new SnowflakeId({})
 
 const defaultOptions = (type: string): SessionOptions => {
   switch (type) {
+    case 'TCPClient':
+      return createDefaultTCPClientOptions()
+    case 'TCPServer':
+      return createDefaultTCPServerOptions()
     case 'Serial':
     default:
       return createDefaultSerialOptions()
@@ -17,6 +21,10 @@ const defaultOptions = (type: string): SessionOptions => {
 
 const createSession = (type: string): Session => {
   switch (type) {
+    case 'TCPClient':
+      return new TCPClientSession(idGenerator.nextId().toString(), defaultOptions(type))
+    case 'TCPServer':
+      return new TCPServerSession(idGenerator.nextId().toString(), defaultOptions(type))
     case 'Serial':
     default:
       return new RawSerialPortSession(idGenerator.nextId().toString(), defaultOptions(type))

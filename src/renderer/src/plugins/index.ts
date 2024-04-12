@@ -7,9 +7,9 @@
 // Plugins
 import pinia from '../store'
 import app from './app'
+import floatingVue from './floating_vue'
 import i18n from './i18n'
 import vuetify from './vuetify'
-import floatingVue from './floating_vue'
 // import router from '../router'
 
 // Types

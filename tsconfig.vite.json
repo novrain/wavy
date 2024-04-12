@@ -18,9 +18,7 @@
       "esnext",
       "dom"
     ],
-    "types": [
-      "element-plus/global"
-    ],
+    "types": [],
     "paths": {
       "@/*": [
         "./src/renderer/src/*"

@@ -329,7 +329,6 @@ const onWavyItemDialogConfirm = () => {
 
 const onWavyItemDelete = (wavyItem: WavyItem, index: number) => {
   frameProject?.deleteWavyItem(index)
-  console.log(wavyItem.tempIndex)
   tempWavyItemIndexSet.clear(wavyItem.tempIndex!)
 }
 

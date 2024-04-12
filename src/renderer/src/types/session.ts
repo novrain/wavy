@@ -296,7 +296,6 @@ export class TCPServerClient extends EventEmitter {
     serverSession: TCPServerSession,
     index?: number | undefined,
   ) {
-    console.log(id)
     super()
     this._serverSession = serverSession
     this._index = index

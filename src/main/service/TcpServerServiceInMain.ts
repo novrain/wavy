@@ -73,7 +73,7 @@ export default class TCPServerServiceInMain {
         const sockets = this.serverSockets.get(id) || new Map()
         sockets.forEach((s, k) => {
           s.destroy()
-          s.removeAllListeners()
+          // s.removeAllListeners()
         })
         sockets.clear()
         this.serverSockets.delete(id)

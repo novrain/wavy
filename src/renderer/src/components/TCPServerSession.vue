@@ -100,7 +100,6 @@ const onClose = () => {
 }
 
 const onConnection = (client: any) => {
-  debugger
   const c = new TCPServerClient(client.id, client.remoteAddress, client.remotePort, serverSession, clients.length + 1)
   c.isConnected = true
   serverSession.addClient(c)

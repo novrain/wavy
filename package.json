@@ -1,6 +1,6 @@
 {
   "name": "wavy",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "private": true,
   "description": "A protocol testing tool that supports various connection methods.",
   "repository": "https://github.com/novrain/wavy",

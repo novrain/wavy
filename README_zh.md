@@ -8,6 +8,7 @@
 
 - 支持Windows/Mac/Linux
 - 支持多连接会话
+- 支持Serial/TCP Client/TCP Server
 - 支持多种编码：Hex/ASCII/Base64
 - 支持仅发送选中的部分指令
 - 支持工程管理，便于管理分享测试指令
@@ -50,7 +51,7 @@
 ### 版本要求
 
 - Nodejs: 18.18.2
-- Electron: 28.1.3
+- Electron: 28.3.0
 
 ### 构建
 

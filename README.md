@@ -8,6 +8,7 @@ Target: Build a protocol testing tool that supports various connection methods.
 
 - Supports Windows/Mac/Linux.
 - Supports multiple connection sessions.
+- Supports Serial/TCP Client/TCP Server.
 - Multiple encoding options: Hex/ASCII/Base64.
 - Supports sending only the selected text as command.
 - Project management support for convenient handling and sharing of test instructions.
@@ -50,7 +51,7 @@ Target: Build a protocol testing tool that supports various connection methods.
 ### Versions
 
 - Nodejs: 18.18.2
-- Electron: 28.1.3
+- Electron: 28.3.0
 
 ### Build
 

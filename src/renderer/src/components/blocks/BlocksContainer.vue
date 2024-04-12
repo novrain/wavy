@@ -339,8 +339,8 @@ const onTypeChange = (oldItem: Block, newItem: Block) => {
   emitChange()
 }
 
-const onSelectedBlocksChange = ((values: string[]) => {
-  innerSelectedBlocks.value = values
+const onSelectedBlocksChange = ((values: string[] | null) => {
+  innerSelectedBlocks.value = values || []
   emitChange()
 })
 </script>

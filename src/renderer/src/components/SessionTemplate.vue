@@ -228,9 +228,11 @@ const onClose = () => {
 const connect = async () => {
   const res = await form.value.validate()
   if (res.valid) {
+    connecting.value = true
     const session = props.session
     session.options = props.options
     session.open().then((r: any) => {
+      connecting.value = false
       connected.value = r.result
       info.value = r.err || ''
       if (r.result) {

@@ -1,3 +1,5 @@
+import { Block } from '@W/frame/Block'
+import { Frame } from '@W/frame/Frame'
 import { AbstractSession, SessionOptions, SessionType } from '@W/types/session'
 import EventEmitter from 'eventemitter3'
 
@@ -104,11 +106,41 @@ export default class RawSerialPortSession extends EventEmitter implements Abstra
     }
   }
 
-  async send(data: Uint8Array, echo: boolean = false, raw: string | undefined = undefined): Promise<any> {
+  async sendBlock(data: Block, echo: boolean): Promise<any> {
+    if (window.serialPort) {
+      return window.serialPort.write(this.id, data.encode()).then((r) => {
+        if (echo) {
+          this.emit('echo', { data })
+        }
+        return r
+      })
+    } else {
+      if (echo) {
+      }
+      return Promise.resolve()
+    }
+  }
+
+  async sendFrame(data: Frame, echo: boolean): Promise<any> {
+    if (window.serialPort) {
+      return window.serialPort.write(this.id, data.encode()).then((r) => {
+        if (echo) {
+          this.emit('echo', { data })
+        }
+        return r
+      })
+    } else {
+      if (echo) {
+      }
+      return Promise.resolve()
+    }
+  }
+
+  async send(data: Uint8Array, echo: boolean = false): Promise<any> {
     if (window.serialPort) {
       return window.serialPort.write(this.id, data).then((r) => {
         if (echo) {
-          this.emit('echo', { data, raw })
+          this.emit('echo', { data })
         }
         return r
       })
@@ -245,11 +277,41 @@ export class TCPClientSession extends EventEmitter implements AbstractSession {
     }
   }
 
-  async send(data: Uint8Array, echo: boolean = false, raw: string | undefined = undefined): Promise<any> {
+  async sendBlock(data: Block, echo: boolean): Promise<any> {
+    if (window.tcpClient) {
+      return window.tcpClient.write(this.id, data.encode()).then((r) => {
+        if (echo) {
+          this.emit('echo', { data })
+        }
+        return r
+      })
+    } else {
+      if (echo) {
+      }
+      return Promise.resolve()
+    }
+  }
+
+  async sendFrame(data: Frame, echo: boolean): Promise<any> {
+    if (window.tcpClient) {
+      return window.tcpClient.write(this.id, data.encode()).then((r) => {
+        if (echo) {
+          this.emit('echo', { data })
+        }
+        return r
+      })
+    } else {
+      if (echo) {
+      }
+      return Promise.resolve()
+    }
+  }
+
+  async send(data: Uint8Array, echo: boolean = false): Promise<any> {
     if (window.tcpClient) {
       return window.tcpClient.write(this.id, data).then((r) => {
         if (echo) {
-          this.emit('echo', { data, raw })
+          this.emit('echo', { data })
         }
         return r
       })
@@ -498,11 +560,41 @@ export class TCPServerSession extends EventEmitter implements AbstractSession {
     }
   }
 
-  async send(data: Uint8Array, echo: boolean = false, raw: string | undefined = undefined): Promise<any> {
+  async sendBlock(data: Block, echo: boolean): Promise<any> {
+    if (window.tcpServer) {
+      return window.tcpServer.write(this.id, data.encode()).then((r) => {
+        if (echo) {
+          this.emit('echo', { data })
+        }
+        return r
+      })
+    } else {
+      if (echo) {
+      }
+      return Promise.resolve()
+    }
+  }
+
+  async sendFrame(data: Frame, echo: boolean): Promise<any> {
+    if (window.tcpServer) {
+      return window.tcpServer.write(this.id, data.encode()).then((r) => {
+        if (echo) {
+          this.emit('echo', { data })
+        }
+        return r
+      })
+    } else {
+      if (echo) {
+      }
+      return Promise.resolve()
+    }
+  }
+
+  async send(data: Uint8Array, echo: boolean = false): Promise<any> {
     if (window.tcpServer) {
       return window.tcpServer.write(this.id, data).then((r) => {
         if (echo) {
-          this.emit('echo', { data, raw })
+          this.emit('echo', { data })
         }
         return r
       })

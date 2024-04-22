@@ -44,7 +44,7 @@ export class DefaultExecutor implements Executor {
     if (block.type === 'Delay') {
       return await delay(block.encode())
     }
-    return await session.sendBlock(block, true)
+    return await session.sendBlock(block.deRefClone(true), true)
   }
 
   executeBlockToSessions = async (sessions: Session[], block: Block): Promise<any> => {
@@ -88,7 +88,7 @@ export class DefaultExecutor implements Executor {
   // project 
   executeFrameToSession = async (session: Session, frame: Frame): Promise<any> => {
     await delay(frame.preDelay)
-    const res = await session.sendFrame(frame, true)
+    const res = await session.sendFrame(frame.deRefClone(true) as Frame, true)
     await delay(frame.postDelay)
     return res
   }

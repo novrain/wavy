@@ -26,6 +26,8 @@ export interface WavyItem {
   container?: Container
   injectContainerToRef(): void
   clone(withIdentify: boolean): WavyItem
+  deRefClone(withIdentify: boolean): WavyItem
+  deRefed?: boolean
   get type(): WavyItemType
   toString(): string
 }
@@ -73,6 +75,8 @@ export class RefFrame implements Frame {
 
   @Expose({ name: 'refId' })
   _refId?: string
+
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -195,6 +199,14 @@ export class RefFrame implements Frame {
     }
     return cloned
   }
+
+  deRefClone(withIdentify: boolean): Frame {
+    const cloned = this.clone(withIdentify) as RefFrame
+    cloned.frame
+    cloned._frame = cloned._frame?.deRefClone(withIdentify) as Frame
+    cloned.deRefed = true
+    return cloned
+  }
 }
 
 export class DataFrame implements BlocksContainer, Frame {
@@ -222,6 +234,7 @@ export class DataFrame implements BlocksContainer, Frame {
   _responseFrame?: Frame
   @Exclude()
   _container?: Container
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -318,7 +331,7 @@ export class DataFrame implements BlocksContainer, Frame {
   }
 
   injectContainerToRef(): void {
-    if (this._container) {
+    if (this._container && !this.deRefed) {
       let p = this._container
       this._blocks.forEach((b => {
         if (b instanceof RefBlock) {
@@ -380,6 +393,25 @@ export class DataFrame implements BlocksContainer, Frame {
     cloned._postDelay = this._postDelay
     return cloned
   }
+
+  deRefClone(withIdentify: boolean = false): Frame {
+    let cloned = new DataFrame(
+      withIdentify ? this.id : defaultId.nextId() + '',
+      this.name
+    )
+    if (withIdentify) {
+      cloned.tempIndex = this.tempIndex
+    }
+    cloned._blocks = this._blocks.map(b => b.deRefClone(withIdentify))
+    if (this._responseFrame) {
+      cloned._responseFrame = this._responseFrame.deRefClone(withIdentify) as Frame
+    }
+    cloned._container = this._container
+    cloned._preDelay = this._preDelay
+    cloned._postDelay = this._postDelay
+    cloned.deRefed = true
+    return cloned
+  }
 }
 
 export type WavyItemType = FrameType | 'Suite'
@@ -405,6 +437,7 @@ export class Suite implements WavyItem, WavyItemsContainer {
   _wavyItems: WavyItem[] = []
   @Exclude()
   _container?: Container
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -449,7 +482,7 @@ export class Suite implements WavyItem, WavyItemsContainer {
   }
 
   injectContainerToRef(): void {
-    if (this._container) {
+    if (this._container && !this.deRefed) {
       this._wavyItems.forEach((f => {
         f.container = this._container
         f.injectContainerToRef()
@@ -530,6 +563,20 @@ export class Suite implements WavyItem, WavyItemsContainer {
     cloned._wavyItems = this._wavyItems.map(f => f.clone(withIdentify))
     cloned._container = this._container
     cloned.injectContainerToRef()
+    return cloned
+  }
+
+  deRefClone(withIdentify: boolean): WavyItem {
+    let cloned = new Suite(
+      withIdentify ? this.id : defaultId.nextId() + '',
+      this.name,
+    )
+    if (withIdentify) {
+      cloned.tempIndex = this.tempIndex
+    }
+    cloned._wavyItems = this._wavyItems.map(f => f.deRefClone(withIdentify))
+    cloned._container = this._container
+    cloned.deRefed = true
     return cloned
   }
 }

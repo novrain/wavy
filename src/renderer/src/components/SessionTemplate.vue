@@ -108,8 +108,8 @@
   </v-container>
 </template>
 <script setup lang="ts">
+import { Block } from '@W/frame/Block'
 import { Frame } from '@W/frame/Frame'
-import { Block } from '@babel/types'
 import { Buffer } from 'buffer'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'

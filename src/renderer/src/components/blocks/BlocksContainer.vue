@@ -376,6 +376,7 @@ const onSelectedBlocksChange = ((values: string[] | null) => {
     tr,
     td {
       padding: 1px 5px;
+      max-width: 200px;
     }
   }
 }

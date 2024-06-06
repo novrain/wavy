@@ -3,13 +3,13 @@
     <v-tabs v-model="innerMode"
             align-tabs="center">
       <v-tab class="mr-2 ml-2"
-             value="frame">{{ t('frame.dataFrame.frameMode') }}</v-tab>
+             value="block-frame">{{ t('frame.dataFrame.frameMode') }}</v-tab>
       <v-tab class="mr-2 ml-2"
-             value="table">{{ t('frame.dataFrame.tableMode') }}</v-tab>
+             value="block-table">{{ t('frame.dataFrame.tableMode') }}</v-tab>
     </v-tabs>
     <v-window v-model="innerMode">
-      <v-window-item key="frame"
-                     value="frame">
+      <v-window-item key="block-frame"
+                     value="block-frame">
         <blocks-frame :title="t('frame.dataFrame.blocks')"
                       :include-ref="true"
                       :include-computed="true"
@@ -18,8 +18,8 @@
                       v-model:selected-blocks="selectedBlocks">
         </blocks-frame>
       </v-window-item>
-      <v-window-item key="table"
-                     value="table">
+      <v-window-item key="block-table"
+                     value="block-table">
         <blocks-container :title="t('frame.dataFrame.blocks')"
                           :include-ref="true"
                           :include-computed="true"

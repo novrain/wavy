@@ -576,9 +576,6 @@ export class ComputedBlock implements Block, RefIdsContainer {
   }
 
   get blocks(): Block[] {
-    if (this._blocksContainer && !this.deRefed && this._refIds.length > 0) {
-      this._blocks = this._refIds.map(i => this._blocksContainer?.findBlock(i)) as Block[]
-    }
     return this._blocks
   }
 
@@ -603,7 +600,9 @@ export class ComputedBlock implements Block, RefIdsContainer {
 
   set refIds(values: string[]) {
     this._refIds = values
-    this.blocks
+    if (this._blocksContainer && !this.deRefed && this._refIds.length > 0) {
+      this._blocks = this._refIds.map(i => this._blocksContainer?.findBlock(i)) as Block[]
+    }
   }
 
   get refIds(): string[] {

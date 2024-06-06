@@ -124,7 +124,16 @@ export class DecimalBlock implements DataBlock {
 
   @Expose()
   get value(): number | bigint {
-    return this._value
+    switch (this.numberType) {
+      case 'Int64':
+      case 'UInt64':
+        return BigInt(this._value)
+      default:
+        if (typeof (this._value) === 'string') {
+          return this._value * 1
+        }
+        return this._value
+    }
   }
 
   get numberLength(): number {

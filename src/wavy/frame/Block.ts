@@ -36,8 +36,10 @@ export interface Block {
   decode(raw: Buffer, offset: number): number
   toString(): string
   clone(withIdentify: boolean): Block
+  deRefClone(withIdentify: boolean): Block
   // get value(): any
   get type(): BlockType
+  deRefed?: boolean
 }
 
 export type UndefinableBlock = Block | undefined
@@ -94,6 +96,7 @@ export class DecimalBlock implements DataBlock {
   _value: number | bigint = 0
   strValue: string
   tempIndex?: number
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -121,7 +124,16 @@ export class DecimalBlock implements DataBlock {
 
   @Expose()
   get value(): number | bigint {
-    return this._value
+    switch (this.numberType) {
+      case 'Int64':
+      case 'UInt64':
+        return BigInt(this._value)
+      default:
+        if (typeof (this._value) === 'string') {
+          return this._value * 1
+        }
+        return this._value
+    }
   }
 
   get numberLength(): number {
@@ -228,7 +240,7 @@ export class DecimalBlock implements DataBlock {
   }
 
   clone(withIdentify: boolean = false): Block {
-    let clone = new DecimalBlock(
+    let cloned = new DecimalBlock(
       withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.value,
@@ -240,9 +252,13 @@ export class DecimalBlock implements DataBlock {
       this.pad
     )
     if (withIdentify) {
-      clone.tempIndex = this.tempIndex
+      cloned.tempIndex = this.tempIndex
     }
-    return clone
+    return cloned
+  }
+
+  deRefClone(withIdentify: boolean): Block {
+    return this.clone(withIdentify)
   }
 }
 
@@ -257,6 +273,7 @@ export class StringBlock implements DataBlock {
   __type: BlockType = 'String'
   strValue: string = '0'
   tempIndex?: number
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -308,7 +325,7 @@ export class StringBlock implements DataBlock {
   }
 
   clone(withIdentify: boolean = false): Block {
-    let clone = new StringBlock(
+    let cloned = new StringBlock(
       withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.value,
@@ -319,9 +336,13 @@ export class StringBlock implements DataBlock {
       this.pad
     )
     if (withIdentify) {
-      clone.tempIndex = this.tempIndex
+      cloned.tempIndex = this.tempIndex
     }
-    return clone
+    return cloned
+  }
+
+  deRefClone(withIdentify: boolean): Block {
+    return this.clone(withIdentify)
   }
 }
 
@@ -332,6 +353,7 @@ export class DelayBlock implements Block {
   __type: BlockType = 'Delay'
   @Exclude()
   _value: number
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -351,6 +373,10 @@ export class DelayBlock implements Block {
     this._value = v
   }
 
+  get type(): BlockType {
+    return this.__type
+  }
+
   encode(): number {
     return this.unit === 's' ? this._value * 1000 : this._value * 1
   }
@@ -364,20 +390,20 @@ export class DelayBlock implements Block {
   }
 
   clone(withIdentify: boolean = false): Block {
-    let clone = new DelayBlock(
+    let cloned = new DelayBlock(
       withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.value,
       this.unit
     )
     if (withIdentify) {
-      clone.tempIndex = this.tempIndex
+      cloned.tempIndex = this.tempIndex
     }
-    return clone
+    return cloned
   }
 
-  get type(): BlockType {
-    return this.__type
+  deRefClone(withIdentify: boolean): Block {
+    return this.clone(withIdentify)
   }
 }
 
@@ -391,6 +417,7 @@ export class RefBlock implements Block {
   @Exclude()
   _blocksContainer?: BlocksContainer
   tempIndex?: number
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -432,7 +459,7 @@ export class RefBlock implements Block {
   }
 
   get block(): UndefinableBlock {
-    if (this._blocksContainer && this._refId) {
+    if (this._blocksContainer && !this.deRefed && this._refId) {
       this._block = this._blocksContainer.findBlock(this._refId)
     }
     return this._block
@@ -466,16 +493,27 @@ export class RefBlock implements Block {
   }
 
   clone(withIdentify: boolean = false): Block {
-    let clone = new RefBlock(
+    let cloned = new RefBlock(
       withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this.refId,
       this._blocksContainer
     )
     if (withIdentify) {
-      clone.tempIndex = this.tempIndex
+      cloned.tempIndex = this.tempIndex
     }
-    return clone
+    return cloned
+  }
+
+  deRefClone(withIdentify: boolean): Block {
+    this.block
+    if (this._block) {
+      const cloned = this._block.deRefClone(withIdentify)
+      cloned.deRefed = true
+      return cloned
+    } else {
+      throw new Error("Missing reference block: " + this._refId)
+    }
   }
 }
 
@@ -509,6 +547,7 @@ export class ComputedBlock implements Block, RefIdsContainer {
   @ComputerTransformer
   _blocksComputer: BlocksComputer
   tempIndex?: number
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -570,7 +609,7 @@ export class ComputedBlock implements Block, RefIdsContainer {
 
   set refIds(values: string[]) {
     this._refIds = values
-    if (this._blocksContainer && this._refIds.length > 0) {
+    if (this._blocksContainer && !this.deRefed && this._refIds.length > 0) {
       this._blocks = this._refIds.map(i => this._blocksContainer?.findBlock(i)) as Block[]
     }
   }
@@ -602,18 +641,25 @@ export class ComputedBlock implements Block, RefIdsContainer {
   }
 
   clone(withIdentify: boolean = false): Block {
-    let clone = new ComputedBlock(
+    let cloned = new ComputedBlock(
       withIdentify ? this.id : defaultId.nextId() + '',
       this.name,
       this._blocksComputer,
       this.endian,
       this._blocksContainer
     )
-    clone.refIds = this._refIds
+    cloned.refIds = this._refIds
     if (withIdentify) {
-      clone.tempIndex = this.tempIndex
+      cloned.tempIndex = this.tempIndex
     }
-    return clone
+    return cloned
+  }
+
+  deRefClone(withIdentify: boolean): Block {
+    const cloned = this.clone(withIdentify) as ComputedBlock
+    cloned._blocks = this._blocks.map(b => b.deRefClone(withIdentify))
+    cloned.deRefed = true
+    return cloned
   }
 }
 
@@ -639,6 +685,7 @@ export class CompositeBlock implements BlocksContainer, Block {
   @Exclude()
   _blocksContainer?: BlocksContainer
   encoding: string = 'hex'
+  deRefed?: boolean
 
   constructor(
     readonly id: string,
@@ -717,7 +764,7 @@ export class CompositeBlock implements BlocksContainer, Block {
   }
 
   injectContainerToRef(): void {
-    if (this._blocksContainer) {
+    if (this._blocksContainer && !this.deRefed) {
       let p = this._blocksContainer
       this._blocks.forEach((b => {
         if (b instanceof RefBlock) {
@@ -755,6 +802,19 @@ export class CompositeBlock implements BlocksContainer, Block {
     cloned._blocks = this._blocks.map(b => b.clone(withIdentify))
     cloned._blocksContainer = this._blocksContainer
     cloned.injectContainerToRef()
+    return cloned
+  }
+
+  deRefClone(withIdentify: boolean = false): Block {
+    let cloned = new CompositeBlock(
+      withIdentify ? this.id : defaultId.nextId() + '',
+      this.name
+    )
+    if (withIdentify) {
+      cloned.tempIndex = this.tempIndex
+    }
+    cloned._blocks = this._blocks.map(b => b.deRefClone(withIdentify))
+    cloned.deRefed = true
     return cloned
   }
 }

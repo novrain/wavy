@@ -1,3 +1,6 @@
+import { Block } from '../frame/Block'
+import { Frame } from '../frame/Frame'
+
 export const SERIAL_BAUD_RATES = [
   110, 150, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 1500000,
 ]
@@ -77,7 +80,9 @@ export interface AbstractSession {
   dirty?: boolean,
   open(): any | Promise<any>,
   close(): any | Promise<any>,
-  send(data: Uint8Array, echo: boolean, raw: string | undefined): any | Promise<any>,
+  send(data: Uint8Array, echo: boolean): any | Promise<any>,
+  sendBlock(data: Block, echo: boolean): any | Promise<any>,
+  sendFrame(data: Frame, echo: boolean): any | Promise<any>,
   addEventListener(event: string, listener: (event: any) => void): any
   removeEventListener(event: string, listener: (event: any) => void): any
 }

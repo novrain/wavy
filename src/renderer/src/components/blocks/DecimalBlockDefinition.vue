@@ -6,6 +6,10 @@
                   width="40px"
                   :label="t('block.decimalBlock.value')"
                   :hide-details="hideDetails"></v-text-field>
+    <binary-integer-editor class="mb-3"
+                           v-model="decimalBlock.value as number"
+                           v-if="['UInt8', 'UInt16', 'UInt32', 'UInt64'].includes(decimalBlock.numberType)"
+                           :size="((parseInt(decimalBlock.numberType.replaceAll('UInt', '')) / 8) as any)"></binary-integer-editor>
     <v-select v-model="decimalBlock.numberType"
               class="mr-1 w-10"
               :items="['UInt8', 'Int8', 'UInt16', 'Int16', 'UInt32', 'Int32', 'UInt64', 'Int64', 'Float', 'Double']"
@@ -49,6 +53,7 @@
 <script setup lang="ts">
 import { Block, DecimalBlock } from '@W/frame/Block'
 import { useI18n } from 'vue-i18n'
+import BinaryIntegerEditor from './BinaryIntegerEditor.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 

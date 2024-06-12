@@ -108,10 +108,19 @@
   </v-container>
 </template>
 <script setup lang="ts">
+import { Block } from '@W/frame/Block'
+import { Frame } from '@W/frame/Frame'
 import { Buffer } from 'buffer'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SessionTextarea from './SessionTextarea.vue'
+
+interface Data {
+  time: Date,
+  data: Uint8Array | string | Block | Frame,
+  type: 'in' | 'out' | 'error'
+  format: 'hex' | 'ascii'
+}
 
 const emits = defineEmits(['connected', 'disconnected'])
 
@@ -129,8 +138,8 @@ const connecting = ref(false)
 const enableTimestamp = ref(true)
 const enableNewline = ref(true)
 const enableSendSelect = ref(false)
-const format = ref('hex')
-const data = ref<{ t: Date, d: Uint8Array | string }[]>([])
+const format = ref<'hex' | 'ascii'>('hex')
+const data = ref<Data[]>([])
 const dataAsText = ref('')
 const command = ref('')
 const info = ref('')
@@ -183,32 +192,37 @@ const send = async () => {
   }
 }
 
-const onData = (d: Uint8Array | string, type: 'in' | 'out' | 'error') => {
+const onData = (d: Uint8Array | string | Block | Frame, type: 'in' | 'out' | 'error') => {
   // if (data.value.length > 10000) {
 
   // }
-  const r = { t: new Date(), d: d }
-  // data.value.push(r)
+  const r = { time: new Date(), data: d, type, format: format.value }
+  data.value.push(r)
   let prefix = '>> '
-  if (type === 'out') {
+  if (r.type === 'out') {
     prefix = '<< '
   }
   if (enableTimestamp.value) {
-    prefix += `[${(r.t.getHours() + '').padStart(2, '0')}:${(r.t.getMinutes() + '').padStart(2, '0')}:${(r.t.getSeconds() + '').padStart(2, '0')}] `
+    prefix += `[${(r.time.getHours() + '').padStart(2, '0')}:${(r.time.getMinutes() + '').padStart(2, '0')}:${(r.time.getSeconds() + '').padStart(2, '0')}] `
   }
-  if (typeof d === 'string') {
-    dataAsText.value += prefix + d + '\r\n'
+  if (typeof r.data === 'string') {
+    dataAsText.value += prefix + r.data + '\r\n'
   } else {
-    dataAsText.value += prefix
-      + (format.value === 'hex'
-        ? Buffer.from(d).toString('hex')
-        : textDecoder.decode(d)) + '\r\n'
+    let str = ''
+    let tempData = r.data as any
+    if (tempData.encode) {
+      tempData = tempData.encode()
+    }
+    str = (r.format === 'hex'
+      ? Buffer.from(tempData).toString('hex')
+      : textDecoder.decode(tempData))
+    dataAsText.value += prefix + str + '\r\n'
   }
 }
 
 const onEcho = (d: any) => {
-  const raw = d.raw
-  onData(raw, 'out')
+  const data = d.data
+  onData(data, 'out')
 }
 
 const onError = (err: any) => {
@@ -228,9 +242,11 @@ const onClose = () => {
 const connect = async () => {
   const res = await form.value.validate()
   if (res.valid) {
+    connecting.value = true
     const session = props.session
     session.options = props.options
     session.open().then((r: any) => {
+      connecting.value = false
       connected.value = r.result
       info.value = r.err || ''
       if (r.result) {

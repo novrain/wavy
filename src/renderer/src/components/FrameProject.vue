@@ -38,7 +38,7 @@
                           @cancel="onBlockDialogCancel"
                           @confirm="onBlockDialogConfirm"
                           :index="blocks.length"></block-dialog>
-            <div class="flex">
+            <div class="d-flex">
               <v-btn icon="mdi-plus"
                      color="primary"
                      variant="text"
@@ -73,7 +73,7 @@
                               @cancel="onWavyItemDialogCancel"
                               @confirm="onWavyItemDialogConfirm"
                               :index="wavyItems.length"></wavy-item-dialog>
-            <div class="flex">
+            <div class="d-flex">
               <v-btn icon="mdi-plus"
                      color="primary"
                      variant="text"

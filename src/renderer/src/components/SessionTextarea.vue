@@ -29,7 +29,7 @@
         </v-container>
       </template>
     </v-textarea>
-    <div class="blur-view"
+    <div class="blur-view v-field__input"
          v-if="props.editable !== false"
          ref="blurViewRef"
          v-html="valueWithSelection">
